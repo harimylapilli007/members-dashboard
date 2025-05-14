@@ -17,6 +17,7 @@ import {
   Settings,
   User,
   X,
+  Hotel,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -50,6 +51,11 @@ export function DashboardLayout({ children, membershipType }: DashboardLayoutPro
       href: `/dashboard/${membershipType}`,
       label: "Overview",
       icon: <LayoutDashboard className="mr-2 h-4 w-4" />,
+    },
+    {
+      href: `/dashboard/${membershipType}/resorts`,
+      label: "Resorts",
+      icon: <Hotel className="mr-2 h-4 w-4" />,
     },
     {
       href: `/dashboard/${membershipType}/bookings`,

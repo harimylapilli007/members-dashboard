@@ -1,4 +1,4 @@
-import { CalendarDays, Clock, Gift, SpadeIcon as Spa, User2, Wifi } from "lucide-react"
+import { Activity, CalendarDays, Clock, Gift, Heart, SpadeIcon as Spa, Trophy, User2, Wifi } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -106,6 +106,7 @@ export default function ClassicDashboard() {
               </Button>
             </CardFooter>
           </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Membership Benefits</CardTitle>
@@ -254,7 +255,56 @@ export default function ClassicDashboard() {
               </ul>
             </CardContent>
           </Card>
+         
+       
+
+          
+
+          
         </div>
+
+       
+
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Wellness Journey</CardTitle>
+              <CardDescription>Your wellness milestones and achievements</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
+                    <Trophy className="h-5 w-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">30-Day Fitness Challenge</h3>
+                    <p className="text-sm text-muted-foreground">Completed on June 15, 2024</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
+                    <Heart className="h-5 w-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">Heart Health Milestone</h3>
+                    <p className="text-sm text-muted-foreground">Achieved on May 1, 2024</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
+                    <Activity className="h-5 w-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">Perfect Activity Week</h3>
+                    <p className="text-sm text-muted-foreground">Achieved on April 20, 2024</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+        
       </div>
     </DashboardLayout>
   )
