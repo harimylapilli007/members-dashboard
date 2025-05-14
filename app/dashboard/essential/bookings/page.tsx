@@ -21,7 +21,6 @@ import {
 import type { AppointmentType } from "@/types/appointment"
 import { cancelAppointmentAction } from "@/actions/appointment-actions"
 import { toast } from "@/components/ui/use-toast"
-import { getUserAppointments } from "@/lib/appointment-db"
 
 export default function EssentialBookingsPage() {
   const [activeTab, setActiveTab] = useState("upcoming")
@@ -45,9 +44,30 @@ export default function EssentialBookingsPage() {
   // Mock user ID
   const userId = "user-1"
 
-  // Get appointments
-  const upcomingAppointments = getUserAppointments(userId, "upcoming")
-  const pastAppointments = getUserAppointments(userId, "completed")
+  // Static appointments data
+  const upcomingAppointments = [
+    {
+      id: "apt-1",
+      userId: "user-1",
+      type: "spa" as AppointmentType,
+      title: "Couple Day Spa Session",
+      date: "2024-03-25",
+      time: "10:00",
+      location: "Wellness Center - Main Branch"
+    }
+  ]
+  
+  const pastAppointments = [
+    {
+      id: "apt-0",
+      userId: "user-1",
+      type: "spa" as AppointmentType,
+      title: "Couple Day Spa Session",
+      date: "2024-02-25",
+      time: "14:00",
+      location: "Wellness Center - Downtown"
+    }
+  ]
 
   // Get appointment types for Essential membership
   const appointmentTypes = [
@@ -171,7 +191,7 @@ export default function EssentialBookingsPage() {
                 <Card key={appointment.id}>
                   <CardHeader>
                     <CardTitle>{appointment.title}</CardTitle>
-                    <CardDescription>{appointment.description}</CardDescription>
+                    <CardDescription>{appointment.location}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center gap-4">
@@ -240,7 +260,7 @@ export default function EssentialBookingsPage() {
                 <Card key={appointment.id}>
                   <CardHeader>
                     <CardTitle>{appointment.title}</CardTitle>
-                    <CardDescription>{appointment.description}</CardDescription>
+                    <CardDescription>{appointment.location}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center gap-4">

@@ -11,7 +11,6 @@ import { DashboardLayout } from "@/components/dashboard-layout"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { BookingForm } from "@/components/booking-form"
 import type { AppointmentType } from "@/types/appointment"
-import { getUserAppointments } from "@/lib/appointment-db"
 
 export default function EssentialDashboard() {
   const router = useRouter()
@@ -24,8 +23,17 @@ export default function EssentialDashboard() {
   // Mock user ID
   const userId = "user-1"
 
-  // Get upcoming appointments
-  const upcomingAppointments = getUserAppointments(userId, "upcoming")
+  // Static upcoming appointments data
+  const upcomingAppointments = [
+    {
+      id: "apt-1",
+      type: "spa" as AppointmentType,
+      title: "Couple Day Spa Session",
+      date: "2024-03-25",
+      time: "10:00",
+      location: "Wellness Center - Main Branch"
+    }
+  ]
 
   const handleBookClick = () => {
     setSelectedAppointmentType({
@@ -104,7 +112,7 @@ export default function EssentialDashboard() {
                       </div>
                       <div className="flex-1">
                         <h3 className="font-medium">{appointment.title}</h3>
-                        <p className="text-sm text-muted-foreground">{appointment.description}</p>
+                        <p className="text-sm text-muted-foreground">{appointment.location}</p>
                       </div>
                       <div className="text-right">
                         <div className="font-medium">{appointment.date}</div>

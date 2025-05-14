@@ -1,5 +1,4 @@
 import { addDays, addMinutes, format, isAfter, isBefore, isSameDay, parse } from "date-fns"
-import { getUserAppointments } from "./appointment-db"
 import type { AppointmentType } from "@/types/appointment"
 
 // Constants for business hours
@@ -30,46 +29,50 @@ const UNAVAILABLE_DATES = [
 
 // Get all booked slots for a specific date
 export function getBookedSlots(date: string): { start: Date; end: Date }[] {
-  // Get all appointments for the date
-  const allAppointments = getUserAppointments("all", "upcoming")
-  const dateAppointments = allAppointments.filter((appointment) => appointment.date === date)
+  // Mock booked slots
+  const mockBookings = [
+    {
+      date: "2024-03-25",
+      time: "10:00",
+      duration: 120
+    },
+    {
+      date: "2024-03-25",
+      time: "14:00",
+      duration: 60
+    }
+  ]
 
-  return dateAppointments.map((appointment) => {
-    const startTime = parse(`${appointment.date} ${appointment.time}`, "yyyy-MM-dd HH:mm", new Date())
-    const endTime = addMinutes(startTime, appointment.duration)
-    return { start: startTime, end: endTime }
-  })
+  return mockBookings
+    .filter(booking => booking.date === date)
+    .map(booking => {
+      const startTime = parse(`${booking.date} ${booking.time}`, "yyyy-MM-dd HH:mm", new Date())
+      const endTime = addMinutes(startTime, booking.duration)
+      return { start: startTime, end: endTime }
+    })
 }
 
-// Check if a specific date is available for booking
-export function isDateAvailable(date: Date, type: AppointmentType): boolean {
-  // Check if date is in the past
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  if (isBefore(date, today)) {
+// Check if a date is available for booking
+function isDateAvailable(date: Date, type: AppointmentType): boolean {
+  // Check if it's a past date
+  if (isBefore(date, new Date())) {
     return false
   }
 
-  // Check if date is too far in the future
-  const maxDate = addDays(today, MAX_ADVANCE_DAYS)
+  // Check if it's too far in the future
+  const maxDate = addDays(new Date(), MAX_ADVANCE_DAYS)
   if (isAfter(date, maxDate)) {
     return false
   }
 
-  // Check if date is a weekend (0 = Sunday, 6 = Saturday)
-  const day = date.getDay()
-  if (day === 0) {
-    return false // Closed on Sundays
-  }
-
-  // Check if date is in the unavailable dates list
-  const dateString = format(date, "yyyy-MM-dd")
-  if (UNAVAILABLE_DATES.includes(dateString)) {
+  // Check if it's a Sunday (closed)
+  if (date.getDay() === 0) {
     return false
   }
 
-  // For wellness-stay, only allow bookings on Monday, Wednesday, and Friday
-  if (type === "wellness-stay" && ![1, 3, 5].includes(day)) {
+  // Check if it's a special unavailable date
+  const dateString = format(date, "yyyy-MM-dd")
+  if (UNAVAILABLE_DATES.includes(dateString)) {
     return false
   }
 

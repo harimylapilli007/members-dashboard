@@ -2,21 +2,36 @@
 
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
-import {
-  cancelAppointment,
-  createAppointment,
-  getAvailableTimeSlots,
-  getTreatmentOptions,
-  locations,
-  membershipAppointmentTypes,
-  updateAppointment,
-} from "@/lib/appointment-db"
 import type { AppointmentType } from "@/types/appointment"
 import { generateAvailableTimeSlots, getNextAvailableDate } from "@/lib/availability-service"
 import { format } from "date-fns"
 
 // Mock user ID - in a real app, this would come from authentication
 const MOCK_USER_ID = "user-1"
+
+// Mock data
+export const locations = [
+  { id: "loc-1", name: "Wellness Center - Main Branch" },
+  { id: "loc-2", name: "Wellness Resort - Beach Location" },
+  { id: "loc-3", name: "Wellness Center - Downtown" },
+]
+
+export const membershipAppointmentTypes: Record<string, Array<{ type: AppointmentType; title: string }>> = {
+  essential: [
+    { type: "spa", title: "Couple Day Spa Session" },
+    { type: "wellness-stay", title: "4N/5D Couple Stay with Wellness Program" },
+  ],
+  classic: [
+    { type: "spa", title: "Couple Day Spa Session" },
+    { type: "wellness-stay", title: "4N/5D Couple Stay with Wellness Program" },
+    { type: "wellness-checkup", title: "Annual Wellness Checkup" },
+  ],
+  signature: [
+    { type: "spa", title: "Couple Day Spa Session" },
+    { type: "wellness-stay", title: "4N/5D Couple Stay with Wellness Program" },
+    { type: "wellness-checkup", title: "Quarterly Wellness Checkup" },
+  ],
+}
 
 // Validation schemas
 const bookAppointmentSchema = z.object({
@@ -46,12 +61,51 @@ export async function getLocations() {
 
 // Get available time slots for a date
 export async function getAvailableTimes(date: string, type: AppointmentType) {
-  return getAvailableTimeSlots(date, type)
+  // Return mock time slots
+  return ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"]
 }
 
 // Get treatment options for an appointment type
 export async function getTreatments(type: AppointmentType) {
-  return getTreatmentOptions(type)
+  const treatments = {
+    spa: [
+      {
+        id: "spa-1",
+        title: "Swedish Massage",
+        description: "Relaxing full body massage",
+        duration: 120,
+      },
+      {
+        id: "spa-2",
+        title: "Deep Tissue Massage",
+        description: "Therapeutic massage targeting deep muscle tissue",
+        duration: 120,
+      },
+    ],
+    "wellness-stay": [
+      {
+        id: "stay-1",
+        title: "Detox Program",
+        description: "Comprehensive detox and wellness program",
+        duration: 60,
+      },
+      {
+        id: "stay-2",
+        title: "Stress Management Retreat",
+        description: "Focus on stress relief and mental wellness",
+        duration: 60,
+      },
+    ],
+    "wellness-checkup": [
+      {
+        id: "checkup-1",
+        title: "Complete Health Assessment",
+        description: "Comprehensive health and wellness evaluation",
+        duration: 180,
+      },
+    ],
+  }
+  return treatments[type] || []
 }
 
 // Book a new appointment
@@ -62,7 +116,7 @@ export async function bookAppointment(formData: FormData) {
     const validatedData = bookAppointmentSchema.parse(data)
 
     // Get treatment details
-    const treatments = getTreatmentOptions(validatedData.type as AppointmentType)
+    const treatments = await getTreatments(validatedData.type as AppointmentType)
     const treatment = treatments.find((t) => t.id === validatedData.treatmentId)
 
     if (!treatment) {
@@ -76,17 +130,19 @@ export async function bookAppointment(formData: FormData) {
       return { success: false, message: "Invalid location selected" }
     }
 
-    // Create the appointment
-    const appointment = createAppointment(
-      MOCK_USER_ID,
-      validatedData.type as AppointmentType,
-      treatment.title,
-      treatment.description,
-      validatedData.date,
-      validatedData.time,
-      treatment.duration,
-      location.name,
-    )
+    // Mock appointment creation
+    const appointment = {
+      id: `apt-${Date.now()}`,
+      userId: MOCK_USER_ID,
+      type: validatedData.type,
+      title: treatment.title,
+      description: treatment.description,
+      date: validatedData.date,
+      time: validatedData.time,
+      duration: treatment.duration,
+      location: location.name,
+      status: "upcoming",
+    }
 
     // Revalidate the dashboard and bookings pages
     revalidatePath("/dashboard/essential")
@@ -117,14 +173,12 @@ export async function rescheduleAppointment(formData: FormData) {
     const data = Object.fromEntries(formData.entries())
     const validatedData = rescheduleAppointmentSchema.parse(data)
 
-    // Update the appointment
-    const updatedAppointment = updateAppointment(validatedData.appointmentId, {
+    // Mock appointment update
+    const updatedAppointment = {
+      id: validatedData.appointmentId,
       date: validatedData.date,
       time: validatedData.time,
-    })
-
-    if (!updatedAppointment) {
-      return { success: false, message: "Appointment not found" }
+      status: "upcoming",
     }
 
     // Revalidate the dashboard and bookings pages
@@ -158,10 +212,10 @@ export async function cancelAppointmentAction(formData: FormData) {
       return { success: false, message: "Appointment ID is required" }
     }
 
-    const updatedAppointment = cancelAppointment(appointmentId)
-
-    if (!updatedAppointment) {
-      return { success: false, message: "Appointment not found" }
+    // Mock appointment cancellation
+    const updatedAppointment = {
+      id: appointmentId,
+      status: "cancelled",
     }
 
     // Revalidate the dashboard and bookings pages

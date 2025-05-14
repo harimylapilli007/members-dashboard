@@ -13,8 +13,8 @@ export interface Appointment {
   duration: number // in minutes
   location: string
   status: AppointmentStatus
-  createdAt: string // ISO string
-  updatedAt: string // ISO string
+  createdAt?: string // ISO string
+  updatedAt?: string // ISO string
 }
 
 export interface BookingFormData {
