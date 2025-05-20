@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   Bell,
   Calendar,
@@ -22,6 +22,9 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { signOut } from 'firebase/auth'
+import { auth } from '@/lib/firebase'
+import { useToast } from '@/components/ui/use-toast'
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -31,6 +34,8 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children, membershipType }: DashboardLayoutProps) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+  const { toast } = useToast()
 
   const membershipColor =
     {
@@ -83,6 +88,24 @@ export function DashboardLayout({ children, membershipType }: DashboardLayoutPro
       icon: <Settings className="mr-2 h-4 w-4" />,
     },
   ]
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+      toast({
+        title: "Success",
+        description: "Successfully logged out",
+      })
+      router.push('/signin')
+    } catch (error) {
+      console.error('Error signing out:', error)
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to log out. Please try again.",
+      })
+    }
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -186,7 +209,11 @@ export function DashboardLayout({ children, membershipType }: DashboardLayoutPro
               ))}
             </nav>
             <div className="mt-auto">
-              <Button variant="ghost" className="w-full justify-start text-muted-foreground">
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start text-muted-foreground"
+                onClick={handleLogout}
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 Log Out
               </Button>
