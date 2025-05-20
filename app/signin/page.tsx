@@ -17,6 +17,7 @@ export default function SignIn() {
   const [verificationId, setVerificationId] = useState('');
   const [loading, setLoading] = useState(false);
   const [recaptchaReady, setRecaptchaReady] = useState(false);
+  const [guestData, setGuestData] = useState<{ id: string; center_id: string } | null>(null);
   const recaptchaContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { toast } = useToast();
@@ -136,7 +137,7 @@ export default function SignIn() {
       }
 
       // Check if user exists in Zenoti
-      const response = await fetch(`https://api.zenoti.com/v1/guests/search?phone=${formattedPhone}`, {
+      const response = await fetch(`https://api.zenoti.com/v1/guests/search?phone=${phoneNumber}`, {
         headers: {
           'Authorization': 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283',
           'accept': 'application/json'
@@ -144,21 +145,28 @@ export default function SignIn() {
       });
 
       const data = await response.json();
+      console.log(data);
 
       if (!response.ok) {
         throw new Error('Failed to check user existence');
       }
 
       // If no user found, redirect to signup
-      if (!data || data.length === 0) {
+      if (!data || !data.guests || data.guests.length === 0) {
         toast({
           variant: "destructive",
           title: "User Not Found",
           description: "Please sign up first to continue.",
         });
-        // router.push('/signup');
         return;
       }
+
+      // Store guest data
+      const guest = data.guests[1];
+      setGuestData({
+        id: guest.id,
+        center_id: guest.center_id
+      });
 
       if (!window.recaptchaVerifier) {
         throw new Error('reCAPTCHA not initialized');
@@ -222,12 +230,13 @@ export default function SignIn() {
       }
 
       const credential = await window.confirmationResult.confirm(otp);
-      if (credential.user) {
+      if (credential.user && guestData) {
         toast({
           title: "Success",
           description: "Successfully signed in!",
         });
-        router.push('/dashboard/classic');
+        // Pass guest data to dashboard
+        router.push(`/dashboard/classic?id=${guestData.id}&center_id=${guestData.center_id}`);
       }
     } catch (error: any) {
       console.error('Error verifying OTP:', error);
