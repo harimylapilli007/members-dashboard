@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { XCircle } from "lucide-react"
 
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/ui/use-toast"
 
-export default function PaymentFailure() {
+function PaymentFailureContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { toast } = useToast()
@@ -169,5 +169,27 @@ export default function PaymentFailure() {
         </CardFooter>
       </Card>
     </div>
+  )
+}
+
+export default function PaymentFailure() {
+  return (
+    <Suspense fallback={
+      <div className="container flex items-center justify-center min-h-screen py-12">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <div className="flex items-center justify-center mb-4">
+              <XCircle className="h-16 w-16 text-red-500" />
+            </div>
+            <CardTitle className="text-center">Loading...</CardTitle>
+            <CardDescription className="text-center">
+              Please wait while we process your payment status.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    }>
+      <PaymentFailureContent />
+    </Suspense>
   )
 } 
