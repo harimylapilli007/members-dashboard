@@ -1,7 +1,7 @@
 "use client"
 
 import { Activity, CalendarDays, Clock, Gift, Heart, SpadeIcon as Spa, Trophy, User2, Wifi } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
@@ -109,7 +109,7 @@ const getStatusColor = (status: number): string => {
   return colorMap[status] || 'text-gray-600';
 };
 
-export default function ClassicDashboard() {
+function ClassicDashboardContent() {
   const searchParams = useSearchParams()
   const [membershipData, setMembershipData] = useState<GuestMembership | null>(null)
   const [membershipDetails, setMembershipDetails] = useState<MembershipDetail[]>([])
@@ -642,5 +642,21 @@ export default function ClassicDashboard() {
         />
       )}
     </DashboardLayout>
+  )
+}
+
+export default function ClassicDashboard() {
+  return (
+    <Suspense fallback={
+      <DashboardLayout membershipType="classic">
+        <div className="container p-4 md:p-8">
+          <div className="flex items-center justify-center h-64">
+            <p>Loading membership data...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    }>
+      <ClassicDashboardContent />
+    </Suspense>
   )
 }
