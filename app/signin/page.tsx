@@ -9,6 +9,22 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
+import { AccountSelector } from '@/components/account-selector';
+
+interface Guest {
+  id: string;
+  center_id: string;
+  personal_info: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    mobile_phone: {
+      number: string;
+    };
+  };
+  email: string;
+  phone: string;
+}
 
 export default function SignIn() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -17,7 +33,8 @@ export default function SignIn() {
   const [verificationId, setVerificationId] = useState('');
   const [loading, setLoading] = useState(false);
   const [recaptchaReady, setRecaptchaReady] = useState(false);
-  const [guestData, setGuestData] = useState<{ id: string; center_id: string } | null>(null);
+  const [guests, setGuests] = useState<Guest[]>([]);
+  const [showAccountSelector, setShowAccountSelector] = useState(false);
   const recaptchaContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { toast } = useToast();
@@ -145,7 +162,6 @@ export default function SignIn() {
       });
 
       const data = await response.json();
-      console.log(data);
 
       if (!response.ok) {
         throw new Error('Failed to check user existence');
@@ -161,12 +177,22 @@ export default function SignIn() {
         return;
       }
 
-      // Store guest data
-      const guest = data.guests[1];
-      setGuestData({
+      // Ensure the guest data is properly structured
+      const formattedGuests = data.guests.map((guest: any) => ({
         id: guest.id,
-        center_id: guest.center_id
-      });
+        center_id: guest.center_id,
+        personal_info: {
+          first_name: guest.personal_info?.first_name || '',
+          last_name: guest.personal_info?.last_name || '',
+          email: guest.personal_info?.email || '',
+          mobile_phone: {
+            number: guest.personal_info?.mobile_phone?.number || ''
+          }
+        }
+      }));
+
+      // Store all guests
+      setGuests(formattedGuests);
 
       if (!window.recaptchaVerifier) {
         throw new Error('reCAPTCHA not initialized');
@@ -230,13 +256,35 @@ export default function SignIn() {
       }
 
       const credential = await window.confirmationResult.confirm(otp);
-      if (credential.user && guestData) {
+      if (credential.user) {
+        // Get the ID token
+        const idToken = await credential.user.getIdToken();
+        
+        // Set the auth token cookie
+        document.cookie = `auth-token=${idToken}; path=/; max-age=3600; secure; samesite=strict`;
+        
         toast({
           title: "Success",
-          description: "Successfully signed in!",
+          description: "Successfully verified!",
         });
-        // Pass guest data to dashboard
-        router.push(`/dashboard/classic?id=${guestData.id}&center_id=${guestData.center_id}`);
+        
+        // If only one account, navigate directly
+        if (guests.length === 1) {
+          // Store parameters in localStorage before navigation
+          const dashboardParams = new URLSearchParams()
+          dashboardParams.append('id', guests[0].id)
+          dashboardParams.append('center_id', guests[0].center_id)
+          dashboardParams.append('first_name', guests[0].personal_info.first_name)
+          dashboardParams.append('last_name', guests[0].personal_info.last_name)
+          dashboardParams.append('email', guests[0].personal_info.email ?? '')
+          dashboardParams.append('phone', guests[0].personal_info.mobile_phone.number ?? '')
+          localStorage.setItem('dashboardParams', dashboardParams.toString())
+
+          router.push(`/dashboard/classic?id=${guests[0].id}&center_id=${guests[0].center_id}&first_name=${guests[0].personal_info.first_name}&last_name=${guests[0].personal_info.last_name}&email=${guests[0].personal_info.email ?? ''}&phone=${guests[0].personal_info.mobile_phone.number ?? ''}`);
+        } else {
+          // Show account selector for multiple accounts
+          setShowAccountSelector(true);
+        }
       }
     } catch (error: any) {
       console.error('Error verifying OTP:', error);
@@ -249,6 +297,28 @@ export default function SignIn() {
       setLoading(false);
     }
   };
+
+  const handleAccountSelect = (guest: Guest) => {
+    // Store parameters in localStorage before navigation
+    const dashboardParams = new URLSearchParams()
+    dashboardParams.append('id', guest.id)
+    dashboardParams.append('center_id', guest.center_id)
+    dashboardParams.append('first_name', guest.personal_info.first_name)
+    dashboardParams.append('last_name', guest.personal_info.last_name)
+    dashboardParams.append('email', guest.personal_info.email ?? '')
+    dashboardParams.append('phone', guest.personal_info.mobile_phone.number ?? '')
+    localStorage.setItem('dashboardParams', dashboardParams.toString())
+
+    router.push(`/dashboard/classic?id=${guest.id}&center_id=${guest.center_id}&first_name=${guest.personal_info.first_name}&last_name=${guest.personal_info.last_name}&email=${guest.personal_info.email ?? ''}&phone=${guest.personal_info.mobile_phone.number ?? ''}`);
+  };
+
+  if (showAccountSelector) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <AccountSelector guests={guests} onSelect={handleAccountSelect} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

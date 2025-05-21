@@ -29,9 +29,10 @@ import { useToast } from '@/components/ui/use-toast'
 interface DashboardLayoutProps {
   children: React.ReactNode
   membershipType: string
+  fullName?: string
 }
 
-export function DashboardLayout({ children, membershipType }: DashboardLayoutProps) {
+export function DashboardLayout({ children, membershipType, fullName }: DashboardLayoutProps) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
@@ -92,6 +93,8 @@ export function DashboardLayout({ children, membershipType }: DashboardLayoutPro
   const handleLogout = async () => {
     try {
       await signOut(auth)
+      // Clear the auth token cookie
+      document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict';
       toast({
         title: "Success",
         description: "Successfully logged out",
@@ -167,7 +170,7 @@ export function DashboardLayout({ children, membershipType }: DashboardLayoutPro
             </nav>
             <div className="flex items-center gap-3">
               <div className="hidden md:block">
-                <div className="text-sm font-medium">Ode Life {membershipTitle}</div>
+                <div className="text-sm font-medium">{fullName || `Ode Life ${membershipTitle}`}</div>
                 <div className={`text-xs ${membershipColor}`}>Premium Member</div>
               </div>
               <Button variant="ghost" size="icon">
@@ -187,7 +190,7 @@ export function DashboardLayout({ children, membershipType }: DashboardLayoutPro
                   <span className={`text-sm font-medium ${membershipColor}`}>{membershipTitle.charAt(0)}</span>
                 </div>
                 <div>
-                  <div className="text-sm font-medium">Ode Life {membershipTitle}</div>
+                  <div className="text-sm font-medium">{fullName || `Ode Life ${membershipTitle}`}</div>
                   <div className={`text-xs ${membershipColor}`}>Premium Member</div>
                 </div>
               </div>

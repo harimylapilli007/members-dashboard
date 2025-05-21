@@ -1,3 +1,7 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { CalendarDays, Clock, Gift, SpadeIcon as Spa, Star, User2, Wifi } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -5,9 +9,145 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from "@/components/ui/progress"
 import { DashboardLayout } from "@/components/dashboard-layout"
 
+interface Membership {
+  type: number;
+  code: string;
+  name: string;
+  id: string;
+  description: string | null;
+  freeze_fee_reason_enabled: boolean;
+}
+
+interface Invoice {
+  receipt_no: string;
+  status: number;
+  id: string;
+  item_id: string;
+  no: string;
+}
+
+interface CreditBalance {
+  total: number;
+  service: number;
+  product: number;
+  other: number;
+  comments: string | null;
+}
+
+interface Guest {
+  first_name: string;
+  last_name: string;
+}
+
+interface GuestMembership {
+  user_membership_id: string;
+  status: number;
+  is_refunded: boolean;
+  membership: Membership;
+  invoice: Invoice;
+  expiry_date: string;
+  credit_balance: CreditBalance;
+  credit_amount: CreditBalance;
+  member_since: string;
+  guestpass_total: number;
+  guestpass_balance: number;
+  guest: Guest;
+}
+
+interface MembershipResponse {
+  guest_memberships: GuestMembership[];
+}
+
 export default function SignatureDashboard() {
+  const searchParams = useSearchParams()
+  const [membershipData, setMembershipData] = useState<GuestMembership | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchMembershipData = async () => {
+      try {
+        const guestId = searchParams.get('id')
+        const centerId = searchParams.get('center_id')
+
+        if (!guestId || !centerId) {
+          setError('Guest ID and Center ID are required')
+          setLoading(false)
+          return
+        }
+
+        const response = await fetch(
+          `https://api.zenoti.com/v1/guests/${guestId}/memberships?center_id=${centerId}`,
+          {
+            headers: {
+              'Authorization': 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283',
+              'accept': 'application/json',
+              'content-type': 'application/json'
+            }
+          }
+        )
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch membership data')
+        }
+
+        const data: MembershipResponse = await response.json()
+        if (data.guest_memberships && data.guest_memberships.length > 0) {
+          setMembershipData(data.guest_memberships[0])
+        } else {
+          setError('No membership data found')
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMembershipData()
+  }, [searchParams])
+
+  if (loading) {
+    return (
+      <DashboardLayout membershipType="signature">
+        <div className="container p-4 md:p-8">
+          <div className="flex items-center justify-center h-64">
+            <p>Loading membership data...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
+  }
+
+  if (error) {
+    return (
+      <DashboardLayout membershipType="signature">
+        <div className="container p-4 md:p-8">
+          <div className="flex items-center justify-center h-64">
+            <p className="text-red-500">Error: {error}</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
+  }
+
+  if (!membershipData) {
+    return (
+      <DashboardLayout membershipType="signature">
+        <div className="container p-4 md:p-8">
+          <div className="flex items-center justify-center h-64">
+            <p>No membership data available</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
+  }
+
+  const expiryDate = new Date(membershipData.expiry_date).toLocaleDateString()
+  const memberSince = new Date(membershipData.member_since).toLocaleDateString()
+
   return (
-    <DashboardLayout membershipType="signature">
+    <DashboardLayout membershipType="signature" fullName={membershipData?.guest?.first_name && membershipData?.guest?.last_name ? `${membershipData.guest.first_name} ${membershipData.guest.last_name}` : undefined}>
       <div className="container p-4 md:p-8 space-y-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Signature Dashboard</h1>
@@ -22,7 +162,8 @@ export default function SignatureDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">Elite Active</div>
-              <p className="text-xs text-muted-foreground">Valid until May 14, 2040</p>
+              <p className="text-xs text-muted-foreground">Valid until {expiryDate}</p>
+              <p className="text-xs text-muted-foreground">Member since {memberSince}</p>
             </CardContent>
           </Card>
           <Card>
@@ -38,24 +179,44 @@ export default function SignatureDashboard() {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Wellness Stay</CardTitle>
-              <CalendarDays className="h-4 w-4 text-amber-600" />
+              <CardTitle className="text-sm font-medium">Credit Balance</CardTitle>
+              <Gift className="h-4 w-4 text-amber-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Not Used</div>
-              <p className="text-xs text-muted-foreground">1 Week Stay with Wellness Program</p>
-              <Progress className="mt-2" value={0} />
+              <div className="text-2xl font-bold">₹{membershipData.credit_balance.total.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">Available Credit</p>
+              <div className="mt-2 space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span>Services</span>
+                  <span>₹{membershipData.credit_balance.service.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span>Products</span>
+                  <span>₹{membershipData.credit_balance.product.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span>Other</span>
+                  <span>₹{membershipData.credit_balance.other.toLocaleString()}</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Annual Memberships</CardTitle>
-              <Gift className="h-4 w-4 text-amber-600" />
+              <CardTitle className="text-sm font-medium">Guest Pass</CardTitle>
+              <CalendarDays className="h-4 w-4 text-amber-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0/12</div>
-              <p className="text-xs text-muted-foreground">Annual Spa Memberships Used</p>
-              <Progress className="mt-2" value={0} />
+              <div className="text-2xl font-bold">
+                {membershipData?.guestpass_balance === -1 ? 'Unlimited' : membershipData?.guestpass_balance}
+              </div>
+              <p className="text-xs text-muted-foreground">Available Guest Passes</p>
+              {membershipData?.guestpass_total !== -1 && (
+                <Progress 
+                  className="mt-2" 
+                  value={(membershipData?.guestpass_balance / membershipData?.guestpass_total) * 100} 
+                />
+              )}
             </CardContent>
           </Card>
         </div>
