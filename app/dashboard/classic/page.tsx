@@ -651,7 +651,7 @@ export default function ClassicDashboard() {
       <DashboardLayout membershipType="classic">
         <div className="container p-4 md:p-8">
           <div className="flex items-center justify-center h-64">
-            <p>Loading membership data..</p>
+            <p>Loading membership data...</p>
           </div>
         </div>
       </DashboardLayout>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { CalendarDays, Clock, Gift, SpadeIcon as Spa, Star, User2, Wifi } from "lucide-react"
 
@@ -58,7 +58,7 @@ interface MembershipResponse {
   guest_memberships: GuestMembership[];
 }
 
-export default function SignatureDashboard() {
+function SignatureDashboardContent() {
   const searchParams = useSearchParams()
   const [membershipData, setMembershipData] = useState<GuestMembership | null>(null)
   const [loading, setLoading] = useState(true)
@@ -514,5 +514,21 @@ export default function SignatureDashboard() {
         </div>
       </div>
     </DashboardLayout>
+  )
+}
+
+export default function SignatureDashboard() {
+  return (
+    <Suspense fallback={
+      <DashboardLayout membershipType="signature">
+        <div className="container p-4 md:p-8">
+          <div className="flex items-center justify-center h-64">
+            <p>Loading membership data..</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    }>
+      <SignatureDashboardContent />
+    </Suspense>
   )
 }
