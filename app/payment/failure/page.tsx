@@ -6,6 +6,7 @@ import { XCircle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { updateMembershipStatus } from "@/actions/payment-actions"
 import { useToast } from "@/components/ui/use-toast"
 
 function PaymentFailureContent() {
@@ -21,45 +22,74 @@ function PaymentFailureContent() {
   })
 
   useEffect(() => {
-    try {
-      const txnid = searchParams.get('txnid')
-      const status = searchParams.get('status')
-      const errorMessage = searchParams.get('error_Message')
-      const errorCode = searchParams.get('error_code')
-      
-      if (status === 'success') {
-        try {
-          const sanitizedParams = sanitizeParams(searchParams)
-          const queryString = sanitizedParams.toString()
-          const targetUrl = queryString ? `/payment/success?${queryString}` : '/payment/success'
-          router.push(targetUrl)
-        } catch (navigationError) {
-          console.error('Error navigating to success page:', navigationError)
+    const handlePaymentFailure = async () => {
+      try {
+        const txnid = searchParams.get('txnid')
+        const status = searchParams.get('status')
+        const errorMessage = searchParams.get('error_Message')
+        const errorCode = searchParams.get('error_code')
+        
+        if (status === 'success') {
+          try {
+            const sanitizedParams = sanitizeParams(searchParams)
+            const queryString = sanitizedParams.toString()
+            const targetUrl = queryString ? `/payment/success?${queryString}` : '/payment/success'
+            router.push(targetUrl)
+          } catch (navigationError) {
+            console.error('Error navigating to success page:', navigationError)
+          }
+          return
         }
-        return
+
+        // Set error details
+        setErrorDetails({
+          message: errorMessage || 'Payment was not successful',
+          code: errorCode || undefined,
+          transactionId: txnid || undefined,
+        })
+
+        // Update membership status in the backend
+        if (txnid) {
+          try {
+            const responseData = {
+              txnid,
+              amount: searchParams.get('amount') || '0',
+              productinfo: searchParams.get('productinfo') || '',
+              firstname: searchParams.get('firstname') || '',
+              email: searchParams.get('email') || '',
+              status: 'failure',
+              hash: searchParams.get('hash') || '',
+              error_Message: errorMessage || undefined,
+              error_code: errorCode || undefined
+            }
+
+            const updateResult = await updateMembershipStatus(responseData)
+            
+            if (!updateResult.success) {
+              console.error('Failed to update membership status:', updateResult.error?.message)
+            }
+          } catch (updateError) {
+            console.error('Error updating membership status:', updateError)
+          }
+        }
+
+        // Show error toast
+        toast({
+          variant: "destructive",
+          title: "Payment Failed",
+          description: errorMessage || 'Your payment could not be processed. Please try again.',
+        })
+      } catch (error) {
+        console.error('Error handling payment failure:', error)
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "An unexpected error occurred. Please try again or contact support.",
+        })
       }
-
-      // Set error details
-      setErrorDetails({
-        message: errorMessage || 'Payment was not successful',
-        code: errorCode || undefined,
-        transactionId: txnid || undefined,
-      })
-
-      // Show error toast
-      toast({
-        variant: "destructive",
-        title: "Payment Failed",
-        description: errorMessage || 'Your payment could not be processed. Please try again.',
-      })
-    } catch (error) {
-      console.error('Error handling payment status:', error)
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "An unexpected error occurred. Please try again or contact support.",
-      })
     }
+
+    handlePaymentFailure()
   }, [searchParams, router, toast])
 
   const sanitizeParams = (params: URLSearchParams) => {

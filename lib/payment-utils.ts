@@ -42,8 +42,8 @@ export const initiatePayment = (membershipData: {
     email: membershipData.email,
     phone: membershipData.phone,
     salt: '0Rd0lVQEvO',
-    surl: `${window.location.origin}/payment/success`,
-    furl: `https://members-dashboard-steel.vercel.app/payment/failure`,
+    surl: `${window.location.protocol}//${window.location.host}/api/payment/success`,
+    furl: `${window.location.protocol}//${window.location.host}/api/payment/failure`,
   }
 
   // Generate the hash for the payment

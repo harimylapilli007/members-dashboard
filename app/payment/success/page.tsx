@@ -7,6 +7,7 @@ import { CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { verifyPayUResponse } from "@/lib/payment-utils"
+import { updateMembershipStatus } from "@/actions/payment-actions"
 import { useToast } from "@/components/ui/use-toast"
 
 function PaymentSuccessContent() {
@@ -49,6 +50,18 @@ function PaymentSuccessContent() {
             if (value) params.append(key, value)
           })
           router.push(`/payment/failure?${params.toString()}`)
+          return
+        }
+
+        // Update membership status in the backend
+        const updateResult = await updateMembershipStatus(responseData)
+        
+        if (!updateResult.success) {
+          toast({
+            variant: "destructive",
+            title: "Error Updating Membership",
+            description: updateResult.error?.message || "Failed to update membership status. Please contact support.",
+          })
           return
         }
 
