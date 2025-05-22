@@ -33,7 +33,6 @@ export async function POST(request: Request) {
       mihpayid: responseData.mihpayid,
       error_Message: responseData.error_Message,
       error_code: responseData.error_code,
-      // Log all other parameters that might be present
       allParams: Object.fromEntries(formData.entries())
     })
 
@@ -46,47 +45,79 @@ export async function POST(request: Request) {
       email: responseData.email,
       status: responseData.status,
       hash: responseData.hash,
-      salt: '0Rd0lVQEvO' // This should match the salt used in payment-utils.ts
+      salt: '0Rd0lVQEvO'
     })
 
     if (!isValid) {
       // Redirect to failure page with error information
-      const params = new URLSearchParams()
-      params.append('txnid', responseData.txnid)
-      params.append('error_Message', responseData.error_Message || 'Invalid payment response')
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-      return NextResponse.redirect(`${baseUrl}/payment/failure?${params.toString()}`)
+      const params = new URLSearchParams()
+      if (responseData.txnid) {
+        params.append('txnid', responseData.txnid)
+      }
+      params.append('error_Message', 'Invalid payment response')
+
+      const redirectUrl = `${baseUrl}/payment/failure?${params.toString()}`
+      return new Response(null, {
+        status: 302,
+        headers: {
+          'Location': redirectUrl,
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      })
     }
 
-    // Skip membership status update for now
-    // const result = await updateMembershipStatus(responseData)
-    // if (!result.success) {
-    //   // Redirect to failure page with error information
-    //   const params = new URLSearchParams()
-    //   params.append('txnid', responseData.txnid)
-    //   params.append('error_Message', result.error?.message || 'Failed to update membership status')
-    //   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-    //   return NextResponse.redirect(`${baseUrl}/payment/failure?${params.toString()}`)
-    // }
-
-    // Redirect to success page with payment information
-    const params = new URLSearchParams()
-    params.append('txnid', responseData.txnid)
-    params.append('error_Message', 'Payment processed successfully')
+    // Construct the redirect URL with only txnid and success message
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-    return NextResponse.redirect(`${baseUrl}/payment/success?${params.toString()}`)
-  } catch (error) {
-    console.error('Error processing payment success:', error)
-    // Redirect to failure page with error information
     const params = new URLSearchParams()
-    // Get txnid from the request if available
-    const formData = await request.formData()
-    const responseData = Object.fromEntries(formData.entries()) as unknown as PayUResponse
+    
+    // Only add txnid and success message
     if (responseData.txnid) {
       params.append('txnid', responseData.txnid)
     }
-    params.append('error_Message', error instanceof Error ? error.message : 'An error occurred while processing payment')
+    params.append('error_Message', 'Payment processed successfully')
+
+    const redirectUrl = `${baseUrl}/payment/success?${params.toString()}`
+
+    // Return a redirect response with proper headers
+    return new Response(null, {
+      status: 302,
+      headers: {
+        'Location': redirectUrl,
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    })
+
+  } catch (error) {
+    console.error('Error processing payment success:', error)
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-    return NextResponse.redirect(`${baseUrl}/payment/failure?${params.toString()}`)
+    const params = new URLSearchParams()
+    
+    // Get txnid from the request if available
+    try {
+      const formData = await request.formData()
+      const responseData = Object.fromEntries(formData.entries()) as unknown as PayUResponse
+      if (responseData.txnid) {
+        params.append('txnid', responseData.txnid)
+      }
+    } catch (e) {
+      console.error('Error getting txnid from request:', e)
+    }
+    
+    params.append('error_Message', error instanceof Error ? error.message : 'An error occurred while processing payment')
+    
+    const redirectUrl = `${baseUrl}/payment/failure?${params.toString()}`
+
+    // Return a redirect response with proper headers
+    return new Response(null, {
+      status: 302,
+      headers: {
+        'Location': redirectUrl,
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    })
   }
 } 

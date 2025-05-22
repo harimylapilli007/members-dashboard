@@ -33,79 +33,47 @@ export async function POST(request: Request) {
       mihpayid: responseData.mihpayid,
       error_Message: responseData.error_Message,
       error_code: responseData.error_code,
-      // Log all other parameters that might be present
       allParams: Object.fromEntries(formData.entries())
     })
 
-    // Verify the PayU response hash
-    const isValid = verifyPayUResponse({
-      txnid: responseData.txnid,
-      amount: responseData.amount,
-      productinfo: responseData.productinfo,
-      firstname: responseData.firstname,
-      email: responseData.email,
-      status: responseData.status,
-      hash: responseData.hash,
-      salt: '0Rd0lVQEvO' // This should match the salt used in payment-utils.ts
+    // Construct the redirect URL with only error_Message and txnid
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const params = new URLSearchParams()
+    
+    // Only add txnid and error_Message
+    if (responseData.txnid) {
+      params.append('txnid', responseData.txnid)
+    }
+    params.append('error_Message', responseData.error_Message || 'Payment failed')
+
+    const redirectUrl = `${baseUrl}/payment/failure?${params.toString()}`
+
+    // Return a redirect response with proper headers
+    return new Response(null, {
+      status: 302,
+      headers: {
+        'Location': redirectUrl,
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache'
+      }
     })
 
-    if (!isValid) {
-      // Redirect to failure page with error information
-      const params = new URLSearchParams()
-      params.append('txnid', responseData.txnid)
-      params.append('error_Message', responseData.error_Message || 'Payment failed')
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL
-      if (!baseUrl) {
-        console.error('NEXT_PUBLIC_APP_URL is not set')
-        return NextResponse.redirect(new URL('/payment/failure', 'http://localhost:3000'))
-      }
-      try {
-        const redirectUrl = new URL('/payment/failure', baseUrl)
-        redirectUrl.search = params.toString()
-        return NextResponse.redirect(redirectUrl)
-      } catch (error) {
-        console.error('Error constructing redirect URL:', error)
-        return NextResponse.redirect(new URL('/payment/failure', 'http://localhost:3000'))
-      }
-    }
-
-    // Payment actions are currently on hold
-    console.log('Payment actions held - skipping membership status update')
-    
-    // Redirect to failure page with error information
-    const params = new URLSearchParams()
-    params.append('txnid', responseData.txnid)
-    params.append('error_Message', responseData.error_Message || 'Payment failed')
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL
-    if (!baseUrl) {
-      console.error('NEXT_PUBLIC_APP_URL is not set')
-      return NextResponse.redirect(new URL('/payment/failure', 'http://localhost:3000'))
-    }
-    try {
-      const redirectUrl = new URL('/payment/failure', baseUrl)
-      redirectUrl.search = params.toString()
-      return NextResponse.redirect(redirectUrl)
-    } catch (error) {
-      console.error('Error constructing redirect URL:', error)
-      return NextResponse.redirect(new URL('/payment/failure', 'http://localhost:3000'))
-    }
   } catch (error) {
     console.error('Error processing payment failure:', error)
-    // Redirect to failure page with error information
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     const params = new URLSearchParams()
     params.append('error_Message', error instanceof Error ? error.message : 'An error occurred while processing payment failure')
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL
-    if (!baseUrl) {
-      console.error('NEXT_PUBLIC_APP_URL is not set')
-      return NextResponse.redirect(new URL('/payment/failure', 'http://localhost:3000'))
-    }
-    try {
-      const redirectUrl = new URL('/payment/failure', baseUrl)
-      redirectUrl.search = params.toString()
-      return NextResponse.redirect(redirectUrl)
-    } catch (error) {
-      console.error('Error constructing redirect URL:', error)
-      return NextResponse.redirect(new URL('/payment/failure', 'http://localhost:3000'))
-    }
+    
+    const redirectUrl = `${baseUrl}/payment/failure?${params.toString()}`
+
+    // Return a redirect response with proper headers
+    return new Response(null, {
+      status: 302,
+      headers: {
+        'Location': redirectUrl,
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    })
   }
 } 

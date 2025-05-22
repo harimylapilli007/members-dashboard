@@ -8,6 +8,15 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { updateMembershipStatus } from "@/actions/payment-actions"
 import { useToast } from "@/components/ui/use-toast"
+import { initiatePayment } from "@/lib/payment-utils"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 function PaymentFailureContent() {
   const router = useRouter()
@@ -20,6 +29,8 @@ function PaymentFailureContent() {
   }>({
     message: 'Payment failed',
   })
+  const [showRetryDialog, setShowRetryDialog] = useState(false)
+  const [isRetrying, setIsRetrying] = useState(false)
 
   useEffect(() => {
     const handlePaymentFailure = async () => {
@@ -47,6 +58,12 @@ function PaymentFailureContent() {
           code: errorCode || undefined,
           transactionId: txnid || undefined,
         })
+
+        // Show retry dialog for cancelled payments
+        if (errorMessage?.toLowerCase().includes('cancelled')) {
+          setShowRetryDialog(true)
+          return
+        }
 
         // Update membership status in the backend
         if (txnid) {
@@ -91,6 +108,59 @@ function PaymentFailureContent() {
 
     handlePaymentFailure()
   }, [searchParams, router, toast])
+
+  const handleRetry = async () => {
+    setIsRetrying(true)
+    try {
+      // Get the stored payment details from localStorage
+      const storedPaymentDetails = localStorage.getItem('paymentDetails')
+      if (storedPaymentDetails) {
+        const paymentDetails = JSON.parse(storedPaymentDetails)
+        // Re-initiate payment with stored details
+        initiatePayment(paymentDetails)
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Unable to retry payment. Please try again from the membership page.",
+        })
+        router.push('/dashboard/classic')
+      }
+    } catch (error) {
+      console.error('Error retrying payment:', error)
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to retry payment. Please try again from the membership page.",
+      })
+      router.push('/dashboard/classic')
+    } finally {
+      setIsRetrying(false)
+      setShowRetryDialog(false)
+    }
+  }
+
+  const handleCancel = () => {
+    setShowRetryDialog(false)
+    // Update membership status and show failure message
+    if (errorDetails.transactionId) {
+      updateMembershipStatus({
+        txnid: errorDetails.transactionId,
+        amount: searchParams.get('amount') || '0',
+        productinfo: searchParams.get('productinfo') || '',
+        firstname: searchParams.get('firstname') || '',
+        email: searchParams.get('email') || '',
+        status: 'failure',
+        hash: searchParams.get('hash') || '',
+        error_Message: 'Payment cancelled by user',
+      })
+    }
+    toast({
+      variant: "destructive",
+      title: "Payment Cancelled",
+      description: "Your payment has been cancelled.",
+    })
+  }
 
   const sanitizeParams = (params: URLSearchParams) => {
     const sanitized = new URLSearchParams()
@@ -154,51 +224,79 @@ function PaymentFailureContent() {
   }
 
   return (
-    <div className="container flex items-center justify-center min-h-screen py-12">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <div className="flex items-center justify-center mb-4">
-            <XCircle className="h-16 w-16 text-red-500" />
-          </div>
-          <CardTitle className="text-center">Payment Failed</CardTitle>
-          <CardDescription className="text-center">
-            We couldn't process your payment. Please try again.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2 text-center">
-            {errorDetails.transactionId && (
+    <>
+      <div className="container flex items-center justify-center min-h-screen py-12">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <div className="flex items-center justify-center mb-4">
+              <XCircle className="h-16 w-16 text-red-500" />
+            </div>
+            <CardTitle className="text-center">Payment Failed</CardTitle>
+            <CardDescription className="text-center">
+              We couldn't process your payment. Please try again.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2 text-center">
+              {errorDetails.transactionId && (
+                <p className="text-sm text-muted-foreground">
+                  Transaction ID: {errorDetails.transactionId}
+                </p>
+              )}
+              {errorDetails.code && (
+                <p className="text-sm text-muted-foreground">
+                  Error Code: {errorDetails.code}
+                </p>
+              )}
               <p className="text-sm text-muted-foreground">
-                Transaction ID: {errorDetails.transactionId}
+                {errorDetails.message}
               </p>
-            )}
-            {errorDetails.code && (
-              <p className="text-sm text-muted-foreground">
-                Error Code: {errorDetails.code}
-              </p>
-            )}
-            <p className="text-sm text-muted-foreground">
-              {errorDetails.message}
-            </p>
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-2">
-          <Button 
-            className="w-full" 
-            onClick={handleDashboardClick}
-          >
-            Go to Dashboard
-          </Button>
-          <Button 
-            variant="outline" 
-            className="w-full"
-            onClick={() => router.back()}
-          >
-            Try Again
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-2">
+            <Button 
+              className="w-full" 
+              onClick={handleDashboardClick}
+            >
+              Go to Dashboard
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => setShowRetryDialog(true)}
+            >
+              Try Again
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+
+      <Dialog open={showRetryDialog} onOpenChange={setShowRetryDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Retry Payment</DialogTitle>
+            <DialogDescription>
+              Would you like to retry the payment? This will initiate a new payment attempt.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={handleCancel}
+              disabled={isRetrying}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleRetry}
+              disabled={isRetrying}
+            >
+              {isRetrying ? 'Processing...' : 'Retry Payment'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
