@@ -1,26 +1,31 @@
 import type React from "react"
+import "@/styles/globals.css"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { Toaster } from "@/components/ui/toaster"
-
-const inter = Inter({ subsets: ["latin"] })
+import { AuthProvider } from "@/lib/auth-context"
 
 export const metadata: Metadata = {
-  title: "Ode Life - Luxury Membership",
-  description: "Experience luxury living with Ode Life membership.",
+  title: "ODE SPA",
+  description: "Luxury spa treatments and wellness services",
+    generator: 'v0.dev'
 }
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode
-}) {
+}>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        {children}
-        <Toaster />
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )

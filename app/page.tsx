@@ -1,336 +1,192 @@
-import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+"use client"
 
-import { redirect } from "next/navigation"
-
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
+import { Home, CreditCard, Calendar, ChevronDown, User } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import Header from "./components/Header"
+import { useState, useEffect } from "react"
 
-export default function Home() {
-  redirect("/signin")
-  // return (
-  //   <div className="flex min-h-screen flex-col">
-  //     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-  //       <div className="flex h-16 items-center px-4 md:px-6">
-  //         <div className="mr-4 hidden md:flex">
-  //           <nav className="flex items-center space-x-6 text-sm font-medium">
-  //             <Link href="/" className="text-xl font-bold tracking-tight">
-  //               Ode Life
-  //             </Link>
-  //           </nav>
-  //         </div>
-  //         <div className="flex flex-1 items-center justify-end space-x-4">
-  //           <nav className="flex items-center space-x-2">
-  //             <Button variant="ghost">Sign In</Button>
-  //             <Button>Sign Up</Button>
-  //           </nav>
-  //         </div>
-  //       </div>
-  //     </header>
-  //     <main className="flex-1">
-  //       <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
-  //         <div className="px-4 md:px-6">
-  //           <div className="flex flex-col items-center justify-center space-y-4 text-center">
-  //             <div className="space-y-2">
-  //               <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-  //                 Welcome to Ode Life Membership
-  //               </h1>
-  //               <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl">
-  //                 Choose your wellness journey and access your personalized dashboard
-  //               </p>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </section>
-  //       <section className="w-full py-12 md:py-24 lg:py-32">
-  //         <div className=" px-4 md:px-6">
-  //           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-  //             <Card className="border-amber-200 relative overflow-hidden">
-  //               <div className="absolute top-0 right-0 p-3">
-  //                 <div className="flex items-center justify-center rounded-full bg-amber-50 p-2">
-  //                   <svg
-  //                     xmlns="http://www.w3.org/2000/svg"
-  //                     width="24"
-  //                     height="24"
-  //                     viewBox="0 0 24 24"
-  //                     fill="none"
-  //                     stroke="currentColor"
-  //                     strokeWidth="2"
-  //                     strokeLinecap="round"
-  //                     strokeLinejoin="round"
-  //                     className="h-6 w-6 text-amber-600"
-  //                   >
-  //                     <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-  //                     <circle cx="12" cy="10" r="3" />
-  //                   </svg>
-  //                 </div>
-  //               </div>
-  //               <CardHeader>
-  //                 <CardTitle className="text-2xl">Ode Life Essential</CardTitle>
-  //                 <CardDescription>5-Year Membership</CardDescription>
-  //               </CardHeader>
-  //               <CardContent>
-  //                 <div className="text-3xl font-bold">₹3,99,999</div>
-  //                 <p className="mt-2 text-sm text-muted-foreground">
-  //                   A 5-year wellness journey for those who prioritize balance, healing, and luxury experiences.
-  //                 </p>
-  //                 <ul className="mt-4 space-y-2">
-  //                   <li className="flex items-center">
-  //                     <svg
-  //                       xmlns="http://www.w3.org/2000/svg"
-  //                       width="24"
-  //                       height="24"
-  //                       viewBox="0 0 24 24"
-  //                       fill="none"
-  //                       stroke="currentColor"
-  //                       strokeWidth="2"
-  //                       strokeLinecap="round"
-  //                       strokeLinejoin="round"
-  //                       className="mr-2 h-4 w-4 text-amber-600"
-  //                     >
-  //                       <path d="M20 6 9 17l-5-5" />
-  //                     </svg>
-  //                     4N/5D Couple Stay with Wellness Program
-  //                   </li>
-  //                   <li className="flex items-center">
-  //                     <svg
-  //                       xmlns="http://www.w3.org/2000/svg"
-  //                       width="24"
-  //                       height="24"
-  //                       viewBox="0 0 24 24"
-  //                       fill="none"
-  //                       stroke="currentColor"
-  //                       strokeWidth="2"
-  //                       strokeLinecap="round"
-  //                       strokeLinejoin="round"
-  //                       className="mr-2 h-4 w-4 text-amber-600"
-  //                     >
-  //                       <path d="M20 6 9 17l-5-5" />
-  //                     </svg>
-  //                     4 Couple Day Spa Sessions
-  //                   </li>
-  //                   <li className="flex items-center">
-  //                     <svg
-  //                       xmlns="http://www.w3.org/2000/svg"
-  //                       width="24"
-  //                       height="24"
-  //                       viewBox="0 0 24 24"
-  //                       fill="none"
-  //                       stroke="currentColor"
-  //                       strokeWidth="2"
-  //                       strokeLinecap="round"
-  //                       strokeLinejoin="round"
-  //                       className="mr-2 h-4 w-4 text-amber-600"
-  //                     >
-  //                       <path d="M20 6 9 17l-5-5" />
-  //                     </svg>
-  //                     Annual Spa Membership
-  //                   </li>
-  //                 </ul>
-  //               </CardContent>
-  //               <CardFooter>
-  //                 <Link href="/dashboard/essential" className="w-full">
-  //                   <Button className="w-full">
-  //                     View Dashboard
-  //                     <ArrowRight className="ml-2 h-4 w-4" />
-  //                   </Button>
-  //                 </Link>
-  //               </CardFooter>
-  //             </Card>
-  //             <Card className="border-amber-200 relative overflow-hidden">
-  //               <div className="absolute top-0 right-0 p-3">
-  //                 <div className="flex items-center justify-center rounded-full bg-amber-50 p-2">
-  //                   <svg
-  //                     xmlns="http://www.w3.org/2000/svg"
-  //                     width="24"
-  //                     height="24"
-  //                     viewBox="0 0 24 24"
-  //                     fill="none"
-  //                     stroke="currentColor"
-  //                     strokeWidth="2"
-  //                     strokeLinecap="round"
-  //                     strokeLinejoin="round"
-  //                     className="h-6 w-6 text-amber-600"
-  //                   >
-  //                     <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
-  //                   </svg>
-  //                 </div>
-  //               </div>
-  //               <CardHeader>
-  //                 <CardTitle className="text-2xl">Ode Life Classic</CardTitle>
-  //                 <CardDescription>10-Year Membership</CardDescription>
-  //               </CardHeader>
-  //               <CardContent>
-  //                 <div className="text-3xl font-bold">₹6,99,999</div>
-  //                 <p className="mt-2 text-sm text-muted-foreground">
-  //                   A decade of luxury, wellness, and unmatched privileges designed for the modern wellness seeker.
-  //                 </p>
-  //                 <ul className="mt-4 space-y-2">
-  //                   <li className="flex items-center">
-  //                     <svg
-  //                       xmlns="http://www.w3.org/2000/svg"
-  //                       width="24"
-  //                       height="24"
-  //                       viewBox="0 0 24 24"
-  //                       fill="none"
-  //                       stroke="currentColor"
-  //                       strokeWidth="2"
-  //                       strokeLinecap="round"
-  //                       strokeLinejoin="round"
-  //                       className="mr-2 h-4 w-4 text-amber-600"
-  //                     >
-  //                       <path d="M20 6 9 17l-5-5" />
-  //                     </svg>
-  //                     4 Couple Day Spa Sessions
-  //                   </li>
-  //                   <li className="flex items-center">
-  //                     <svg
-  //                       xmlns="http://www.w3.org/2000/svg"
-  //                       width="24"
-  //                       height="24"
-  //                       viewBox="0 0 24 24"
-  //                       fill="none"
-  //                       stroke="currentColor"
-  //                       strokeWidth="2"
-  //                       strokeLinecap="round"
-  //                       strokeLinejoin="round"
-  //                       className="mr-2 h-4 w-4 text-amber-600"
-  //                     >
-  //                       <path d="M20 6 9 17l-5-5" />
-  //                     </svg>
-  //                     12 Annual Spa Memberships
-  //                   </li>
-  //                   <li className="flex items-center">
-  //                     <svg
-  //                       xmlns="http://www.w3.org/2000/svg"
-  //                       width="24"
-  //                       height="24"
-  //                       viewBox="0 0 24 24"
-  //                       fill="none"
-  //                       stroke="currentColor"
-  //                       strokeWidth="2"
-  //                       strokeLinecap="round"
-  //                       strokeLinejoin="round"
-  //                       className="mr-2 h-4 w-4 text-amber-600"
-  //                     >
-  //                       <path d="M20 6 9 17l-5-5" />
-  //                     </svg>
-  //                     1 Week Stay with Wellness Program
-  //                   </li>
-  //                 </ul>
-  //               </CardContent>
-  //               <CardFooter>
-  //                 <Link href="/dashboard/classic" className="w-full">
-  //                   <Button className="w-full">
-  //                     View Dashboard
-  //                     <ArrowRight className="ml-2 h-4 w-4" />
-  //                   </Button>
-  //                 </Link>
-  //               </CardFooter>
-  //             </Card>
-  //             <Card className="border-amber-200 relative overflow-hidden">
-  //               <div className="absolute top-0 right-0 p-3">
-  //                 <div className="flex items-center justify-center rounded-full bg-amber-50 p-2">
-  //                   <svg
-  //                     xmlns="http://www.w3.org/2000/svg"
-  //                     width="24"
-  //                     height="24"
-  //                     viewBox="0 0 24 24"
-  //                     fill="none"
-  //                     stroke="currentColor"
-  //                     strokeWidth="2"
-  //                     strokeLinecap="round"
-  //                     strokeLinejoin="round"
-  //                     className="h-6 w-6 text-amber-600"
-  //                   >
-  //                     <path d="M12 2L5 12l7 10 7-10z" />
-  //                   </svg>
-  //                 </div>
-  //               </div>
-  //               <CardHeader>
-  //                 <CardTitle className="text-2xl">Ode Life Signature</CardTitle>
-  //                 <CardDescription>15-Year Membership</CardDescription>
-  //               </CardHeader>
-  //               <CardContent>
-  //                 <div className="text-3xl font-bold">₹9,99,999</div>
-  //                 <p className="mt-2 text-sm text-muted-foreground">
-  //                   Join the wellness elite. A 15-year membership designed for a life immersed in rejuvenation and
-  //                   rewards.
-  //                 </p>
-  //                 <ul className="mt-4 space-y-2">
-  //                   <li className="flex items-center">
-  //                     <svg
-  //                       xmlns="http://www.w3.org/2000/svg"
-  //                       width="24"
-  //                       height="24"
-  //                       viewBox="0 0 24 24"
-  //                       fill="none"
-  //                       stroke="currentColor"
-  //                       strokeWidth="2"
-  //                       strokeLinecap="round"
-  //                       strokeLinejoin="round"
-  //                       className="mr-2 h-4 w-4 text-amber-600"
-  //                     >
-  //                       <path d="M20 6 9 17l-5-5" />
-  //                     </svg>
-  //                     4 Couple Day Spa Sessions
-  //                   </li>
-  //                   <li className="flex items-center">
-  //                     <svg
-  //                       xmlns="http://www.w3.org/2000/svg"
-  //                       width="24"
-  //                       height="24"
-  //                       viewBox="0 0 24 24"
-  //                       fill="none"
-  //                       stroke="currentColor"
-  //                       strokeWidth="2"
-  //                       strokeLinecap="round"
-  //                       strokeLinejoin="round"
-  //                       className="mr-2 h-4 w-4 text-amber-600"
-  //                     >
-  //                       <path d="M20 6 9 17l-5-5" />
-  //                     </svg>
-  //                     12 Annual Spa Memberships
-  //                   </li>
-  //                   <li className="flex items-center">
-  //                     <svg
-  //                       xmlns="http://www.w3.org/2000/svg"
-  //                       width="24"
-  //                       height="24"
-  //                       viewBox="0 0 24 24"
-  //                       fill="none"
-  //                       stroke="currentColor"
-  //                       strokeWidth="2"
-  //                       strokeLinecap="round"
-  //                       strokeLinejoin="round"
-  //                       className="mr-2 h-4 w-4 text-amber-600"
-  //                     >
-  //                       <path d="M20 6 9 17l-5-5" />
-  //                     </svg>
-  //                     1 Week Stay with Wellness Program
-  //                   </li>
-  //                 </ul>
-  //               </CardContent>
-  //               <CardFooter>
-  //                 <Link href="/dashboard/signature" className="w-full">
-  //                   <Button className="w-full">
-  //                     View Dashboard
-  //                     <ArrowRight className="ml-2 h-4 w-4" />
-  //                   </Button>
-  //                 </Link>
-  //               </CardFooter>
-  //             </Card>
-  //           </div>
-  //         </div>
-  //       </section>
-  //     </main>
-  //     <footer className="w-full border-t py-6">
-  //       <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:gap-8">
-  //         <p className="text-center text-sm leading-loose text-muted-foreground">
-  //           © 2025 Ode Life. All rights reserved.
-  //         </p>
-  //       </div>
-  //     </footer>
-  //   </div>
-  // )
+export default function Component() {
+  const pathname = usePathname()
+  const router = useRouter()
+  const [userData, setUserData] = useState<any>(null)
+
+  useEffect(() => {
+    const storedData = localStorage.getItem('userData')
+    if (storedData) {
+      setUserData(JSON.parse(storedData))
+    }
+  }, [])
+
+  const isActive = (path: string) => {
+    return pathname === path
+  }
+
+  const getMenuItemClasses = (path: string) => {
+    const baseClasses = "relative flex items-center gap-3 px-6 py-3 rounded-r-lg z-10 transition-colors"
+    const activeClasses = "text-[#a07735]  bg-[#e2c799]"
+    const inactiveClasses = "text-white group-hover:text-[#a07735] group-hover:bg-[#f5f1e8]"
+    
+    return `${baseClasses} ${isActive(path) ? activeClasses : inactiveClasses}`
+  }
+
+  const getCutoutClasses = (path: string) => {
+    const baseClasses = "absolute -left-5 top-0 bottom-0 w-5 rounded-l-2xl transition-colors"
+    return `${baseClasses} ${isActive(path) ? "bg-[#e2c799]" : "bg-transparent group-hover:bg-[#f5f1e8]"}`
+  }
+
+  const memberships = [
+    {
+      id: 1,
+      price: "Rs. 15,000",
+      image: "/membership/15000.png",
+    },
+    {
+      id: 2,
+      price: "Rs. 25,000",
+      image: "/membership/25000.png",
+    },
+    {
+      id: 3,
+      price: "Rs. 35,000",
+      image: "/membership/35000.png",
+    },
+    {
+      id: 4,
+      price: "Rs. 50,000",
+      image: "/membership/50000.png",
+    },
+    {
+      id: 5,
+      price: "Rs. 65,000",
+      image: "/membership/65000.png",
+    },
+    {
+      id: 6,
+      price: "Rs. 1,00,000",
+      image: "/membership/100000.png",
+    },
+  ]
+
+  return (
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Background gradient */}
+      <div
+        className="absolute inset-0 -z-10"
+        style={{
+          background: "linear-gradient(120deg, #f5f1e8 0%, #e5e7eb 60%, #b2d5e4 100%)"
+        }}
+      />
+      {/* Subtle blurred circles */}
+      <div className="absolute top-20 -left-60 w-96 h-96 bg-[#e2c799] opacity-40 rounded-full -z-10" />
+      <div className="absolute bottom-20 right-0 w-[500px] h-[400px] bg-[#b2d5e4] opacity-30 rounded-full blur-xl -z-10" />
+      <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 rounded-full -z-10" />
+
+      <Header />
+
+      <div className="flex flex-col lg:flex-row items-start max-w-[1400px] mx-auto px-4 md:px-6">
+        {/* Sidebar - Exact styling from the design */}
+        <aside
+          className="w-full lg:w-[300px] h-auto lg:h-[520px] mt-6 lg:mt-12 mb-6 lg:mb-12 flex-shrink-0 flex flex-col"
+          style={{ minWidth: 'auto' }}
+        >
+          <div className="bg-[#a07735] opacity-90 rounded-2xl h-full shadow-xl flex flex-col">
+            {/* Profile Section */}
+            <div className="p-4 md:p-6 pt-6 md:pt-8 flex flex-col items-center">
+              <Avatar className="w-16 h-16 mb-6 bg-[#e5e7eb]">
+                <AvatarFallback className="text-[#454545]">
+                  <User className="w-6 h-6" />
+                </AvatarFallback>
+              </Avatar>
+              <Button
+                variant="outline"
+                className="border-white text-white hover:bg-white hover:text-[#a07735] bg-transparent px-6 py-2 w-full"
+                onClick={() => router.push('/signin')}
+              >
+                Login
+              </Button>
+            </div>
+
+            {/* Navigation Menu */}
+            <div className="px-4 pb-6 mt-4">
+              {/* Home menu item */}
+              <div className="relative mb-3 mx-5 w-full group">
+                <div className={getCutoutClasses("/dashboard/memberships")}></div>
+                <Link href="/dashboard/memberships" className={getMenuItemClasses("/dashboard/memberships")}>
+                  <Home className="w-4 h-4" />
+                  <span className="font-medium text-sm">Home</span>
+                </Link>
+              </div>
+
+              {/* Regular menu items with hover effect */}
+              <div className="space-y-3">
+                <div className="relative mb-3 mx-5 w-full group">
+                  <div className={getCutoutClasses("/dashboard/memberships")}></div>
+                  <Link href="/dashboard/memberships" className={getMenuItemClasses("/dashboard/memberships")}>
+                    <CreditCard className="w-4 h-4" />
+                    <span className="font-medium text-sm">Memberships</span>
+                  </Link>
+                </div>
+                <div className="relative mb-3 mx-5 w-full group">
+                  <div className={getCutoutClasses("/ServiceBookingPage")}></div>
+                  <Link href={`/ServiceBookingPage?openModal=true&guestId=${userData?.id}`} className={getMenuItemClasses("/ServiceBookingPage")}>
+                    <Calendar className="w-4 h-4" />
+                    <span className="font-medium text-sm">Bookings</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 p-4 md:p-8 w-full">
+          <div className="mb-6 md:mb-8">
+            <p className="text-[#454545] mb-4 font-inter">{"Here's everything you need to live the Ode Life, seamlessly."}</p>
+            <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Available Memberships</h1>
+            <p className="text-[#454545] font-inter">Explore our membership options</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+            {memberships.map((membership) => (
+              <Card key={membership.id} className="overflow-hidden shadow-lg border-0 bg-white rounded-lg h-[320px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
+                <CardContent className="p-0">
+                  <div className="relative h-40">
+                    <Image
+                      src={membership.image || "/placeholder.svg"}
+                      alt="Spa interior"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h1 className="text-lg font-semibold text-[#232323] mb-2">Ode Spa Membership</h1>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xl font-bold text-[#a07735]">{membership.price}</span>
+                      <Link href="#" className="text-[#9d8c6a] hover:text-[#454545] flex items-center text-sm font-medium">
+                        View Details
+                        <ChevronDown className="w-4 h-4 ml-1" />
+                      </Link>
+                    </div>
+                    <div className="flex justify-center">
+                      <Button 
+                        className="relative w-[222px] h-[41px] bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Inter'] font-bold text-[14px] leading-[17px] text-center text-[#98564D]"
+                        onClick={() => router.push('/signin')}
+                      >
+                        Take Membership
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </main>
+      </div>
+    </div>
+  )
 }

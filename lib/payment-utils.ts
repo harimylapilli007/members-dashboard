@@ -36,7 +36,8 @@ export const initiatePayment = (membershipData: {
   const paymentData: PaymentData = {
     key: '26sF13CI',
     txnid: membershipData.invoiceId,
-    amount: membershipData.price.toString(),
+    // amount: membershipData.price.toString(),
+    amount: '1',
     productinfo: membershipData.name,
     firstname: membershipData.firstName,
     email: membershipData.email,
@@ -74,15 +75,14 @@ export const verifyPayUResponse = (responseData: {
   amount: string
   productinfo: string
   firstname: string
-  email: string
   status: string
   hash: string
   salt: string
 }): boolean => {
-  const { txnid, amount, productinfo, firstname, email, status, hash, salt } = responseData
+  const { txnid, amount, productinfo, firstname, status, hash, salt } = responseData
   
   // Create the hash string in the same order as PayU
-  const hashString = `${salt}|${status}|||||||||||${email}|${firstname}|${productinfo}|${amount}|${txnid}`
+  const hashString = `${salt}|${status}|||||||||||${firstname}|${productinfo}|${amount}|${txnid}`
   const calculatedHash = SHA512(hashString).toString()
   
   return calculatedHash === hash

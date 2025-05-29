@@ -92,3 +92,20 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+h1{
+  font-family: 'Marcellus', serif;
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 48px;
+  letter-spacing: 0;
+}
+
+span{
+  font-family: Marcellus;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 16px;
+  letter-spacing: 0%;
+  color: #000000;
+}

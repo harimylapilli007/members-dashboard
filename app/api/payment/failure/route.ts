@@ -36,17 +36,27 @@ export async function POST(request: Request) {
       allParams: Object.fromEntries(formData.entries())
     })
 
-    // Construct the redirect URL with only error_Message and txnid
+    // Update membership status in the backend
+    try {
+      const updateResult = await updateMembershipStatus(responseData)
+      console.log('Membership status update result:', updateResult)
+    } catch (updateError) {
+      console.error('Error updating membership status:', updateError)
+    }
+
+    // Construct the redirect URL with error details
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     const params = new URLSearchParams()
     
-    // Only add txnid and error_Message
-    if (responseData.txnid) {
-      params.append('txnid', responseData.txnid)
-    }
-    params.append('error_Message', responseData.error_Message || 'Payment failed')
+    // Add all relevant parameters
+    if (responseData.txnid) params.append('txnid', responseData.txnid)
+    if (responseData.amount) params.append('amount', responseData.amount)
+    if (responseData.status) params.append('status', responseData.status)
+    if (responseData.error_Message) params.append('error_Message', responseData.error_Message)
+    if (responseData.error_code) params.append('error_code', responseData.error_code)
 
     const redirectUrl = `${baseUrl}/payment/failure?${params.toString()}`
+    console.log('Redirecting to:', redirectUrl)
 
     // Return a redirect response with proper headers
     return new Response(null, {
@@ -65,6 +75,7 @@ export async function POST(request: Request) {
     params.append('error_Message', error instanceof Error ? error.message : 'An error occurred while processing payment failure')
     
     const redirectUrl = `${baseUrl}/payment/failure?${params.toString()}`
+    console.log('Error redirect URL:', redirectUrl)
 
     // Return a redirect response with proper headers
     return new Response(null, {

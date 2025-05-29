@@ -49,59 +49,6 @@ export async function updateMembershipStatus(responseData: z.infer<typeof payURe
       success: true,
       data: validatedData
     }
-
-    /* Original Zenoti API integration - temporarily disabled
-    // Call Zenoti API to update membership status
-    const response = await fetch(
-      `https://api.zenoti.com/v1/invoices/${validatedData.txnid}/transactions`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283',
-          'accept': 'application/json',
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          amount: parseFloat(validatedData.amount),
-          payment_method: 'PayU',
-          status: validatedData.status === 'success' ? 'Completed' : 'Failed',
-          notes: validatedData.error_Message || 'Payment processed via PayU'
-        })
-      }
-    )
-
-    // Handle rate limiting and other API errors
-    if (response.status === 429) {
-      console.warn('Zenoti API rate limit exceeded, payment will be processed but status update may be delayed')
-      return {
-        success: true,
-        data: validatedData
-      }
-    }
-
-    // Check if response is JSON
-    const contentType = response.headers.get('content-type')
-    if (!contentType || !contentType.includes('application/json')) {
-      const responseText = await response.text()
-      console.error('Invalid response from Zenoti API:', responseText)
-      // If we can't update the status, we should still consider the payment processed
-      return {
-        success: true,
-        data: validatedData
-      }
-    }
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      console.error('Zenoti API error:', data)
-      // If we can't update the status, we should still consider the payment processed
-      return {
-        success: true,
-        data: validatedData
-      }
-    }
-    */
   } catch (error) {
     console.error('Error updating membership status:', error)
     return {
@@ -111,4 +58,57 @@ export async function updateMembershipStatus(responseData: z.infer<typeof payURe
       }
     }
   }
+}
+
+/**
+ * Creates a custom payment in Zenoti
+ * @param invoiceId - The invoice ID
+ * @param amount - The payment amount
+ * @param customPaymentId - The custom payment ID
+ * @param collectedById - The ID of the employee collecting the payment
+ */
+export async function makeCustomPayment(invoiceId: string, amount: string, customPaymentId: string, collectedById: string) {
+  const options = {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      amount: parseFloat(amount),
+      tip_amount: 0.00,
+      cash_register_id: null,
+      custom_payment_id: customPaymentId,
+      additional_data: 'PayU Money',
+      collected_by_id: collectedById,
+    }),
+  };
+
+  const response = await fetch(`https://api.zenoti.com/v1/invoices/${invoiceId}/payment/custom`, options);
+  return response.json();
+}
+
+/**
+ * Closes an invoice in Zenoti
+ * @param invoiceId - The invoice ID
+ * @param closedById - The ID of the employee closing the invoice
+ */
+export async function closeInvoice(invoiceId: string, closedById: string) {
+  const options = {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      is_invoice_closed: true,
+      status: 1,
+      closed_by_id: closedById
+    })
+  };
+
+  const response = await fetch(`https://api.zenoti.com/v1/invoices/${invoiceId}/close`, options);
+  return response.json();
 } 

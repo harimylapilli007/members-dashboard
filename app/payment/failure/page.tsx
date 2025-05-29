@@ -124,7 +124,7 @@ function PaymentFailureContent() {
           title: "Error",
           description: "Unable to retry payment. Please try again from the membership page.",
         })
-        router.push('/dashboard/classic')
+        router.push('/dashboard/memberships')
       }
     } catch (error) {
       console.error('Error retrying payment:', error)
@@ -133,7 +133,7 @@ function PaymentFailureContent() {
         title: "Error",
         description: "Failed to retry payment. Please try again from the membership page.",
       })
-      router.push('/dashboard/classic')
+      router.push('/dashboard/memberships')
     } finally {
       setIsRetrying(false)
       setShowRetryDialog(false)
@@ -182,50 +182,24 @@ function PaymentFailureContent() {
   const handleDashboardClick = () => {
     try {
       if (typeof window !== 'undefined') {
-        const storedParams = localStorage.getItem('dashboardParams')
-        let params: URLSearchParams
-        
-        if (storedParams) {
-          try {
-            params = new URLSearchParams(storedParams)
-          } catch (e) {
-            console.warn('Invalid stored parameters, using current params')
-            params = new URLSearchParams()
-          }
+        const storedUserData = localStorage.getItem('userData')
+        if (storedUserData) {
+          router.push('/dashboard/memberships')
         } else {
-          params = new URLSearchParams()
+          router.push('/signin')
         }
-
-        // Filter out payment-related parameters and sanitize
-        const sanitizedParams = new URLSearchParams()
-        for (const [key, value] of params.entries()) {
-          if (key === 'txnid' || key === 'status' || key === 'error_Message') {
-            continue
-          }
-          try {
-            if (value && value !== 'null' && value !== 'undefined') {
-              sanitizedParams.append(key, encodeURIComponent(value))
-            }
-          } catch (e) {
-            console.warn(`Skipping invalid parameter: ${key}=${value}`)
-          }
-        }
-
-        const queryString = sanitizedParams.toString()
-        const targetUrl = queryString ? `/dashboard/classic?${queryString}` : '/dashboard/classic'
-        router.push(targetUrl)
       } else {
-        router.push('/dashboard/classic')
+        router.push('/signin')
       }
     } catch (error) {
       console.error('Error navigating to dashboard:', error)
-      router.push('/dashboard/classic')
+      router.push('/signin')
     }
   }
 
   return (
     <>
-      <div className="container flex items-center justify-center min-h-screen py-12">
+      <div className="container mx-auto flex items-center justify-center min-h-screen py-12 px-4">
         <Card className="w-full max-w-md">
           <CardHeader>
             <div className="flex items-center justify-center mb-4">
@@ -303,7 +277,7 @@ function PaymentFailureContent() {
 export default function PaymentFailure() {
   return (
     <Suspense fallback={
-      <div className="container flex items-center justify-center min-h-screen py-12">
+      <div className="flex items-center justify-center min-h-screen py-12">
         <Card className="w-full max-w-md">
           <CardHeader>
             <div className="flex items-center justify-center mb-4">

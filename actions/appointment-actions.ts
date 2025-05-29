@@ -221,8 +221,8 @@ export async function cancelAppointmentAction(formData: FormData) {
     // Revalidate the dashboard and bookings pages
     revalidatePath("/dashboard/essential")
     revalidatePath("/dashboard/essential/bookings")
-    revalidatePath("/dashboard/classic")
-    revalidatePath("/dashboard/classic/bookings")
+    revalidatePath("/dashboard/memberships")
+    revalidatePath("/dashboard/memberships/bookings")
     revalidatePath("/dashboard/signature")
     revalidatePath("/dashboard/signature/bookings")
 

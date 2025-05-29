@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   // Redirect logic
   if (isPublicPath && token) {
     // If user is on public path and has token, redirect to dashboard
-    return NextResponse.redirect(new URL('/dashboard/classic', request.url))
+    return NextResponse.redirect(new URL('/dashboard/memberships', request.url))
   }
 
   if (!isPublicPath && !token) {

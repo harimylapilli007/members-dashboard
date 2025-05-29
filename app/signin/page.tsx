@@ -1,3 +1,5 @@
+// 
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -22,8 +24,6 @@ interface Guest {
       number: string;
     };
   };
-  email: string;
-  phone: string;
 }
 
 export default function SignIn() {
@@ -271,27 +271,28 @@ export default function SignIn() {
         // If only one account, navigate directly
         if (guests.length === 1) {
           // Store parameters in localStorage before navigation
-          const dashboardParams = new URLSearchParams()
-          dashboardParams.append('id', guests[0].id)
-          dashboardParams.append('center_id', guests[0].center_id)
-          dashboardParams.append('first_name', guests[0].personal_info.first_name)
-          dashboardParams.append('last_name', guests[0].personal_info.last_name)
-          dashboardParams.append('email', guests[0].personal_info.email ?? '')
-          dashboardParams.append('phone', guests[0].personal_info.mobile_phone.number ?? '')
-          localStorage.setItem('dashboardParams', dashboardParams.toString())
+          const userData = {
+            id: guests[0].id,
+            center_id: guests[0].center_id,
+            first_name: guests[0].personal_info.first_name,
+            last_name: guests[0].personal_info.last_name,
+            email: guests[0].personal_info.email ?? '',
+            phone: guests[0].personal_info.mobile_phone.number ?? ''
+          }
+          localStorage.setItem('userData', JSON.stringify(userData))
 
-          router.push(`/dashboard/classic?id=${guests[0].id}&center_id=${guests[0].center_id}&first_name=${guests[0].personal_info.first_name}&last_name=${guests[0].personal_info.last_name}&email=${guests[0].personal_info.email ?? ''}&phone=${guests[0].personal_info.mobile_phone.number ?? ''}`);
+          router.push('/dashboard/memberships');
         } else {
           // Show account selector for multiple accounts
           setShowAccountSelector(true);
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error verifying OTP:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || 'Invalid OTP. Please try again.',
+        description: error instanceof Error ? error.message : 'Invalid OTP. Please try again.',
       });
     } finally {
       setLoading(false);
@@ -300,22 +301,27 @@ export default function SignIn() {
 
   const handleAccountSelect = (guest: Guest) => {
     // Store parameters in localStorage before navigation
-    const dashboardParams = new URLSearchParams()
-    dashboardParams.append('id', guest.id)
-    dashboardParams.append('center_id', guest.center_id)
-    dashboardParams.append('first_name', guest.personal_info.first_name)
-    dashboardParams.append('last_name', guest.personal_info.last_name)
-    dashboardParams.append('email', guest.personal_info.email ?? '')
-    dashboardParams.append('phone', guest.personal_info.mobile_phone.number ?? '')
-    localStorage.setItem('dashboardParams', dashboardParams.toString())
+    const userData = {
+      id: guest.id,
+      center_id: guest.center_id,
+      first_name: guest.personal_info.first_name,
+      last_name: guest.personal_info.last_name,
+      email: guest.personal_info.email ?? '',
+      phone: guest.personal_info.mobile_phone.number ?? ''
+    }
+    localStorage.setItem('userData', JSON.stringify(userData))
 
-    router.push(`/dashboard/classic?id=${guest.id}&center_id=${guest.center_id}&first_name=${guest.personal_info.first_name}&last_name=${guest.personal_info.last_name}&email=${guest.personal_info.email ?? ''}&phone=${guest.personal_info.mobile_phone.number ?? ''}`);
+    router.push('/dashboard/memberships');
   };
 
   if (showAccountSelector) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <AccountSelector guests={guests} onSelect={handleAccountSelect} />
+        <AccountSelector 
+          guests={guests} 
+          onSelect={handleAccountSelect} 
+          onClose={() => setShowAccountSelector(false)}
+        />
       </div>
     );
   }
