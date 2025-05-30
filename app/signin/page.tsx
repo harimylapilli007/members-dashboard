@@ -311,10 +311,8 @@ export default function SignIn() {
           }
           localStorage.setItem('userData', JSON.stringify(userData))
 
-          // Use replace with a small delay to ensure state is updated
-          setTimeout(() => {
-            router.replace('/dashboard/memberships');
-          }, 100);
+          // Force a hard navigation to ensure proper state reset
+          window.location.href = '/dashboard/memberships';
         } else {
           // Show account selector for multiple accounts
           setShowAccountSelector(true);
