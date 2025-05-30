@@ -442,7 +442,6 @@ function MembershipDashboardContent() {
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-8 w-full">
           <div className="mb-6 md:mb-8">
-            <p className="text-[#454545] mb-4 font-inter">{"Here's everything you need to live the Ode Life, seamlessly."}</p>
             <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Membership Dashboard</h1>
             <p className="text-[#454545] font-inter">Welcome to your Ode Life membership dashboard.</p>
           </div>
@@ -508,7 +507,7 @@ function MembershipDashboardContent() {
               {membershipDetails.map((membership) => (
                 <Card key={membership.id} className="overflow-hidden shadow-lg border-0 bg-white rounded-lg h-[300px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
                   <CardContent className="p-0">
-                    <div className="relative h-32 w-full min-w-0 min-h-0">
+                    <div className="relative h-40 w-full min-w-0 min-h-0">
                       <Image
                         src={`/membership/${membership.price?.sales || 'default'}.png`}
                         alt="Ode Spa Membership"
@@ -531,7 +530,7 @@ function MembershipDashboardContent() {
                           <ChevronDown className="w-4 h-4 ml-1" />
                         </button>
                       </div>
-                      <div className="flex justify-center">
+                      <div className="flex justify-center mt-2">
                         <Button 
                           className="relative w-[200px] h-[36px] bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Inter'] font-bold text-[13px] leading-[17px] text-center text-[#98564D]"
                           onClick={() => {

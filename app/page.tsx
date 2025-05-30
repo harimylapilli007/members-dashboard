@@ -269,7 +269,7 @@ export default function Component() {
                     className="overflow-hidden shadow-lg border-0 bg-white rounded-lg h-[300px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] min-w-0 w-full"
                   >
                     <CardContent className="p-0">
-                      <div className="relative h-32 w-full min-w-0 min-h-0">
+                      <div className="relative h-40 w-full min-w-0 min-h-0">
                         <Image
                           src={membership.image || "/placeholder.svg"}
                           alt="Spa interior"
@@ -289,7 +289,7 @@ export default function Component() {
                             <ChevronDown className="w-4 h-4 ml-1" />
                           </button>
                         </div>
-                        <div className="flex justify-center">
+                        <div className="flex justify-center mt-2">
                           <Button 
                             className="relative w-[200px] h-[36px] bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Inter'] font-bold text-[13px] leading-[17px] text-center text-[#98564D]"
                             onClick={() => router.push('/signin')}
