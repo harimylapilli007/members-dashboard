@@ -11,9 +11,9 @@ const MOCK_USER_ID = "user-1"
 
 // Mock data
 export const locations = [
-  { id: "loc-1", name: "Wellness Center - Main Branch" },
-  { id: "loc-2", name: "Wellness Resort - Beach Location" },
-  { id: "loc-3", name: "Wellness Center - Downtown" },
+  { id: "loc-1", name: "Wellness Center - Main Branch", city: "Mumbai" },
+  { id: "loc-2", name: "Wellness Resort - Beach Location", city: "Goa" },
+  { id: "loc-3", name: "Wellness Center - Downtown", city: "Bangalore" },
 ]
 
 export const membershipAppointmentTypes: Record<string, Array<{ type: AppointmentType; title: string }>> = {
@@ -56,7 +56,11 @@ export async function getAppointmentTypes(membershipType: string) {
 
 // Get available locations
 export async function getLocations() {
-  return locations
+  return locations.map(location => ({
+    id: location.id,
+    name: location.name,
+    city: location.city
+  }))
 }
 
 // Get available time slots for a date
