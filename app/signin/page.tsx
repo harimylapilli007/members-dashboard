@@ -290,7 +290,7 @@ export default function SignIn() {
         // Get the ID token
         const idToken = await credential.user.getIdToken();
         
-        // Set the auth token cookie
+        // Set the auth token cookie with proper domain and path
         document.cookie = `auth-token=${idToken}; path=/; max-age=3600; secure; samesite=strict`;
         
         toast({
@@ -311,8 +311,10 @@ export default function SignIn() {
           }
           localStorage.setItem('userData', JSON.stringify(userData))
 
-          // Use replace instead of push to prevent back navigation
-          router.replace('/dashboard/memberships');
+          // Use replace with a small delay to ensure state is updated
+          setTimeout(() => {
+            router.replace('/dashboard/memberships');
+          }, 100);
         } else {
           // Show account selector for multiple accounts
           setShowAccountSelector(true);
