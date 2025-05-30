@@ -70,7 +70,7 @@ export default function Header() {
 
         <div className="flex items-center gap-2 md:gap-6">
           
-          <Link href="/cart" className="text-[#a07735] hover:text-[#8a6930]">
+          <Link href="" className="text-[#a07735] hover:text-[#8a6930]">
             <ShoppingCart className="w-6 h-6 font-bold" fill="currentColor" />
           </Link>
           
