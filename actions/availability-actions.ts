@@ -23,7 +23,7 @@ const monthAvailabilitySchema = z.object({
 })
 
 // Get available time slots for a specific date
-export async function getAvailableSlots(date: string, type: AppointmentType) {
+export async function getAvailableSlots(date: string, type: AppointmentType): Promise<{ success: boolean; slots: string[]; message?: string }> {
   try {
     // Validate input
     const validatedData = availabilitySchema.parse({ date, type })
