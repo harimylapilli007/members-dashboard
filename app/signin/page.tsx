@@ -12,6 +12,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { AccountSelector } from '@/components/account-selector';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Phone, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 interface Guest {
   id: string;
@@ -28,7 +30,7 @@ interface Guest {
 
 export default function SignIn() {
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [verificationId, setVerificationId] = useState('');
   const [loading, setLoading] = useState(false);
@@ -246,6 +248,33 @@ export default function SignIn() {
     }
   };
 
+  const handleOtpChange = (index: number, value: string) => {
+    if (value.length > 1) {
+      value = value.slice(-1);
+    }
+    
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`otp-${index + 1}`);
+      if (nextInput) {
+        nextInput.focus();
+      }
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      const prevInput = document.getElementById(`otp-${index - 1}`);
+      if (prevInput) {
+        prevInput.focus();
+      }
+    }
+  };
+
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -255,7 +284,8 @@ export default function SignIn() {
         throw new Error('No verification in progress. Please request a new OTP.');
       }
 
-      const credential = await window.confirmationResult.confirm(otp);
+      const otpString = otp.join('');
+      const credential = await window.confirmationResult.confirm(otpString);
       if (credential.user) {
         // Get the ID token
         const idToken = await credential.user.getIdToken();
@@ -316,7 +346,7 @@ export default function SignIn() {
 
   if (showAccountSelector) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100">
         <AccountSelector 
           guests={guests} 
           onSelect={handleAccountSelect} 
@@ -327,78 +357,191 @@ export default function SignIn() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="w-[400px]">
-        <CardHeader>
-          <CardTitle>Sign In</CardTitle>
-          <CardDescription>Enter your phone number to receive an OTP</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {!showOtpInput ? (
-            <form onSubmit={handleSendOtp} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+1234567890"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  required
-                  disabled={loading}
-                />
-                <p className="text-sm text-gray-500">
-                  Enter your phone number with country code (e.g., +1234567890)
-                </p>
-              </div>
-              <div ref={recaptchaContainerRef} id="recaptcha-container" className="flex justify-center"></div>
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={loading || !recaptchaReady}
+    <div className="min-h-screen flex items-center justify-center bg-[#f6f6f6] relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-[#b9935a] rounded-full opacity-20"
+            initial={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+            }}
+            animate={{
+              y: [0, -20, 0],
+              opacity: [0.2, 0.5, 0.2],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="rounded-2xl shadow-xl bg-white w-[400px] relative z-10"
+      >
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="rounded-t-2xl bg-gradient-to-b from-[#a87b3c] to-[#b9935a] px-8 pt-8 pb-6 text-center"
+        >
+          <motion.h1
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="text-2xl font-bold text-white mb-1"
+          >
+            Welcome Back
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-white text-base"
+          >
+            Enter your phone number to continue
+          </motion.p>
+        </motion.div>
+
+        <div className="px-8 pb-8 pt-6">
+          <AnimatePresence mode="wait">
+            {!showOtpInput ? (
+              <motion.form
+                key="phone-form"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                onSubmit={handleSendOtp}
+                className="space-y-6"
               >
-                {loading ? 'Sending...' : 'Send OTP'}
-              </Button>
-            </form>
-          ) : (
-            <form onSubmit={handleVerifyOtp} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="otp">Enter OTP</Label>
-                <Input
-                  id="otp"
-                  type="text"
-                  placeholder="Enter OTP"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  required
-                  disabled={loading}
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Verifying...' : 'Verify OTP'}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={() => {
-                  setShowOtpInput(false);
-                  setOtp('');
-                  if (window.recaptchaVerifier) {
-                    window.recaptchaVerifier.clear();
-                    window.recaptchaVerifier = null;
-                  }
-                  setRecaptchaReady(false);
-                  setupRecaptcha();
-                }}
-                disabled={loading}
+                <div className="space-y-2.5">
+                  <Label htmlFor="phone" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    Phone Number
+                  </Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="+1 (555) 000-0000"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    required
+                    disabled={loading}
+                    className="border-gray-300 focus:border-[#b9935a] focus:ring-[#b9935a] h-11 rounded-lg bg-white transition-all duration-200"
+                  />
+                </div>
+                <div ref={recaptchaContainerRef} id="recaptcha-container" className="flex justify-center py-2"></div>
+                <Button 
+                  type="submit" 
+                  className="w-full h-11 rounded-lg bg-[#b9935a] text-white font-semibold text-base disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
+                  disabled={loading || !recaptchaReady}
+                  style={{ boxShadow: 'none' }}
+                >
+                  {loading ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                    />
+                  ) : (
+                    <>
+                      Send OTP
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
+                </Button>
+              </motion.form>
+            ) : (
+              <motion.form
+                key="otp-form"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                onSubmit={handleVerifyOtp}
+                className="space-y-6"
               >
-                Back to Phone Number
-              </Button>
-            </form>
-          )}
-        </CardContent>
-      </Card>
+                <div className="space-y-2.5">
+                  <Label className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Enter OTP
+                  </Label>
+                  <div className="flex gap-2.5 justify-center">
+                    {otp.map((digit, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        <Input
+                          id={`otp-${index}`}
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          maxLength={1}
+                          value={digit}
+                          onChange={(e) => handleOtpChange(index, e.target.value)}
+                          onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                          className="w-12 h-12 text-center text-lg border-gray-300 focus:border-[#b9935a] focus:ring-[#b9935a] rounded-lg bg-white transition-all duration-200"
+                          disabled={loading}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full h-11 rounded-lg bg-[#b9935a] text-white font-semibold text-base disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
+                  disabled={loading}
+                  style={{ boxShadow: 'none' }}
+                >
+                  {loading ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                    />
+                  ) : (
+                    <>
+                      Verify OTP
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-11 rounded-lg border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-200"
+                  onClick={() => {
+                    setShowOtpInput(false);
+                    setOtp(['', '', '', '', '', '']);
+                    if (window.recaptchaVerifier) {
+                      window.recaptchaVerifier.clear();
+                      window.recaptchaVerifier = null;
+                    }
+                    setRecaptchaReady(false);
+                    setupRecaptcha();
+                  }}
+                  disabled={loading}
+                >
+                  Back to Phone Number
+                </Button>
+              </motion.form>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
     </div>
   );
 } 

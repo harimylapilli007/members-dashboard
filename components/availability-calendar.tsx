@@ -69,8 +69,10 @@ export function AvailabilityCalendar({
   }
 
   // Custom day renderer to show availability
-  const renderDay = (day: Date, isSelected: boolean) => {
+  const renderDay = (props: DayProps) => {
+    const day = props.date as Date
     const isAvailable = isDateAvailable(day)
+    const isSelected = selectedDate && day.getTime() === selectedDate.getTime()
 
     return (
       <div
@@ -112,7 +114,7 @@ export function AvailabilityCalendar({
         return date < new Date(new Date().setHours(0, 0, 0, 0)) || !isDateAvailable(date)
       }}
       components={{
-        Day: (props: DayProps) => renderDay(props.date as Date, props.selected || false),
+        Day: renderDay,
       }}
       initialFocus
     />
