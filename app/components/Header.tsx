@@ -42,18 +42,18 @@ export default function Header() {
     <header className="bg-white border-b border-[#ced4da] px-4 md:px-6 py-4">
       <div className="flex flex-col md:flex-row items-center justify-around gap-4 md:gap-0">
         <div className="flex items-center gap-2">
-          <div className="w-12 h-12 bg-[#a07735] rounded-full flex items-center justify-center">
+          {/* <div className="w-12 h-12 bg-[#a07735] rounded-full flex items-center justify-center"> */}
             <Image
-              src="/placeholder.svg?height=30&width=30&query=gold lotus flower icon"
+              src="/Logo.png"
               alt="Ode Spa Logo"
-              width={30}
-              height={30}
+              width={200}
+              height={200}
             />
-          </div>
-          <div className="flex flex-col">
+          {/* </div> */}
+          {/* <div className="flex flex-col">
             <span className="text-[#a07735] font-bold text-xl leading-tight">ODE SPA</span>
             <span className="text-[#9d8c6a] text-xs">SPA.WELLNESS</span>
-          </div>
+          </div> */}
         </div>
 
         <nav className="flex items-center gap-4 md:gap-8">

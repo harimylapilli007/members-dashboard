@@ -256,27 +256,31 @@ export default function Component() {
             {/* Main Content */}
             <main className="flex-1 p-4 md:p-8 w-full">
               <div className="mb-6 md:mb-8">
-                <p className="text-[#454545] mb-4 font-inter">{"Here's everything you need to live the Ode Life, seamlessly."}</p>
+              <p className="text-[#454545] mb-4 font-inter">{"Here's everything you need to live the Ode Life, seamlessly."}</p>
+
                 <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Available Memberships</h1>
                 <p className="text-[#454545] font-inter">Explore our membership options</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 min-w-0 items-stretch">
                 {memberships.map((membership) => (
-                  <Card key={membership.id} className="overflow-hidden shadow-lg border-0 bg-white rounded-lg h-[320px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
+                  <Card
+                    key={membership.id}
+                    className="overflow-hidden shadow-lg border-0 bg-white rounded-lg h-[300px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] min-w-0 w-full"
+                  >
                     <CardContent className="p-0">
-                      <div className="relative h-40">
+                      <div className="relative h-32 w-full min-w-0 min-h-0">
                         <Image
                           src={membership.image || "/placeholder.svg"}
                           alt="Spa interior"
                           fill
-                          className="object-cover"
+                          className="object-cover block"
                         />
                       </div>
                       <div className="p-4">
-                        <h1 className="text-lg font-semibold text-[#232323] mb-2">Ode Spa Membership</h1>
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-xl font-bold text-[#a07735]">{membership.price}</span>
+                        <h1 className="text-base font-semibold text-[#232323] mb-2">Ode Spa Membership</h1>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-lg font-bold text-[#a07735]">{membership.price}</span>
                           <button
                             className="text-[#9d8c6a] hover:text-[#454545] flex items-center text-sm font-medium bg-transparent border-0 outline-none"
                             onClick={() => setSelectedMembership(membership)}
@@ -287,7 +291,7 @@ export default function Component() {
                         </div>
                         <div className="flex justify-center">
                           <Button 
-                            className="relative w-[222px] h-[41px] bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Inter'] font-bold text-[14px] leading-[17px] text-center text-[#98564D]"
+                            className="relative w-[200px] h-[36px] bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Inter'] font-bold text-[13px] leading-[17px] text-center text-[#98564D]"
                             onClick={() => router.push('/signin')}
                           >
                             Take Membership
