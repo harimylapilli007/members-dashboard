@@ -27,7 +27,7 @@ export default function Header() {
         title: "Success",
         description: "Successfully logged out",
       })
-      router.push('/signin')
+      router.push('/')
     } catch (error) {
       console.error('Error signing out:', error)
       toast({
