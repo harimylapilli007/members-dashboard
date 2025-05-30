@@ -311,7 +311,8 @@ export default function SignIn() {
           }
           localStorage.setItem('userData', JSON.stringify(userData))
 
-          router.push('/dashboard/memberships');
+          // Use replace instead of push to prevent back navigation
+          router.replace('/dashboard/memberships');
         } else {
           // Show account selector for multiple accounts
           setShowAccountSelector(true);
