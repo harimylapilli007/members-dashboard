@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Home, Bell, User, LogOut } from "lucide-react"
+import { Home, Bell, User, LogOut, ShoppingBag, ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -40,7 +40,7 @@ export default function Header() {
 
   return (
     <header className="bg-white border-b border-[#ced4da] px-4 md:px-6 py-4">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
+      <div className="flex flex-col md:flex-row items-center justify-around gap-4 md:gap-0">
         <div className="flex items-center gap-2">
           <div className="w-12 h-12 bg-[#a07735] rounded-full flex items-center justify-center">
             <Image
@@ -57,27 +57,23 @@ export default function Header() {
         </div>
 
         <nav className="flex items-center gap-4 md:gap-8">
-          <Link href="#" className="text-[#454545] hover:text-[#a07735] font-medium text-sm md:text-base">
+          <Link href="#" className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
             SERVICES
           </Link>
-          <Link href="#" className="text-[#454545] hover:text-[#a07735] font-medium text-sm md:text-base">
+          <Link href="#" className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
             MEMBERSHIP
           </Link>
-          <Link href="#" className="text-[#454545] hover:text-[#a07735] font-medium text-sm md:text-base">
+          <Link href="#" className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
             BOOKING
           </Link>
         </nav>
 
-        <div className="flex items-center gap-2 md:gap-4">
-          <Button variant="ghost" size="icon" className="text-[#a07735]">
-            <Home className="w-5 h-5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-[#a07735]">
-            <Bell className="w-5 h-5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-[#a07735]">
-            <User className="w-5 h-5" />
-          </Button>
+        <div className="flex items-center gap-2 md:gap-6">
+          
+          <Link href="/cart" className="text-[#a07735] hover:text-[#8a6930]">
+            <ShoppingCart className="w-6 h-6 font-bold" fill="currentColor" />
+          </Link>
+          
           {user ? (
             <Button 
               variant="outline" 

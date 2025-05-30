@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Home, CreditCard, Calendar, ChevronDown, User } from "lucide-react"
+import { Home, CreditCard, Calendar, ChevronDown, User, X, ChevronLeft } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -15,6 +15,7 @@ export default function Component() {
   const router = useRouter()
   const [userData, setUserData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [selectedMembership, setSelectedMembership] = useState<any>(null)
 
   useEffect(() => {
     try {
@@ -30,6 +31,9 @@ export default function Component() {
   }, [])
 
   const isActive = (path: string) => {
+    if (path === "/") {
+      return pathname === "/" || pathname === ""
+    }
     return pathname === path
   }
 
@@ -79,8 +83,101 @@ export default function Component() {
     },
   ]
 
+  // Modal component for membership details
+  const MembershipModal = ({ membership, onClose }: { membership: any, onClose: () => void }) => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-0 overflow-hidden animate-fadeIn">
+        {/* Header */}
+        <div className="bg-[#9E5F45] p-4 rounded-t-2xl text-center relative">
+          <h2 className="text-2xl font-marcellus text-white mb-1">Odespa Membership</h2>
+        </div>
+        <div className="px-0 pt-0 pb-0 rounded-t-2xl text-center relative">
+        <div className="flex items-center justify-between px-8 pt-6 pb-2">
+            <button
+              className="hover:text-[#a07735] text-lg font-bold font-inter flex items-center gap-2"
+              onClick={onClose}
+              aria-label="Back"
+            >
+              <ChevronLeft className="w-6 h-6" />
+              <span className="text-lg font-bold font-inter">Back</span>
+            </button>
+            <div className="flex-1 flex flex-col items-center">
+             
+              <h1 className="text-2xl font-bold font-marcellus mb-1">{membership.price}</h1>
+            </div>
+            <div className="w-[140px] flex justify-end">
+              <Button
+                className="bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] text-[#98564D] font-bold px-6 py-2 rounded-xl shadow-md"
+                onClick={() => router.push('/signin')}
+              >
+                Take Membership
+              </Button>
+            </div>
+          </div>
+        </div>
+        {/* Details Grid */}
+        <div className="grid grid-cols-2 grid-rows-2 gap-6 p-8 bg-white">
+          
+          {/* Benefits */}
+          <div className="bg-[#f5f1e8] rounded-xl p-6 flex flex-col shadow-sm">
+            <div className="flex items-center mb-2">
+              <span className="text-2xl mr-2">🎁</span>
+              <h1 className="font-semibold text-[#a07735] text-lg">Benefits</h1>
+            </div>
+            <ul className="list-disc ml-6 text-sm text-[#454545] space-y-1">
+              <li>Flat 5% OFF on all subsequent bookings after redemption</li>
+              <li>10% OFF on ODE skincare and wellness products</li>
+              <li>Birthday month special: One free head massage</li>
+            </ul>
+          </div>
+          {/* Terms */}
+          <div className="bg-[#f5f1e8] rounded-xl p-6 flex flex-col shadow-sm">
+            <div className="flex items-center mb-2">
+              <span className="text-2xl mr-2">📜</span>
+              <h1 className="font-semibold text-[#a07735] text-lg">Terms</h1>
+            </div>
+            <ul className="list-disc ml-6 text-sm text-[#454545] space-y-1">
+              <li>Non-transferable</li>
+              <li>Cannot be clubbed with other promotional offers</li>
+              <li>Advance booking recommended on weekends</li>
+            </ul>
+          </div>
+          {/* Discounts & Offers */}
+          <div className="bg-[#f5f1e8] rounded-xl p-6 flex flex-col shadow-sm">
+            <div className="flex items-center mb-2">
+              <span className="text-2xl mr-2">⭐</span>
+              <h1 className="font-semibold text-[#a07735] text-lg">Discounts & Offers</h1>
+            </div>
+            <ul className="list-disc ml-6 text-sm text-[#454545] space-y-1">
+              <li>Flat 5% OFF on all subsequent bookings after redemption</li>
+              <li>10% OFF on ODE skincare and wellness products</li>
+              <li>Birthday month special: One free head massage</li>
+            </ul>
+          </div>
+          {/* Validity */}
+          <div className="bg-[#f5f1e8] rounded-xl p-6 flex flex-col shadow-sm">
+            <div className="flex items-center mb-2">
+              <span className="text-2xl mr-2">⏳</span>
+              <h1 className="font-semibold text-[#a07735] text-lg">Validity</h1>
+            </div>
+            <ul className="list-disc ml-6 text-sm text-[#454545] space-y-1">
+              <li>12 months from the date of activation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <div className="relative min-h-screen overflow-hidden">
+      {/* Modal for membership details */}
+      {selectedMembership && (
+        <MembershipModal
+          membership={selectedMembership}
+          onClose={() => setSelectedMembership(null)}
+        />
+      )}
       {isLoading ? (
         <div className="flex items-center justify-center min-h-screen">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#a07735]"></div>
@@ -128,8 +225,8 @@ export default function Component() {
                 <div className="px-4 pb-6 mt-4">
                   {/* Home menu item */}
                   <div className="relative mb-3 mx-5 w-full group">
-                    <div className={getCutoutClasses("/dashboard/memberships")}></div>
-                    <Link href="/dashboard/memberships" className={getMenuItemClasses("/dashboard/memberships")}>
+                    <div className={getCutoutClasses("/")}></div>
+                    <Link href="/" className={getMenuItemClasses("/")}>
                       <Home className="w-4 h-4" />
                       <span className="font-medium text-sm">Home</span>
                     </Link>
@@ -180,10 +277,13 @@ export default function Component() {
                         <h1 className="text-lg font-semibold text-[#232323] mb-2">Ode Spa Membership</h1>
                         <div className="flex items-center justify-between mb-3">
                           <span className="text-xl font-bold text-[#a07735]">{membership.price}</span>
-                          <Link href="#" className="text-[#9d8c6a] hover:text-[#454545] flex items-center text-sm font-medium">
+                          <button
+                            className="text-[#9d8c6a] hover:text-[#454545] flex items-center text-sm font-medium bg-transparent border-0 outline-none"
+                            onClick={() => setSelectedMembership(membership)}
+                          >
                             View Details
                             <ChevronDown className="w-4 h-4 ml-1" />
-                          </Link>
+                          </button>
                         </div>
                         <div className="flex justify-center">
                           <Button 

@@ -2,7 +2,7 @@
 
 import { Activity, CalendarDays, Clock, Gift, Heart, SpadeIcon as Spa, Trophy, User2, Wifi, Home, CreditCard, Calendar, Bell, User, ChevronDown } from "lucide-react"
 import { useEffect, useState, Suspense } from "react"
-import { useSearchParams, useRouter, usePathname } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { auth } from '@/lib/firebase'

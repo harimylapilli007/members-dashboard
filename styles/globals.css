@@ -109,3 +109,14 @@ span{
   letter-spacing: 0%;
   color: #000000;
 }
+
+p, li{
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0%;
+  color: #000000;
+  font-weight: 500;
+}
+
+
