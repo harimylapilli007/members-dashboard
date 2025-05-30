@@ -83,7 +83,7 @@ export default function MainHeader() {
         </nav>
 
         <div className="flex items-center gap-2 ">
-        <Link href="http://localhost:3000/dashboard/memberships">
+        <Link href="/dashboard/memberships">
           <Button
               variant="outline"
               className="text-gray-700 hover:text-[#a07735] items-center gap-2 hidden md:flex"
