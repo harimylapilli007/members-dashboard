@@ -1,4 +1,5 @@
 import { LRUCache } from 'lru-cache';
+import { toast } from "@/hooks/use-toast";
 
 // Cache configuration
 const cache = new LRUCache<string, any>({
@@ -75,7 +76,13 @@ export async function fetchWithRetry(
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+        const errorMessage = errorData.error?.message || `HTTP error! status: ${response.status}`;
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Please refresh the page or select another date to try again.",
+        });
+        return null;
       }
 
       const data = await response.json();
@@ -98,7 +105,12 @@ export async function fetchWithRetry(
       }
       
       if (retryCount === MAX_RETRIES - 1) {
-        throw error;
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Please refresh the page or select another date to try again.",
+        });
+        return null;
       }
       
       // Only retry on network errors or timeouts

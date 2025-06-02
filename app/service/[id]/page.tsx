@@ -11,12 +11,15 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { useAuth } from '@/lib/auth-context'
 import Header from "@/app/components/Header"
 import { fetchWithRetry, generateCacheKey } from '../../utils/api'
+import { useToast } from "@/hooks/use-toast"
+import { Toaster } from "@/components/ui/toaster"
 
 
 export default function Home() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { logout, user } = useAuth()
+  const { toast } = useToast()
   const serviceName = searchParams.get('name') || 'Swedish Massage'
   const servicePrice = parseInt(searchParams.get('price') || '3999', 10)
   const locationName = searchParams.get('location') || ''
@@ -241,7 +244,13 @@ export default function Home() {
     } catch (error) {
       console.error('Booking error:', error)
       if (isMounted.current) {
-        setError(error instanceof Error ? error.message : 'Failed to create booking')
+        const errorMessage = error instanceof Error ? error.message : 'Failed to create booking'
+        setError(errorMessage)
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Please refresh the page or select another date to try again.",
+        })
       }
     } finally {
       if (isMounted.current) {
@@ -275,7 +284,13 @@ export default function Home() {
     } catch (error) {
       console.error('Error fetching slots:', error);
       if (isMounted.current) {
-        setError(error instanceof Error ? error.message : 'Failed to fetch available slots');
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch available slots';
+        setError(errorMessage);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Please refresh the page or select another date to try again.",
+        });
       }
     }
   };
@@ -883,6 +898,7 @@ export default function Home() {
         onClose={() => setIsLocationModalOpen(false)}
         onSelectLocation={handleSelectLocation}
       />
+      <Toaster />
     </>
   )
 }
