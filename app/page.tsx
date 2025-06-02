@@ -280,7 +280,7 @@ export default function Component() {
                       <div className="p-4">
                         <h1 className="text-base font-semibold text-[#232323] mb-2">Ode Spa Membership</h1>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-lg font-bold text-[#a07735]">{membership.price}</span>
+                          <span className="text-lg font-bold text-[#98564D]">{membership.price}</span>
                           <button
                             className="text-[#9d8c6a] hover:text-[#454545] flex items-center text-sm font-medium bg-transparent border-0 outline-none"
                             onClick={() => setSelectedMembership(membership)}
@@ -291,7 +291,7 @@ export default function Component() {
                         </div>
                         <div className="flex justify-center mt-2">
                           <Button 
-                            className="relative w-[200px] h-[36px] bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Inter'] font-bold text-[13px] leading-[17px] text-center text-[#98564D]"
+                            className="relative w-[200px] h-[36px] bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Inter'] font-bold text-[16px] leading-[17px] text-center text-[#98564D]"
                             onClick={() => router.push('/signin')}
                           >
                             Take Membership

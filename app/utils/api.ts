@@ -77,11 +77,11 @@ export async function fetchWithRetry(
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         const errorMessage = errorData.error?.message || `HTTP error! status: ${response.status}`;
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Please refresh the page or select another date to try again.",
-        });
+        // toast({
+        //   variant: "destructive",
+        //   title: "Error",
+        //   description: "Please refresh the page or select another date to try again.",
+        // });
         return null;
       }
 

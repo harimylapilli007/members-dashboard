@@ -347,8 +347,17 @@ export default function Home() {
         generateCacheKey('reserve-slot', { bookingId, slotTime })
       );
 
-      // Show confirmation dialog
-      setShowConfirmation(true);
+      // Navigate to checkout page with all required parameters
+      const params = new URLSearchParams({
+        serviceName: serviceName,
+        duration: duration,
+        price: servicePrice.toString(),
+        location: selectedLocation.outlet.name,
+        date: format(selectedDate, 'yyyy-MM-dd'),
+        time: selectedSlot
+      });
+      
+      router.push(`/checkout?${params.toString()}`);
     } catch (error) {
       console.error('Reservation error:', error);
       setReservationError(error instanceof Error ? error.message : 'Failed to reserve slot');
@@ -814,10 +823,10 @@ export default function Home() {
               <>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">Booking Confirmation</h2>
                 <div className="space-y-3">
-                  <p><span className="font-medium">City:</span> {selectedLocation?.city}</p>
-                  <p><span className="font-medium">Outlet:</span> {selectedLocation?.outlet.name}</p>
-                  <p><span className="font-medium">Date & Time:</span> {format(selectedDate, 'MMMM d, yyyy')} ⏰ {selectedSlot}</p>
-                  <p><span className="font-medium">Service:</span> {serviceName}</p>
+                  <p className="font-inter"><span className="font-medium">City:</span> {selectedLocation?.city}</p>
+                  <p className="font-inter"><span className="font-medium">Outlet:</span> {selectedLocation?.outlet.name}</p>
+                  <p className="font-inter"><span className="font-medium">Date & Time:</span> {format(selectedDate, 'MMMM d, yyyy')} ⏰ {selectedSlot}</p>
+                  <p className="font-inter"><span className="font-medium">Service:</span> {serviceName}</p>
                 </div>
                 {reservationError && (
                   <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-md">
