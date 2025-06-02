@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/auth-context'
 import { format } from 'date-fns'
 import { Calendar, Clock, MapPin, Tag } from 'lucide-react'
 import Image from 'next/image'
-import MainHeader from "@/components/MainHeader";
+import Header from "@/app/components/Header";
 import { fetchWithRetry, generateCacheKey } from '../utils/api';
 
 interface Booking {
@@ -118,7 +118,7 @@ export default function BookingsPage() {
     try {
       // Get guest ID from localStorage
       const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
-      const guestId = dashboardParams.get('id')
+      const guestId = dashboardParams.get('id') || localStorage.getItem('guestId')
 
       if (!guestId) {
         throw new Error('Guest ID not found')
@@ -221,7 +221,7 @@ export default function BookingsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <MainHeader />
+      <Header />
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
