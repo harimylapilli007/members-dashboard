@@ -285,6 +285,10 @@ export default function SignIn() {
       }
 
       const otpString = otp.join('');
+      if (otpString.length !== 6) {
+        throw new Error('Please enter a complete 6-digit OTP code.');
+      }
+
       const credential = await window.confirmationResult.confirm(otpString);
       if (credential.user) {
         // Get the ID token
@@ -318,13 +322,32 @@ export default function SignIn() {
           setShowAccountSelector(true);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error verifying OTP:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : 'Invalid OTP. Please try again.',
-      });
+      
+      // Handle specific Firebase auth errors
+      if (error.code === 'auth/invalid-verification-code') {
+        toast({
+          variant: "destructive",
+          title: "Invalid OTP",
+          description: "The OTP code is invalid or has expired. Please request a new OTP.",
+        });
+        // Reset OTP input
+        setOtp(['', '', '', '', '', '']);
+        // Reset reCAPTCHA
+        if (window.recaptchaVerifier) {
+          window.recaptchaVerifier.clear();
+          window.recaptchaVerifier = null;
+        }
+        setRecaptchaReady(false);
+        setupRecaptcha();
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error instanceof Error ? error.message : 'Failed to verify OTP. Please try again.',
+        });
+      }
     } finally {
       setLoading(false);
     }

@@ -198,14 +198,14 @@ export default function Component() {
 
           <Header />
 
-          <div className="flex flex-col lg:flex-row items-start max-w-[1400px] mx-auto px-4 md:px-6">
+          <div className="flex flex-col lg:flex-row items-start max-w-[1200px] mx-auto px-4 md:px-6">
             {/* Sidebar - Exact styling from the design */}
-            <aside
+            {/* <aside
               className="w-full lg:w-[300px] h-auto lg:h-[520px] mt-6 lg:mt-12 mb-6 lg:mb-12 flex-shrink-0 flex flex-col"
               style={{ minWidth: 'auto' }}
             >
               <div className="bg-[#a07735] opacity-90 rounded-2xl h-full shadow-xl flex flex-col">
-                {/* Profile Section */}
+              
                 <div className="p-4 md:p-6 pt-6 md:pt-8 flex flex-col items-center">
                   <Avatar className="w-16 h-16 mb-6 bg-[#e5e7eb]">
                     <AvatarFallback className="text-[#454545]">
@@ -221,9 +221,9 @@ export default function Component() {
                   </Button>
                 </div>
 
-                {/* Navigation Menu */}
+              
                 <div className="px-4 pb-6 mt-4">
-                  {/* Home menu item */}
+              
                   <div className="relative mb-3 mx-5 w-full group">
                     <div className={getCutoutClasses("/")}></div>
                     <Link href="/" className={getMenuItemClasses("/")}>
@@ -232,7 +232,7 @@ export default function Component() {
                     </Link>
                   </div>
 
-                  {/* Regular menu items with hover effect */}
+                
                   <div className="space-y-3">
                     <div className="relative mb-3 mx-5 w-full group">
                       <div className={getCutoutClasses("/dashboard/memberships")}></div>
@@ -251,18 +251,18 @@ export default function Component() {
                   </div>
                 </div>
               </div>
-            </aside>
+            </aside> */}
 
             {/* Main Content */}
             <main className="flex-1 p-4 md:p-8 w-full">
-              <div className="mb-6 md:mb-8">
-              <p className="text-[#454545] mb-4 font-inter">{"Here's everything you need to live the Ode Life, seamlessly."}</p>
+              <div className="mb-6 md:mb-8 max-w-[1000px] mx-auto">
+                <p className="text-[#454545] mb-4 font-inter">{"Here's everything you need to live the Ode Life, seamlessly."}</p>
 
                 <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Available Memberships</h1>
                 <p className="text-[#454545] font-inter">Explore our membership options</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 min-w-0 items-stretch">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 min-w-0 items-stretch max-w-[1000px] mx-auto">
                 {memberships.map((membership) => (
                   <Card
                     key={membership.id}

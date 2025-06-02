@@ -15,7 +15,7 @@ import { Progress } from "@/components/ui/progress"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { MembershipModal } from "@/components/membership-modal"
 import { useToast } from "@/components/ui/use-toast"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Header from "@/app/components/Header"
 
 interface CreditBalance {
@@ -400,23 +400,27 @@ function MembershipDashboardContent() {
             {/* Profile Section */}
             <div className="p-4 md:p-6 pt-6 md:pt-8 flex flex-col items-center">
               <Avatar className="w-16 h-16 mb-6 bg-[#e5e7eb]">
+                <AvatarImage src="/spa.jpg" alt="User avatar" />
                 <AvatarFallback className="text-[#454545]">
-                  <User className="w-6 h-6" />
+                  {userData?.first_name ? userData.first_name[0].toUpperCase() : <User className="w-6 h-6" />}
                 </AvatarFallback>
               </Avatar>
-             
+              <div className="text-center">
+                <p className="text-white font-medium text-sm">{userData?.first_name} {userData?.last_name}</p>
+                <p className="text-white text-xs">{userData?.email}</p>
+              </div>
             </div>
 
             {/* Navigation Menu */}
             <div className="px-4 pb-6 mt-4">
               {/* Home menu item */}
-              <div className="relative mb-3 mx-5 w-full group">
+              {/* <div className="relative mb-3 mx-5 w-full group">
                 <div className={getCutoutClasses("/")}></div>
                 <Link href="/" className={getMenuItemClasses("/")}>
                   <Home className="w-4 h-4" />
                   <span className="font-medium text-sm">Home</span>
                 </Link>
-              </div>
+              </div> */}
 
               {/* Regular menu items with hover effect */}
               <div className="space-y-3">
@@ -549,7 +553,7 @@ function MembershipDashboardContent() {
           </div>
 
           {/* Rest of the content */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Card className="md:col-span-2 overflow-hidden shadow-lg border-0 bg-white rounded-lg">
               <CardHeader>
                 <CardTitle className="text-[#232323]">Upcoming Appointments</CardTitle>
@@ -635,7 +639,7 @@ function MembershipDashboardContent() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </div> */}
         </main>
       </div>
 

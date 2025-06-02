@@ -14,6 +14,7 @@ export default function Header() {
   const router = useRouter()
   const { user, logout } = useAuth()
   const { toast } = useToast()
+  const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData') || '{}') : {}
 
   const handleLogout = async () => {
     try {
@@ -23,6 +24,7 @@ export default function Header() {
       // Clear user data from localStorage
       localStorage.removeItem('userData')
       localStorage.removeItem('guestId')
+      localStorage.removeItem('dashboardParams')
       toast({
         title: "Success",
         description: "Successfully logged out",
@@ -57,23 +59,23 @@ export default function Header() {
         </div>
 
         <nav className="flex items-center gap-4 md:gap-8">
-          <Link href="#" className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
+          {/* <Link href="#" className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
             SERVICES
-          </Link>
-          <Link href="#" className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
+          </Link> */}
+          <Link href="/dashboard/memberships" className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
             MEMBERSHIP
           </Link>
-          <Link href="#" className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
+          <Link href={`/ServiceBookingPage?openModal=true&guestId=${userData?.id}`} className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
             BOOKING
           </Link>
         </nav>
 
         <div className="flex items-center gap-2 md:gap-6">
           
-          <Link href="" className="text-[#a07735] hover:text-[#8a6930]">
+          {/* <Link href="" className="text-[#a07735] hover:text-[#8a6930]">
             <ShoppingCart className="w-6 h-6 font-bold" fill="currentColor" />
           </Link>
-          
+           */}
           {user ? (
             <Button 
               variant="outline" 

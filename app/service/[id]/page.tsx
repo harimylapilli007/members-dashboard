@@ -9,7 +9,7 @@ import "@/styles/globals.css"
 import { format, addDays, isSameDay } from "date-fns"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useAuth } from '@/lib/auth-context'
-import MainHeader from "@/components/MainHeader"
+import Header from "@/app/components/Header"
 import { fetchWithRetry, generateCacheKey } from '../../utils/api'
 
 
@@ -54,6 +54,7 @@ export default function Home() {
   const isMounted = useRef(false)
   const requestInProgress = useRef(false)
   const lastRequestTime = useRef(0)
+  const [guestId, setGuestId] = useState<string | null>(null)
 
   const handleSelectLocation = (city: string, outlet: string, centerId: string) => {
     setSelectedLocation({ 
@@ -171,6 +172,12 @@ export default function Home() {
       isMounted.current = false
     }
   }, [selectedLocation?.outlet.id, format(selectedDate, 'yyyy-MM-dd')])
+
+  useEffect(() => {
+    const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
+    const guestId = dashboardParams.get('id')  || localStorage.getItem('guestId')
+    setGuestId(guestId)
+  }, [])
 
   const createBooking = async () => {
     if (!selectedLocation?.outlet.id || !isMounted.current) {
@@ -380,7 +387,7 @@ export default function Home() {
     <>
       <div className={`min-h-screen bg-white ${isLocationModalOpen || showConfirmation ? "blur-sm" : ""}`}>
         {/* Header */}
-        <MainHeader />
+        <Header />
         {/* Main content */}
         <main className="mx-auto px-4 sm:px-6 md:px-10 py-4 sm:py-6 md:py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">

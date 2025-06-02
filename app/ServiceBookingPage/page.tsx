@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useAuth } from '@/lib/auth-context';
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
-import MainHeader from "@/components/MainHeader";
+import Header from "../components/Header";
 import { fetchWithRetry, generateCacheKey } from '../utils/api';
 
 interface Service {
@@ -382,7 +382,7 @@ export default function ServiceBookingPage() {
     <>
       <div className={`min-h-screen bg-gray-50 ${isLocationModalOpen || selectedService ? "blur-sm" : ""}`}>
         {/* Header */}
-        <MainHeader />
+        <Header />
         {/* Hero Section */}
         <div className="relative bg-gradient-to-r from-[#a07735] to-[#8a6930] py-16">
           <div className="absolute inset-0 bg-black opacity-20"></div>
