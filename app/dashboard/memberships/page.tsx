@@ -15,7 +15,7 @@ import { Progress } from "@/components/ui/progress"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { MembershipModal } from "@/components/membership-modal"
 import { useToast } from "@/components/ui/use-toast"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import Header from "@/app/components/Header"
 
 interface CreditBalance {
@@ -400,15 +400,10 @@ function MembershipDashboardContent() {
             {/* Profile Section */}
             <div className="p-4 md:p-6 pt-6 md:pt-8 flex flex-col items-center">
               <Avatar className="w-16 h-16 mb-6 bg-[#e5e7eb]">
-                <AvatarImage src="/spa.jpg" alt="User avatar" />
                 <AvatarFallback className="text-[#454545]">
-                  {userData?.first_name ? userData.first_name[0].toUpperCase() : <User className="w-6 h-6" />}
+                  <User className="w-6 h-6" />
                 </AvatarFallback>
               </Avatar>
-              <div className="text-center">
-                <p className="text-white font-medium text-sm">{userData?.first_name} {userData?.last_name}</p>
-                <p className="text-white text-xs">{userData?.email}</p>
-              </div>
             </div>
 
             {/* Navigation Menu */}

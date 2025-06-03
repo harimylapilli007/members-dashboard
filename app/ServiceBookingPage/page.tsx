@@ -283,7 +283,7 @@ export default function ServiceBookingPage() {
   const [area, setArea] = useState("");
   const [bookingFor, setBookingFor] = useState("just me");
   const [services, setServices] = useState<CategorizedServices>({});
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Spa Therapies");
   const [search, setSearch] = useState("");
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{ city: string; outlet: {name: string, id: string} } | null>(null);

@@ -106,7 +106,7 @@ export default function CheckoutPage() {
       <Header />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-7xl mx-auto">
           {/* Booking Details */}
           <div className="bg-white rounded-xl shadow-sm p-8">
@@ -188,8 +188,11 @@ export default function CheckoutPage() {
             {/* Apply Coupon */}
             <div className="mt-12 bg-[#faf5eb] rounded-xl p-8">
               <div className="flex items-center mb-4">
-                <Ticket className="w-7 h-7 text-[#a07735] mr-4" />
-                <h3 className="text-xl font-serif text-[#1f2937]">Apply Coupon</h3>
+                <svg width="35" height="25" viewBox="0 0 35 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3.88889 0C1.74392 0 0 1.86849 0 4.16667V8.33333C0 8.90625 0.449653 9.35547 0.953993 9.54427C2.09635 9.96745 2.91667 11.1328 2.91667 12.5C2.91667 13.8672 2.09635 15.0326 0.953993 15.4557C0.449653 15.6445 0 16.0938 0 16.6667V20.8333C0 23.1315 1.74392 25 3.88889 25H31.1111C33.2561 25 35 23.1315 35 20.8333V16.6667C35 16.0938 34.5503 15.6445 34.046 15.4557C32.9036 15.0326 32.0833 13.8672 32.0833 12.5C32.0833 11.1328 32.9036 9.96745 34.046 9.54427C34.5503 9.35547 35 8.90625 35 8.33333V4.16667C35 1.86849 33.2561 0 31.1111 0H3.88889ZM7.77778 7.29167V17.7083C7.77778 18.2812 8.21528 18.75 8.75 18.75H26.25C26.7847 18.75 27.2222 18.2812 27.2222 17.7083V7.29167C27.2222 6.71875 26.7847 6.25 26.25 6.25H8.75C8.21528 6.25 7.77778 6.71875 7.77778 7.29167ZM5.83333 6.25C5.83333 5.09766 6.70226 4.16667 7.77778 4.16667H27.2222C28.2977 4.16667 29.1667 5.09766 29.1667 6.25V18.75C29.1667 19.9023 28.2977 20.8333 27.2222 20.8333H7.77778C6.70226 20.8333 5.83333 19.9023 5.83333 18.75V6.25Z" fill="#A07735"/>
+                </svg>
+
+                <h3 className="text-xl font-serif text-[#1f2937] ml-4">Apply Coupon</h3>
               </div>
               <p className="text-[#6b7280] mb-6">Choose and add an additional discount on your booking.</p>
               <button className="flex items-center bg-[#a07735] text-white px-8 py-3.5 rounded-lg hover:bg-[#8a6830] transition-colors">
@@ -237,8 +240,22 @@ export default function CheckoutPage() {
             {/* Promo Box */}
             <div className="mt-8 bg-[#faf5eb] rounded-xl p-6">
               <div className="flex items-center">
-                <Zap className="w-7 h-7 text-[#a07735] mr-4 shrink-0" />
-                <p className="text-[#a07735] font-medium">Instant 5% Off On the Cart by becoming Fest Member.</p>
+                
+              <svg width="25" height="30" viewBox="0 0 25 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clipPath="url(#clip0_1_51)">
+                  <path d="M19.4978 2.61311C19.827 1.81038 19.5815 0.872875 18.9062 0.35725C18.231 -0.158375 17.3103 -0.1115 16.6797 0.462719L2.39396 13.5877C1.83592 14.1033 1.63503 14.9295 1.89731 15.6561C2.15958 16.3826 2.82923 16.8748 3.57141 16.8748H9.79351L5.50222 27.3865C5.17298 28.1893 5.41851 29.1268 6.09373 29.6424C6.76896 30.158 7.68972 30.1112 8.3203 29.5369L22.606 16.4119C23.164 15.8963 23.3649 15.0701 23.1027 14.3436C22.8404 13.617 22.1763 13.1307 21.4286 13.1307H15.2065L19.4978 2.61311Z" fill="#A07735"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_1_51">
+                    <path d="M0 0H25V30H0V0Z" fill="white"/>
+                  </clipPath>
+                </defs>
+              </svg>
+
+
+
+
+                <p className="text-[#a07735] font-medium ml-2">Instant 5% Off On the Cart by becoming Fest Member.</p>
               </div>
             </div>
 
