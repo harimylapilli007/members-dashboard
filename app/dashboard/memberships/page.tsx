@@ -155,16 +155,16 @@ function MembershipDashboardContent() {
   }
 
   const getMenuItemClasses = (path: string) => {
-    const baseClasses = "relative flex items-center gap-3 px-6 py-3 rounded-r-lg z-10 transition-colors"
-    const activeClasses = "text-[#a07735]  bg-[#e2c799]"
-    const inactiveClasses = "text-white group-hover:text-[#a07735] group-hover:bg-[#f5f1e8]"
+    const baseClasses = "relative flex items-center gap-3 px-6 py-6 rounded-r-lg z-10 transition-colors"
+    const activeClasses = "text-[#a07735] bg-[#ecebe9]"
+    const inactiveClasses = "text-white group-hover:text-[#a07735] group-hover:bg-[#ecebe9]"
     
     return `${baseClasses} ${isActive(path) ? activeClasses : inactiveClasses}`
   }
 
   const getCutoutClasses = (path: string) => {
-    const baseClasses = "absolute -left-5 top-0 bottom-0 w-5 rounded-l-2xl transition-colors"
-    return `${baseClasses} ${isActive(path) ? "bg-[#e2c799]" : "bg-transparent group-hover:bg-[#f5f1e8]"}`
+    const baseClasses = "absolute -left-5 top-0 bottom-0 w-5 rounded-l-2xl transition-colors "
+    return `${baseClasses} ${isActive(path) ? "bg-[#ecebe9]" : "bg-transparent group-hover:bg-[#f5f1e8]"}`
   }
 
   useEffect(() => {
@@ -399,11 +399,16 @@ function MembershipDashboardContent() {
           <div className="bg-[#a07735] opacity-90 rounded-2xl h-full shadow-xl flex flex-col">
             {/* Profile Section */}
             <div className="p-4 md:p-6 pt-6 md:pt-8 flex flex-col items-center">
-              <Avatar className="w-16 h-16 mb-6 bg-[#e5e7eb]">
-                <AvatarFallback className="text-[#454545]">
-                  <User className="w-6 h-6" />
-                </AvatarFallback>
-              </Avatar>
+              <div className="flex flex-col items-center">
+                <Avatar className="w-16 h-16 mb-2 bg-[#e5e7eb]">
+                  <AvatarFallback className="text-[#454545] text-xl font-medium">
+                    {userData?.first_name?.[0] || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-white font-medium">
+                  {userData?.first_name || 'User'}
+                </span>
+              </div>
             </div>
 
             {/* Navigation Menu */}
@@ -419,18 +424,22 @@ function MembershipDashboardContent() {
 
               {/* Regular menu items with hover effect */}
               <div className="space-y-3">
-                <div className="relative mb-3 mx-5 w-full group">
+                <div className="relative mb-3 mx-5 w-full group ">
                   <div className={getCutoutClasses("/dashboard/memberships")}></div>
                   <Link href="/dashboard/memberships" className={getMenuItemClasses("/dashboard/memberships")}>
-                    <CreditCard className="w-4 h-4" />
-                    <span className="font-medium text-sm">Memberships</span>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="group-hover:fill-[#a07735]">
+                  <path d="M3.84667 2.5H16.1542C16.5375 2.5 16.8575 2.62861 17.1142 2.88584C17.3708 3.14306 17.4994 3.46306 17.5 3.84583V11.9875C17.5 12.3708 17.3714 12.6908 17.1142 12.9475C16.8569 13.2042 16.5369 13.3328 16.1542 13.3333H12.4358V16.8917L10 15.6725L7.56417 16.89V13.3333H3.84667C3.46278 13.3333 3.1425 13.205 2.88583 12.9483C2.62917 12.6917 2.50056 12.3714 2.5 11.9875V3.84583C2.5 3.4625 2.62861 3.14222 2.88583 2.885C3.14306 2.62778 3.46306 2.49945 3.84583 2.5M3.33333 10.4808H16.6667V8.68584H3.33333V10.4808Z" fill="currentColor"/>
+                  </svg>
+                    <span className="font-medium  text-md">Memberships</span>
                   </Link>
                 </div>
                 <div className="relative mb-3 mx-5 w-full group">
                   <div className={getCutoutClasses("/ServiceBookingPage?openModal=true")}></div>
                   <Link href={`/ServiceBookingPage?openModal=true&guestId=${userData?.id}`} className={getMenuItemClasses("/ServiceBookingPage?openModal=true")}>
-                    <Calendar className="w-4 h-4" />
-                    <span className="font-medium text-sm">Bookings</span>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="group-hover:fill-[#a07735]">
+                  <path d="M1.66699 15.8327C1.66699 17.2493 2.75033 18.3327 4.16699 18.3327H15.8337C17.2503 18.3327 18.3337 17.2493 18.3337 15.8327V9.16602H1.66699V15.8327ZM15.8337 3.33268H14.167V2.49935C14.167 1.99935 13.8337 1.66602 13.3337 1.66602C12.8337 1.66602 12.5003 1.99935 12.5003 2.49935V3.33268H7.50033V2.49935C7.50033 1.99935 7.16699 1.66602 6.66699 1.66602C6.16699 1.66602 5.83366 1.99935 5.83366 2.49935V3.33268H4.16699C2.75033 3.33268 1.66699 4.41602 1.66699 5.83268V7.49935H18.3337V5.83268C18.3337 4.41602 17.2503 3.33268 15.8337 3.33268Z" fill="currentColor"/>
+                  </svg>
+                    <span className="font-medium text-md text-[#ffffff] group-hover:text-black">Bookings</span>
                   </Link>
                 </div>
               </div>

@@ -119,4 +119,18 @@ p, li{
   font-weight: 500;
 }
 
+h2{
+  font-family: 'Inter', sans-serif;
+  font-weight: 200;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0;
+  color: #454545;
+}
+
+.radix-select-font-xs .radix-select-trigger,
+.radix-select-font-xs .radix-select-value,
+.radix-select-font-xs .radix-select-item {
+  font-size: 10px !important;
+}
 

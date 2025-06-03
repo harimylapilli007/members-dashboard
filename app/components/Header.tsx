@@ -54,7 +54,8 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-white border-b border-[#ced4da] px-4 md:px-6 py-2">
+     <header className="bg-white border-b border-[#ced4da] px-4 md:px-6 py-2">
+     {/* <header className="bg-white/10 backdrop-blur-sm px-4 md:px-6 py-2"> */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
         <div className="flex items-center gap-2">
           {/* <div className="w-12 h-12 bg-[#a07735] rounded-full flex items-center justify-center"> */}
@@ -92,7 +93,7 @@ export default function Header() {
           {user ? (
             <Button 
               variant="outline" 
-              className="border-[#a07735] text-[#a07735] hover:bg-[#a07735] hover:text-white text-sm md:text-base"
+              className="border-[#a07735] text-[#a07735] w-36 font-manrope line-height-24 font-bold hover:bg-[#a07735] hover:text-white text-sm md:text-base mr-8"
               onClick={handleLogout}
             >
               <LogOut className="w-4 h-4 mr-2" />
@@ -102,13 +103,14 @@ export default function Header() {
             <>
               <Button 
                 variant="outline" 
-                className="border-[#a07735] text-[#a07735] hover:bg-[#a07735] hover:text-white text-sm md:text-base" 
+                className="border-[#a07735] text-[#a07735] text-[20px] w-36 font-manrope line-height-24 font-400 hover:bg-[#a07735] hover:text-white " 
                 onClick={() => router.push('/signin')}
               >
                 Login
               </Button>
               <Button 
-                className="bg-[#a07735] hover:bg-[#8a6930] text-white text-sm md:text-base" 
+                variant="outline"
+                className="bg-[#a07735] text-[20px] hover:bg-[#ffffff] w-36 font-manrope line-height-24 font-400 hover:text-[#a07735] border-[#a07735] text-white " 
                 onClick={() => router.push('/signin')}
               >
                 Signup

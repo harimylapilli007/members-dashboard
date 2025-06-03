@@ -88,7 +88,7 @@ export default function Component() {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-0 overflow-hidden animate-fadeIn">
         {/* Header */}
-        <div className="bg-[#9E5F45] p-4 rounded-t-2xl text-center relative">
+        <div className="bg-[#a07735] p-4 rounded-t-2xl text-center relative">
           <h1 className="text-2xl font-marcellus text-white mb-1">Odespa Membership</h1>
         </div>
         <div className="px-0 pt-0 pb-0 rounded-t-2xl text-center relative">
@@ -106,11 +106,11 @@ export default function Component() {
               <h1 className="text-2xl font-bold font-marcellus mb-1">{membership.price}</h1>
             </div>
             <div className="w-[140px] flex justify-end">
-              <Button
-                className="bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] text-[#98564D] font-bold px-6 py-2 rounded-xl shadow-md"
-                onClick={() => router.push('/signin')}
+            <Button 
+              className="relative w-[300px] h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
+              onClick={() => router.push('/signin')}
               >
-                Take Membership
+              Take Membership
               </Button>
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function Component() {
             <path d="M9.30176 3.35938L11.001 6.25H10.9375H7.42188C6.34277 6.25 5.46875 5.37598 5.46875 4.29688C5.46875 3.21777 6.34277 2.34375 7.42188 2.34375H7.5293C8.25684 2.34375 8.93555 2.72949 9.30176 3.35938ZM3.125 4.29688C3.125 5 3.2959 5.66406 3.59375 6.25H1.5625C0.698242 6.25 0 6.94824 0 7.8125V10.9375C0 11.8018 0.698242 12.5 1.5625 12.5H23.4375C24.3018 12.5 25 11.8018 25 10.9375V7.8125C25 6.94824 24.3018 6.25 23.4375 6.25H21.4062C21.7041 5.66406 21.875 5 21.875 4.29688C21.875 1.92383 19.9512 0 17.5781 0H17.4707C15.9131 0 14.4678 0.825195 13.6768 2.16797L12.5 4.1748L11.3232 2.17285C10.5322 0.825195 9.08691 0 7.5293 0H7.42188C5.04883 0 3.125 1.92383 3.125 4.29688ZM19.5312 4.29688C19.5312 5.37598 18.6572 6.25 17.5781 6.25H14.0625H13.999L15.6982 3.35938C16.0693 2.72949 16.7432 2.34375 17.4707 2.34375H17.5781C18.6572 2.34375 19.5312 3.21777 19.5312 4.29688ZM1.5625 14.0625V22.6562C1.5625 23.9502 2.6123 25 3.90625 25H10.9375V14.0625H1.5625ZM14.0625 25H21.0938C22.3877 25 23.4375 23.9502 23.4375 22.6562V14.0625H14.0625V25Z" fill="#9E5F45"/>
             </svg>
 
-              <h1 className="font-semibold text-[#98564d] text-lg ml-2">Benefits</h1>
+              <h1 className="font-semibold  text-[22px] text-[#98564d] ml-4">Benefits</h1>
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
@@ -154,7 +154,7 @@ export default function Component() {
 
 
 
-              <h1 className="font-semibold text-[#98564d] text-lg ml-2">Terms</h1>
+              <h1 className="font-semibold text-[#98564d] text-[22px] ml-4">Terms</h1>
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
@@ -191,7 +191,7 @@ export default function Component() {
               </defs>
             </svg>
 
-              <h1 className="font-semibold text-[#98564d] text-lg ml-2">Discounts & Offers</h1>
+              <h1 className="font-semibold text-[#98564d] text-[22px] ml-4">Discounts & Offers</h1>
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
@@ -228,7 +228,7 @@ export default function Component() {
               </defs>
               </svg>
 
-              <h1 className="font-semibold text-[#98564d] text-lg ml-2">Validity</h1>
+              <h1 className="font-semibold text-[#98564d] text-[22px] ml-4">Validity</h1>
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
@@ -329,17 +329,17 @@ export default function Component() {
             {/* Main Content */}
             <main className="flex-1 p-4 md:p-8 w-full">
               <div className="mb-6 md:mb-8 max-w-[1000px] mx-auto">
-                <p className="text-[#454545] mb-4 font-inter">{"Here's everything you need to live the Ode Life, seamlessly."}</p>
+                <h2 className="text-[#454545] mb-4 font-inter">{"Here's everything you need to live the Ode Life, seamlessly."}</h2>
 
                 <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Available Memberships</h1>
-                <p className="text-[#454545] font-inter">Explore our membership options</p>
+                <h2 className="text-[#454545] font-inter">Explore our membership options</h2>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 min-w-0 items-stretch max-w-[1000px] mx-auto">
                 {memberships.map((membership) => (
                   <Card
                     key={membership.id}
-                    className="overflow-hidden shadow-lg border-0 bg-white rounded-lg h-[300px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] min-w-0 w-full"
+                    className="overflow-hidden shadow-lg border-0 bg-white rounded-lg h-[340px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] min-w-0 w-[300px]"
                   >
                     <CardContent className="p-0">
                       <div className="relative h-40 w-full min-w-0 min-h-0">
@@ -350,12 +350,12 @@ export default function Component() {
                           className="object-cover block"
                         />
                       </div>
-                      <div className="p-4">
-                        <h1 className="text-base font-semibold text-[#232323] mb-2">Ode Spa Membership</h1>
-                        <div className="flex items-center justify-between mb-2">
+                      <div className="p-6">
+                        <h1 className="text-base font-semibold text-[20px] text-[#232323] mb-4">Ode Spa Membership</h1>
+                        <div className="flex items-center justify-between mb-4">
                           <span className="text-lg font-bold text-[#98564D]">{membership.price}</span>
                           <button
-                            className="text-[#9d8c6a] hover:text-[#454545] flex items-center text-sm font-medium bg-transparent border-0 outline-none"
+                            className="text-[#9d8c6a]  hover:text-[#454545] flex items-center text-[18px]   bg-transparent border-0 outline-none"
                             onClick={() => setSelectedMembership(membership)}
                           >
                             View Details
@@ -364,7 +364,7 @@ export default function Component() {
                         </div>
                         <div className="flex justify-center mt-2">
                           <Button 
-                            className="relative w-[200px] h-[36px] bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Inter'] font-bold text-[16px] leading-[17px] text-center text-[#98564D]"
+                            className="relative w-[300px] h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
                             onClick={() => router.push('/signin')}
                           >
                             Take Membership

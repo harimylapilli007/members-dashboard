@@ -166,12 +166,15 @@ export default function SignIn() {
 
       // If no user found, redirect to signup
       if (!data || !data.guests || data.guests.length === 0) {
+        // Store phone number in localStorage for registration form
+        localStorage.setItem('registrationPhone', phoneNumber);
+        
         toast({
           variant: "destructive",
           title: "User Not Found",
           description: "Please sign up first to continue.",
         });
-        router.push('/signup');
+        router.push('/register');
         return;
       }
 
