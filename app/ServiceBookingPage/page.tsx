@@ -42,7 +42,7 @@ interface CategoryImage {
 const categoryImages: CategoryImage[] = [
   {
     name: "Spa Therapies",
-    image: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&auto=format&fit=crop&q=80",
     description: "Experience our signature massage therapies for complete relaxation and rejuvenation"
   },
   {
@@ -179,7 +179,7 @@ const ServiceCard = memo(({
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 p-4">
-        <h3 className="text-xl font-semibold text-white mb-1">{service.name}</h3>
+        <h1 className="text-[1rem] font-semibold text-white mb-1 leading-0">{service.name}</h1>
         <div className="flex items-center text-white/90">
           <Clock className="h-4 w-4 mr-1" />
           <span className="text-sm text-white">{service.duration} mins</span>
@@ -384,14 +384,14 @@ export default function ServiceBookingPage() {
         {/* Header */}
         <Header />
         {/* Hero Section */}
-        <div className="relative bg-gradient-to-r from-[#a07735] to-[#8a6930] py-16">
+        <div className="relative bg-gradient-to-r from-[#a07735] to-[#8a6930] p-4">
           <div className="absolute inset-0 bg-black opacity-20"></div>
           {/* Location Selector */}
           <LocationSelector 
             selectedLocation={selectedLocation} 
             onOpen={handleLocationOpen} 
           />
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
             <div className="text-center">
               <h1 className="text-4xl font-bold text-white mb-4">Discover Our Services</h1>
               <p className="text-xl text-white/90 mb-8">Experience luxury wellness treatments tailored for you</p>

@@ -417,7 +417,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             {/* Left: Image + Tabs/Content */}
             <div className="flex flex-col">
-              <div className="rounded-lg overflow-hidden mb-4 sm:mb-6">
+              <div className="rounded-lg overflow-hidden mb-4 sm:mb-6 relative">
                 <Image
                   src="/spa-swedish-massage.png"
                   alt="Swedish Massage"
@@ -425,6 +425,8 @@ export default function Home() {
                   height={500}
                   className="object-cover w-full h-[300px] sm:h-[400px] md:h-[500px]"
                 />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent"></div>
+                <h1 className="absolute bottom-4 left-4 text-2xl sm:text-3xl md:text-4xl text-white font-medium">{serviceName}</h1>
               </div>
               {/* Tabs and Content below image */}
               <div className="bg-white rounded-lg shadow p-4 sm:p-6">
@@ -789,7 +791,19 @@ export default function Home() {
                                     ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                     : "border-gray-300 text-gray-700 hover:border-[#a07735]"
                               }`}
-                              onClick={() => setSelectedSlot(time)}
+                              onClick={() => {
+                                setSelectedSlot(time);
+                                // Directly redirect to cart page when slot is selected
+                                const params = new URLSearchParams({
+                                  serviceName: serviceName,
+                                  duration: duration,
+                                  price: servicePrice.toString(),
+                                  location: selectedLocation?.outlet.name || '',
+                                  date: format(selectedDate, 'yyyy-MM-dd'),
+                                  time: time
+                                });
+                                router.push(`/checkout?${params.toString()}`);
+                              }}
                             >
                               {time}
                             </button>
@@ -801,14 +815,6 @@ export default function Home() {
                     <div className="col-span-full text-center py-4">No slots available for selected date</div>
                   )}
                 </div>
-                {/* Add to cart button */}
-                <button 
-                  className="bg-[#a07735] text-white py-3 px-6 rounded-md w-full text-center font-medium hover:bg-[#8a6930] transition-colors font-sans"
-                  onClick={handleAddToCart}
-                  disabled={isReserving}
-                >
-                  {isReserving ? 'Processing...' : 'ADD TO CART'}
-                </button>
               </div>
             </div>
           </div>
