@@ -92,6 +92,16 @@ export default function CheckoutPage() {
 
   // Add handleConfirmBooking function
   const handleConfirmBooking = async () => {
+    // Check for auth token
+    const authToken = document.cookie.split('; ').find(row => row.startsWith('auth-token='));
+    if (!authToken) {
+      // Store the current URL to redirect back after login
+      const currentUrl = window.location.href;
+      localStorage.setItem('redirectAfterLogin', currentUrl);
+      router.push('/spa-signin');
+      return;
+    }
+
     setIsConfirming(true);
     try {
       // Get guest ID from localStorage
@@ -209,7 +219,7 @@ export default function CheckoutPage() {
         <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-7xl mx-auto">
             {/* Booking Details */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm p-8">
+            <div className="bg-white/50 backdrop-blur-sm rounded-xl shadow-sm p-8">
               <div className="flex items-center mb-8">
                 <div className="w-12 h-12 flex items-center justify-center mr-4">
                   <svg width="40" height="36" viewBox="0 0 40 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -303,7 +313,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* Summary */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm p-8">
+            <div className="bg-white/50 backdrop-blur-sm rounded-xl shadow-sm p-8">
               <div className="flex items-center mb-8">
                 <div className="w-12 h-12 flex items-center justify-center mr-4">
                   <svg width="25" height="30" viewBox="0 0 25 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -392,7 +402,17 @@ export default function CheckoutPage() {
               {/* Confirm Button */}
               <div className="mt-10">
                 <button 
-                  onClick={() => setShowConfirmation(true)}
+                  onClick={() => {
+                    const authToken = document.cookie.split('; ').find(row => row.startsWith('auth-token='));
+                    if (!authToken) {
+                      // Store the current URL to redirect back after login
+                      const currentUrl = window.location.href;
+                      localStorage.setItem('redirectAfterLogin', currentUrl);
+                      router.push('/spa-signin');
+                      return;
+                    }
+                    setShowConfirmation(true);
+                  }}
                   disabled={!termsAccepted}
                   className="w-full bg-[#a07735] text-white py-4 rounded-lg font-medium hover:bg-[#8a6830] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >

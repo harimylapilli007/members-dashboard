@@ -98,7 +98,21 @@ export default function Header() {
           >
             <span className="relative z-10 text-[16px]">BOOKING</span>
           </Link>
+          <Link 
+            href="/view-bookings" 
+            className={cn(
+              "relative px-4 py-2 rounded-lg font-bold font-inter text-sm md:text-base transition-all duration-300",
+              "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
+              "hover:scale-105 hover:shadow-lg",
+              pathname?.includes('/view-bookings')
+                ? "text-white before:bg-[#a07735]/80 before:backdrop-blur-md before:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] before:border before:border-[#a07735]/30"
+                : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm   hover:before:border-[#a07735]/30"
+            )}
+          >
+            <span className="relative z-10 text-[16px]">VIEW BOOKINGS</span>
+          </Link>
         </nav>
+
 
         <div className="flex items-center gap-4">
           
@@ -109,7 +123,7 @@ export default function Header() {
           {user ? (
             <Button 
               variant="outline" 
-              className="border-[#a07735] text-[#a07735] w-36 font-manrope line-height-24 font-bold hover:bg-[#a07735] hover:text-white text-sm md:text-base mr-8"
+              className="border-[#a07735] text-[#a07735] w-36 font-marcellus line-height-24 font-bold hover:bg-[#a07735] hover:text-white text-sm md:text-base mr-8"
               onClick={handleLogout}
             >
               <LogOut className="w-4 h-4 mr-2" />
@@ -119,14 +133,14 @@ export default function Header() {
             <>
               <Button 
                 variant="outline" 
-                className="border-[#a07735] text-[#a07735] text-[20px] w-36 font-manrope line-height-24 font-400 hover:bg-[#a07735] hover:text-white " 
+                className="border-[#a07735] text-[#a07735] text-[20px] w-36 font-marcellus line-height-24 hover:bg-[#a07735] hover:text-white " 
                 onClick={() => router.push('/signin')}
               >
                 Login
               </Button>
               <Button 
                 variant="outline"
-                className="bg-[#a07735] text-[20px] hover:bg-[#ffffff] w-36 font-manrope line-height-24 font-400 hover:text-[#a07735] border-[#a07735] text-white " 
+                className="bg-[#a07735] text-[20px] hover:bg-[#ffffff] w-36 font-marcellus line-height-24 hover:text-[#a07735] border-[#a07735] text-white " 
                 onClick={() => router.push('/signin')}
               >
                 Signup

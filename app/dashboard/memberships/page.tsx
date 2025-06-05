@@ -383,17 +383,29 @@ function MembershipDashboardContent() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
+      {/* Background image */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat -z-30"
+        style={{
+          backgroundImage: "url('/bg-image.jpg')",
+          minHeight: "100vh",
+          width: "100%",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat"
+        }}
+      />
       {/* Background gradient */}
       <div
-        className="absolute inset-0 -z-10"
+        className="absolute inset-0 -z-40"
         style={{
-          background: "linear-gradient(120deg, #f5f1e8 0%, #e5e7eb 60%, #b2d5e4 100%)"
+          background: "linear-gradient(120deg, rgba(245, 241, 232, 0.85) 0%, rgba(229, 231, 235, 0.85) 60%, rgba(178, 213, 228, 0.85) 100%)"
         }}
       />
       {/* Subtle blurred circles */}
-      <div className="absolute top-20 -left-60 w-96 h-96 bg-[#e2c799] opacity-40 rounded-full -z-10" />
-      <div className="absolute bottom-20 right-0 w-[500px] h-[400px] bg-[#b2d5e4] opacity-30 rounded-full blur-xl -z-10" />
-      <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 rounded-full -z-10" />
+      <div className="absolute top-20 -left-60 w-96 h-96 bg-[#e2c799] opacity-40 rounded-full -z-30" />
+      <div className="absolute bottom-20 right-0 w-[500px] h-[400px] bg-[#b2d5e4] opacity-30 rounded-full blur-xl -z-30" />
+      <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 rounded-full -z-30" />
 
       <Header />
 
@@ -539,7 +551,15 @@ function MembershipDashboardContent() {
                       />
                     </div>
                     <div className="p-6">
-                      <h1 className="text-base font-semibold text-[20px] text-[#232323] mb-4">Ode Spa Membership</h1>
+                      <h1 className=" font-semibold text-[22px] text-[#232323] mb-4">
+                        {membership.price?.sales === 15000 ? "Bronze Membership" :
+                         membership.price?.sales === 25000 ? "Silver Membership" :
+                         membership.price?.sales === 35000 ? "Gold Membership" :
+                         membership.price?.sales === 50000 ? "Platinum Membership" :
+                         membership.price?.sales === 65000 ? "Diamond Membership" :
+                         membership.price?.sales === 100000 ? "Ode Signature Elite" :
+                         "Ode Spa Membership"}
+                      </h1>
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-lg font-bold text-[#a07735]">₹{membership.price?.sales?.toLocaleString()}</span>
                         <button

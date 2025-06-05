@@ -135,8 +135,29 @@ export default function BookingsPage() {
         generateCacheKey('guest-appointments', { guestId })
       )
       
+      console.log('API Response:', data)
+
+      if (!data) {
+        throw new Error('No data received from server')
+      }
+
+      if (!data.appointments) {
+        console.error('Invalid response structure:', data)
+        throw new Error('Appointments data is missing from server response')
+      }
+
+      if (!Array.isArray(data.appointments)) {
+        console.error('Appointments is not an array:', data.appointments)
+        throw new Error('Appointments data is not in the expected format')
+      }
+
       // Transform the data into our Booking interface
       const transformedBookings = data.appointments.map((appointment: any) => {
+        if (!appointment || !appointment.appointment_services || !appointment.appointment_services[0]) {
+          console.warn('Invalid appointment data:', appointment)
+          return null
+        }
+
         const service = appointment.appointment_services[0]?.service
         const centerId = appointment.center?.id || appointment.center_id
         console.log('Appointment center data:', appointment.center)
@@ -158,7 +179,11 @@ export default function BookingsPage() {
           duration: service?.duration || 0,
           center_id: centerId
         }
-      })
+      }).filter((booking: Booking | null): booking is Booking => booking !== null)
+
+      if (transformedBookings.length === 0) {
+        console.log('No valid bookings found in the response')
+      }
 
       setBookings(transformedBookings)
     } catch (err) {
@@ -219,101 +244,116 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <Header />
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-semibold text-gray-900">My Bookings</h1>
-            <p className="mt-1 text-sm text-gray-500">View and manage your spa appointments</p>
-          </div>
-          <button
-            onClick={() => router.push('/')}
-            className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"
-          >
-            Book New Service
-          </button>
-        </div>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background gradient */}
+      <div
+        className="fixed inset-0 -z-10"
+        style={{
+          background: "linear-gradient(120deg, #f5f1e8 0%, #e5e7eb 60%, #b2d5e4 100%)"
+        }}
+      />
+      {/* Subtle blurred circles */}
+      <div className="fixed top-20 -left-60 w-[600px] h-[600px] bg-[#e2c799] opacity-60 rounded-full -z-10 blur-3xl" />
+      <div className="fixed bottom-20 right-0 w-[800px] h-[800px] bg-[#b2d5e4] opacity-50 rounded-full -z-10 blur-3xl" />
+      <div className="fixed top-1/3 left-1/2 w-[2000px] h-[2000px] bg-[#b2d5e4] opacity-40 rounded-full -z-10 blur-3xl" />
 
-        {isLoading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#a07735] mx-auto"></div>
-            <p className="mt-4 text-gray-500">Loading your bookings...</p>
-          </div>
-        ) : error ? (
-          <div className="text-center py-12">
-            <div className="text-red-500 mb-4">{error}</div>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"
-            >
-              Try Again
-            </button>
-          </div>
-        ) : bookings.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-500 mb-4">No bookings found</div>
+      {/* Main content wrapper */}
+      <div className="relative z-10">
+        {/* Header */}
+        <Header />
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-semibold text-gray-900">My Bookings</h1>
+              <p className="mt-1 text-sm text-gray-500">View and manage your spa appointments</p>
+            </div>
             <button
               onClick={() => router.push('/')}
               className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"
             >
-              Book Your First Service
+              Book New Service
             </button>
           </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {bookings.map((booking) => (
-              <div
-                key={booking.id}
-                className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow flex flex-col"
+
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#a07735] mx-auto"></div>
+              <p className="mt-4 text-gray-500">Loading your bookings...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <div className="text-red-500 mb-4">{error}</div>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"
               >
-                <div className="flex flex-col h-full">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-medium text-gray-900 line-clamp-1">{booking.service_name}</h3>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap ${getStatusColor(booking.status)}`}>
-                      {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-                    </span>
-                  </div>
-                  <div className="space-y-3 flex-grow">
-                    <div className="flex items-center text-gray-600">
-                      <Calendar className="h-5 w-5 text-[#a07735] mr-2 flex-shrink-0" />
-                      <span className="line-clamp-1">{booking.date}</span>
+                Try Again
+              </button>
+            </div>
+          ) : bookings.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-gray-500 mb-4">No bookings found</div>
+              <button
+                onClick={() => router.push('/')}
+                className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"
+              >
+                Book Your First Service
+              </button>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {bookings.map((booking) => (
+                <div
+                  key={booking.id}
+                  className="bg-white/50 backdrop-blur-sm rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow flex flex-col"
+                >
+                  <div className="flex flex-col h-full">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-medium text-gray-900 line-clamp-1">{booking.service_name}</h3>
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap ${getStatusColor(booking.status)}`}>
+                        {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                      </span>
                     </div>
-                    <div className="flex items-center text-gray-600">
-                      <Clock className="h-5 w-5 text-[#a07735] mr-2 flex-shrink-0" />
-                      <span>{booking.time} ({booking.duration} mins)</span>
-                    </div>
-                    <div className="flex items-center text-gray-600">
-                      <MapPin className="h-5 w-5 text-[#a07735] mr-2 flex-shrink-0" />
-                      <span className="line-clamp-1">{booking.city} - {booking.outlet}</span>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <Tag className="h-5 w-5 text-[#a07735] mr-2" />
-                        <span className="font-semibold text-[#a07735]">₹{booking.price}</span>
+                    <div className="space-y-3 flex-grow">
+                      <div className="flex items-center text-gray-600">
+                        <Calendar className="h-5 w-5 text-[#a07735] mr-2 flex-shrink-0" />
+                        <span className="line-clamp-1">{booking.date}</span>
                       </div>
-                      {booking.status === 'confirmed' && (
-                        <button
-                          onClick={() => handleCancelBooking(booking.id, booking.appointment_id)}
-                          disabled={cancellingBookingId === booking.id}
-                          className={`px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50 transition-colors ${
-                            cancellingBookingId === booking.id ? 'opacity-50 cursor-not-allowed' : ''
-                          }`}
-                        >
-                          {cancellingBookingId === booking.id ? 'Cancelling...' : 'Cancel'}
-                        </button>
-                      )}
+                      <div className="flex items-center text-gray-600">
+                        <Clock className="h-5 w-5 text-[#a07735] mr-2 flex-shrink-0" />
+                        <span>{booking.time} ({booking.duration} mins)</span>
+                      </div>
+                      <div className="flex items-center text-gray-600">
+                        <MapPin className="h-5 w-5 text-[#a07735] mr-2 flex-shrink-0" />
+                        <span className="line-clamp-1">{booking.city} - {booking.outlet}</span>
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <Tag className="h-5 w-5 text-[#a07735] mr-2" />
+                          <span className="font-semibold text-[#a07735]">₹{booking.price}</span>
+                        </div>
+                        {booking.status === 'confirmed' && (
+                          <button
+                            onClick={() => handleCancelBooking(booking.id, booking.appointment_id)}
+                            disabled={cancellingBookingId === booking.id}
+                            className={`px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50 transition-colors ${
+                              cancellingBookingId === booking.id ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
+                          >
+                            {cancellingBookingId === booking.id ? 'Cancelling...' : 'Cancel'}
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

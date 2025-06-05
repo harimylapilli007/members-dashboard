@@ -16,6 +16,7 @@ export default function Component() {
   const [userData, setUserData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedMembership, setSelectedMembership] = useState<any>(null)
+  const [showFirstOffer, setShowFirstOffer] = useState(true)
 
   useEffect(() => {
     try {
@@ -28,6 +29,14 @@ export default function Component() {
     } finally {
       setIsLoading(false)
     }
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowFirstOffer(prev => !prev)
+    }, 3000)
+
+    return () => clearInterval(interval)
   }, [])
 
   const isActive = (path: string) => {
@@ -55,38 +64,45 @@ export default function Component() {
       id: 1,
       price: "Rs. 15,000",
       image: "/membership/15000.png",
-      name:"Bronze Membership"
+      name:"Bronze Membership",
+      offer: "35% off on all weekdays",
+      offer2: "20% off on weekends"
     },
     {
       id: 2,
       price: "Rs. 25,000",
       image: "/membership/25000.png",
-      name:"Silver Membership"
+      name:"Silver Membership",
+      offer: "50% off on all services"
     },
     {
       id: 3,
       price: "Rs. 35,000",
       image: "/membership/35000.png",
-      name:"Gold Membership"
+      name:"Gold Membership",
+      offer: "50% off on all services"
     },
     {
       id: 4,
       price: "Rs. 50,000",
       image: "/membership/50000.png",
-      name:"Platinum membership"
+      name:"Platinum membership",
+      offer: "50% off on all services"
 
     },
     {
       id: 5,
       price: "Rs. 65,000",
       image: "/membership/65000.png",
-      name:"Diamond Membership"
+      name:"Diamond Membership",
+      offer: "50% off on all services"
     },
     {
       id: 6,
       price: "Rs. 1,00,000",
       image: "/membership/100000.png",
-      name:"Ode Signature Elite"
+      name:"Ode Signature Elite",
+      offer: "50% off on all services"
     },
   ]
 
@@ -358,7 +374,7 @@ export default function Component() {
                 {memberships.map((membership) => (
                   <Card
                     key={membership.id}
-                    className="overflow-hidden shadow-lg border-0 bg-white rounded-lg h-[340px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] min-w-0 w-[300px]"
+                    className="overflow-hidden shadow-lg border-0 bg-white rounded-lg h-[380px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] min-w-0 w-[300px]"
                   >
                     <CardContent className="p-0">
                       <div className="relative h-40 w-full min-w-0 min-h-0">
@@ -370,8 +386,8 @@ export default function Component() {
                         />
                       </div>
                       <div className="p-6">
-                        <h1 className="font-semibold text-[22px] text-[#232323] mb-4">{membership.name}</h1>
-                        <div className="flex items-center justify-between mb-4">
+                        <h1 className="font-semibold text-[22px] text-[#232323] mb-2">{membership.name}</h1>
+                        <div className="flex items-center justify-between mb-2">
                           <span className="text-lg font-bold text-[#98564D]">{membership.price}</span>
                           <button
                             className="text-[#9d8c6a]  hover:text-[#454545] flex items-center text-[18px]   bg-transparent border-0 outline-none"
@@ -381,7 +397,23 @@ export default function Component() {
                             <ChevronDown className="w-4 h-4 ml-1" />
                           </button>
                         </div>
-                        <div className="flex justify-center mt-2">
+                        <div className="flex items-center mt-4 h-[22px] relative">
+                          <span className="text-[#232323] text-[18px] font-regular font-inter transition-opacity duration-1000">
+                            {membership.price === "Rs. 15,000" ? (
+                              <>
+                                <span className={`absolute text-[#232323] font-regular text-[18px] transition-all duration-3000 delay-1000 ${showFirstOffer ? 'opacity-100' : 'opacity-0'}`}>
+                                  {membership.offer}
+                                </span>
+                                <span className={`absolute text-[#232323] font-regular text-[18px] transition-all duration-3000 delay-1000 ${!showFirstOffer ? 'opacity-100' : 'opacity-0'}`}>
+                                  {membership.offer2}
+                                </span>
+                              </>
+                            ) : (
+                              membership.offer
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex justify-center mt-4">
                           <Button 
                             className="relative w-[300px] h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
                             onClick={() => router.push('/signin')}
