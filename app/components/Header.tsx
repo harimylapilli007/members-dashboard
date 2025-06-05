@@ -4,14 +4,16 @@ import { Button } from "@/components/ui/button"
 import { Home, Bell, User, LogOut, ShoppingBag, ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useToast } from '@/components/ui/use-toast'
+import { cn } from "@/lib/utils"
 
 export default function Header() {
   const router = useRouter()
+  const pathname = usePathname()
   const { user, logout } = useAuth()
   const { toast } = useToast()
   const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData') || '{}') : {}
@@ -55,36 +57,50 @@ export default function Header() {
 
   return (
     //  <header className="bg-white border-b border-[#ced4da] px-4 md:px-6 py-2">
-     <header className="bg-white/10 backdrop-blur-sm px-4 md:px-6 py-2">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
-        <div className="flex items-center gap-2">
-          {/* <div className="w-12 h-12 bg-[#a07735] rounded-full flex items-center justify-center"> */}
+     <header className="z-10 flex items-center justify-between bg-white/20 backdrop-blur-md border-b border-white/20 shadow-lg px-4 md:px-6 py-2 sticky top-0 max-w-[1305px] mx-auto rounded-2xl mt-4">
+      <div className="flex items-center justify-between w-full">
+        <Link href="/" className="flex items-center">
             <Image
               src="/Logo.png"
               alt="Ode Spa Logo"
               width={200}
               height={200}
             />
-          {/* </div> */}
-          {/* <div className="flex flex-col">
-            <span className="text-[#a07735] font-bold text-xl leading-tight">ODE SPA</span>
-            <span className="text-[#9d8c6a] text-xs">SPA.WELLNESS</span>
-          </div> */}
-        </div>
+        </Link>
 
         <nav className="flex items-center gap-4 md:gap-8">
           {/* <Link href="#" className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
             SERVICES
           </Link> */}
-          <Link href="/dashboard/memberships" className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
-            MEMBERSHIP
+          <Link 
+            href="/dashboard/memberships" 
+            className={cn(
+              "relative px-4 py-2 rounded-lg font-bold font-inter text-sm md:text-base transition-all duration-300",
+              "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
+              "hover:scale-105 hover:shadow-lg",
+              pathname?.includes('/dashboard/memberships')
+                ? "text-white before:bg-[#a07735]/80 before:backdrop-blur-md before:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] before:border before:border-[#a07735]/30"
+                : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm   hover:before:border-[#a07735]/30"
+            )}
+          >
+            <span className="relative z-10 text-[16px]">MEMBERSHIP</span>
           </Link>
-          <Link href={`/ServiceBookingPage?openModal=true&guestId=${userData?.id}`} className="text-[#454545] hover:text-[#a07735] font-bold font-inter text-sm md:text-base">
-            BOOKING
+          <Link 
+            href={`/ServiceBookingPage?openModal=true&guestId=${userData?.id}`}
+            className={cn(
+              "relative px-4 py-2 rounded-lg font-bold font-inter text-sm md:text-base transition-all duration-300",
+              "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
+              "hover:scale-105 hover:shadow-lg",
+              pathname?.includes('/ServiceBookingPage')
+                ? "text-white before:bg-[#a07735]/80 before:backdrop-blur-md before:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] before:border before:border-[#a07735]/30"
+                : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm hover:before:border-[#a07735]/30"
+            )}
+          >
+            <span className="relative z-10 text-[16px]">BOOKING</span>
           </Link>
         </nav>
 
-        <div className="flex items-center gap-2 md:gap-6">
+        <div className="flex items-center gap-4">
           
           {/* <Link href="" className="text-[#a07735] hover:text-[#8a6930]">
             <ShoppingCart className="w-6 h-6 font-bold" fill="currentColor" />

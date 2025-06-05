@@ -385,192 +385,184 @@ export default function SignIn() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f6f6f6] relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-[#b9935a] rounded-full opacity-20"
-            initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-            }}
-            animate={{
-              y: [0, -20, 0],
-              opacity: [0.2, 0.5, 0.2],
-            }}
-            transition={{
-              duration: 3 + Math.random() * 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
-      </div>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background gradient */}
+      <div
+        className="fixed inset-0 -z-10"
+        style={{
+          background: "linear-gradient(120deg, #f5f1e8 0%, #e5e7eb 60%, #b2d5e4 100%)"
+        }}
+      />
+      {/* Subtle blurred circles */}
+      <div className="fixed top-20 -left-60 w-[600px] h-[600px] bg-[#e2c799] opacity-60 rounded-full -z-10 blur-3xl" />
+      <div className="fixed bottom-20 right-0 w-[800px] h-[800px] bg-[#b2d5e4] opacity-50 rounded-full -z-10 blur-3xl" />
+      <div className="fixed top-1/3 left-1/2 w-[2000px] h-[2000px] bg-[#b2d5e4] opacity-40 rounded-full -z-10 blur-3xl" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="rounded-2xl shadow-xl bg-white w-[450px] relative z-10"
-      >
-        {/* Header */}
+      {/* Main content wrapper */}
+      <div className="relative z-10 flex items-center justify-center min-h-screen">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="rounded-t-2xl bg-gradient-to-b from-[#a87b3c] to-[#b9935a] px-8 pt-8 pb-6 text-center"
+          transition={{ duration: 0.5 }}
+          className="rounded-2xl shadow-xl bg-white w-[450px] relative z-10"
         >
-          <motion.h1
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="text-2xl font-bold text-white mb-1"
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="rounded-t-2xl bg-gradient-to-b from-[#a87b3c] to-[#b9935a] px-8 pt-8 pb-6 text-center"
           >
-           Login
-          </motion.h1>
-          {/* <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="text-white text-base"
-          >
-            Enter your phone number to continue
-          </motion.p> */}
-        </motion.div>
+            <motion.h1
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="text-2xl font-bold text-white mb-1"
+            >
+             Login
+            </motion.h1>
+            {/* <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-white text-base"
+            >
+              Enter your phone number to continue
+            </motion.p> */}
+          </motion.div>
 
-        <div className="px-8 pb-8 pt-6">
-          <AnimatePresence mode="wait">
-            {!showOtpInput ? (
-              <motion.form
-                key="phone-form"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3 }}
-                onSubmit={handleSendOtp}
-                className="space-y-6"
-              >
-                <div className="space-y-4">
-                  <h1 className="text-[#454545] text-center font-inter text-[22px] font-bold mb-4">Welcome Back...!</h1>
-                  <Label htmlFor="phone" className="text-gray-700 text-sm text-[18px] font-400 flex items-center gap-2 mb-4">
-                    <Phone className="w-4 h-4" />
-                   <span className="font-['Marcellus'] text-[18px] font-400"> Please enter your phone number</span>
-                  </Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+91 9876543210"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    required
-                    disabled={loading}
-                    className="border-gray-300 focus:border-[#b9935a] focus:ring-2 focus:ring-[#b9935a]/20 focus:ring-offset-0 focus:outline-none h-11 rounded-lg bg-white transition-all duration-200"
-                  />
-                </div>
-                <div ref={recaptchaContainerRef} id="recaptcha-container" className="flex justify-center py-2"></div>
-                <Button 
-                  type="submit" 
-                  className="w-full h-11 rounded-lg bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)]  font-['Marcellus'] text-[#98564D] font-bold text-[20px] leading-[17px] text-center  disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
-                  disabled={loading || !recaptchaReady}
-                  style={{ boxShadow: 'none' }}
+          <div className="px-8 pb-8 pt-6">
+            <AnimatePresence mode="wait">
+              {!showOtpInput ? (
+                <motion.form
+                  key="phone-form"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                  onSubmit={handleSendOtp}
+                  className="space-y-6"
                 >
-                  {loading ? (
-                    <motion.p
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                  <div className="space-y-4">
+                    <h1 className="text-[#454545] text-center font-inter text-[22px] font-bold mb-4">Welcome Back...!</h1>
+                    <Label htmlFor="phone" className="text-gray-700 text-sm text-[18px] font-400 flex items-center gap-2 mb-4">
+                      <Phone className="w-4 h-4" />
+                     <span className="font-['Marcellus'] text-[18px] font-400"> Please enter your phone number</span>
+                    </Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="+91 9876543210"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      required
+                      disabled={loading}
+                      className="border-gray-300 focus:border-[#b9935a] focus:ring-2 focus:ring-[#b9935a]/20 focus:ring-offset-0 focus:outline-none h-11 rounded-lg bg-white transition-all duration-200"
                     />
-                  ) : (
-                    <>
-                      Send OTP
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
-                </Button>
-              </motion.form>
-            ) : (
-              <motion.form
-                key="otp-form"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                onSubmit={handleVerifyOtp}
-                className="space-y-6"
-              >
-                <div className="space-y-6">
-                  <Label className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span className="font-['Marcellus'] text-[18px] font-400"> Enter OTP</span>
-                  </Label>
-                  <div className="flex gap-2.5 justify-center">
-                    {otp.map((digit, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <Input
-                          id={`otp-${index}`}
-                          type="text"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
-                          maxLength={1}
-                          value={digit}
-                          onChange={(e) => handleOtpChange(index, e.target.value)}
-                          onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                          className="w-12 h-12 text-center text-lg border border-gray-300 focus:border-[#b9935a] focus:ring-2 focus:ring-[#b9935a]/20 focus:ring-offset-0 focus:outline-none rounded-lg bg-white transition-all duration-200"
-                          disabled={loading}
-                        />
-                      </motion.div>
-                    ))}
                   </div>
-                </div>
-                <Button 
-                  type="submit" 
-                  className="w-full h-11 rounded-lg bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)]  font-['Marcellus'] text-[#98564D] font-bold text-[20px] leading-[17px] text-center  disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
-                  disabled={loading}
-                  style={{ boxShadow: 'none' }}
+                  <div ref={recaptchaContainerRef} id="recaptcha-container" className="flex justify-center py-2"></div>
+                  <Button 
+                    type="submit" 
+                    className="w-full h-11 rounded-lg bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)]  font-['Marcellus'] text-[#98564D] font-bold text-[20px] leading-[17px] text-center  disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
+                    disabled={loading || !recaptchaReady}
+                    style={{ boxShadow: 'none' }}
+                  >
+                    {loading ? (
+                      <motion.p
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                      />
+                    ) : (
+                      <>
+                        Send OTP
+                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </Button>
+                </motion.form>
+              ) : (
+                <motion.form
+                  key="otp-form"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  onSubmit={handleVerifyOtp}
+                  className="space-y-6"
                 >
-                  {loading ? (
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
-                    />
-                  ) : (
-                    <>
-                      Verify OTP
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full h-11 rounded-lg font-['Marcellus'] text-[18px] font-400   border-[#a07735] hover:bg-gray-50  text-[#a07735] transition-all duration-200"
-                  onClick={() => {
-                    setShowOtpInput(false);
-                    setOtp(['', '', '', '', '', '']);
-                    if (window.recaptchaVerifier) {
-                      window.recaptchaVerifier.clear();
-                      window.recaptchaVerifier = null;
-                    }
-                    setRecaptchaReady(false);
-                    setupRecaptcha();
-                  }}
-                  disabled={loading}
-                >
-                  Back to Phone Number
-                </Button>
-              </motion.form>
-            )}
-          </AnimatePresence>
-        </div>
-      </motion.div>
+                  <div className="space-y-6">
+                    <Label className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span className="font-['Marcellus'] text-[18px] font-400"> Enter OTP</span>
+                    </Label>
+                    <div className="flex gap-2.5 justify-center">
+                      {otp.map((digit, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ scale: 0.9, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          <Input
+                            id={`otp-${index}`}
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength={1}
+                            value={digit}
+                            onChange={(e) => handleOtpChange(index, e.target.value)}
+                            onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                            className="w-12 h-12 text-center text-lg border border-gray-300 focus:border-[#b9935a] focus:ring-2 focus:ring-[#b9935a]/20 focus:ring-offset-0 focus:outline-none rounded-lg bg-white transition-all duration-200"
+                            disabled={loading}
+                          />
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full h-11 rounded-lg bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)]  font-['Marcellus'] text-[#98564D] font-bold text-[20px] leading-[17px] text-center  disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
+                    disabled={loading}
+                    style={{ boxShadow: 'none' }}
+                  >
+                    {loading ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                      />
+                    ) : (
+                      <>
+                        Verify OTP
+                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full h-11 rounded-lg font-['Marcellus'] text-[18px] font-400   border-[#a07735] hover:bg-gray-50  text-[#a07735] transition-all duration-200"
+                    onClick={() => {
+                      setShowOtpInput(false);
+                      setOtp(['', '', '', '', '', '']);
+                      if (window.recaptchaVerifier) {
+                        window.recaptchaVerifier.clear();
+                        window.recaptchaVerifier = null;
+                      }
+                      setRecaptchaReady(false);
+                      setupRecaptcha();
+                    }}
+                    disabled={loading}
+                  >
+                    Back to Phone Number
+                  </Button>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 } 

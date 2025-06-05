@@ -55,31 +55,38 @@ export default function Component() {
       id: 1,
       price: "Rs. 15,000",
       image: "/membership/15000.png",
+      name:"Bronze Membership"
     },
     {
       id: 2,
       price: "Rs. 25,000",
       image: "/membership/25000.png",
+      name:"Silver Membership"
     },
     {
       id: 3,
       price: "Rs. 35,000",
       image: "/membership/35000.png",
+      name:"Gold Membership"
     },
     {
       id: 4,
       price: "Rs. 50,000",
       image: "/membership/50000.png",
+      name:"Platinum membership"
+
     },
     {
       id: 5,
       price: "Rs. 65,000",
       image: "/membership/65000.png",
+      name:"Diamond Membership"
     },
     {
       id: 6,
       price: "Rs. 1,00,000",
       image: "/membership/100000.png",
+      name:"Ode Signature Elite"
     },
   ]
 
@@ -89,7 +96,7 @@ export default function Component() {
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-0 overflow-hidden animate-fadeIn">
         {/* Header */}
         <div className="bg-[#a07735] p-4 rounded-t-2xl text-center relative">
-          <h1 className="text-2xl font-marcellus text-white mb-1">Odespa Membership</h1>
+          <h1 className="text-2xl font-marcellus text-white mb-1">{membership.name}</h1>
         </div>
         <div className="px-0 pt-0 pb-0 rounded-t-2xl text-center relative">
         <div className="flex items-center justify-between px-8 pt-6 pb-2">
@@ -110,7 +117,7 @@ export default function Component() {
               className="relative w-[300px] h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
               onClick={() => router.push('/signin')}
               >
-              Take Membership
+              Buy Membership
               </Button>
             </div>
           </div>
@@ -257,21 +264,33 @@ export default function Component() {
         </div>
       ) : (
         <>
+          {/* Background image */}
+          <div 
+            className="fixed inset-0 bg-cover bg-center bg-no-repeat -z-30"
+            style={{
+              backgroundImage: "url('/bg-image.jpg')",
+              minHeight: "100vh",
+              width: "100%",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }}
+          />
           {/* Background gradient */}
           <div
-            className="absolute inset-0 -z-10"
+            className="absolute inset-0 -z-40"
             style={{
-              background: "linear-gradient(120deg, #f5f1e8 0%, #e5e7eb 60%, #b2d5e4 100%)"
+              background: "linear-gradient(120deg, rgba(245, 241, 232, 0.85) 0%, rgba(229, 231, 235, 0.85) 60%, rgba(178, 213, 228, 0.85) 100%)"
             }}
           />
           {/* Subtle blurred circles */}
-          <div className="absolute top-20 -left-60 w-96 h-96 bg-[#e2c799] opacity-40 rounded-full -z-10" />
-          <div className="absolute bottom-20 right-0 w-[500px] h-[400px] bg-[#b2d5e4] opacity-30 rounded-full blur-xl -z-10" />
-          <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 rounded-full -z-10" />
+          <div className="absolute top-20 -left-60 w-96 h-96 bg-[#e2c799] opacity-40 rounded-full -z-30" />
+          <div className="absolute bottom-20 right-0 w-[500px] h-[400px] bg-[#b2d5e4] opacity-30 rounded-full blur-xl -z-30" />
+          <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 rounded-full -z-30" />
 
           <Header />
 
-          <div className="flex flex-col lg:flex-row items-start max-w-[1200px] mx-auto px-4 md:px-6">
+          <div className="flex flex-col lg:flex-row items-start max-w-[1400px] mx-auto px-4 md:px-6">
             {/* Sidebar - Exact styling from the design */}
             {/* <aside
               className="w-full lg:w-[300px] h-auto lg:h-[520px] mt-6 lg:mt-12 mb-6 lg:mb-12 flex-shrink-0 flex flex-col"
@@ -351,7 +370,7 @@ export default function Component() {
                         />
                       </div>
                       <div className="p-6">
-                        <h1 className="text-base font-semibold text-[20px] text-[#232323] mb-4">Ode Spa Membership</h1>
+                        <h1 className="font-semibold text-[22px] text-[#232323] mb-4">{membership.name}</h1>
                         <div className="flex items-center justify-between mb-4">
                           <span className="text-lg font-bold text-[#98564D]">{membership.price}</span>
                           <button
@@ -367,7 +386,7 @@ export default function Component() {
                             className="relative w-[300px] h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
                             onClick={() => router.push('/signin')}
                           >
-                            Take Membership
+                            Buy Membership
                           </Button>
                         </div>
                       </div>

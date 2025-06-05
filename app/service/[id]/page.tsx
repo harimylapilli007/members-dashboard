@@ -408,243 +408,254 @@ export default function Home() {
   };
 
   return (
-    <>
-      <div className={`min-h-screen bg-white ${isLocationModalOpen || showConfirmation ? "blur-sm" : ""}`}>
-        {/* Header */}
-        <Header />
-        {/* Main content */}
-        <main className="mx-auto px-4 sm:px-6 md:px-10 py-4 sm:py-6 md:py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-            {/* Left: Image + Tabs/Content */}
-            <div className="flex flex-col">
-              <div className="rounded-lg overflow-hidden mb-4 sm:mb-6 relative">
-                <Image
-                  src="/spa-swedish-massage.png"
-                  alt="Swedish Massage"
-                  width={600}
-                  height={500}
-                  className="object-cover w-full h-[300px] sm:h-[400px] md:h-[500px]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent"></div>
-                <h1 className="absolute bottom-4 left-4 text-2xl sm:text-3xl md:text-4xl text-white font-medium">{serviceName}</h1>
-              </div>
-              {/* Tabs and Content below image */}
-              <div className="bg-white rounded-lg shadow p-4 sm:p-6">
-                <div className="border-b border-gray-300">
-                  <div className="flex flex-wrap gap-4 sm:gap-8">
-                    <button
-                      className={`font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "benefits" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}`}
-                      onClick={() => setActiveTab("benefits")}
-                    >
-                      Benefits
-                    </button>
-                    <button
-                      className={`font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "expect" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}`}
-                      onClick={() => setActiveTab("expect")}
-                    >
-                      What to Expect
-                    </button>
-                    <button
-                      className={`font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "reviews" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}`}
-                      onClick={() => setActiveTab("reviews")}
-                    >
-                      Reviews
-                    </button>
-                  </div>
-                </div>
-                {/* Tab Content */}
-                <div className={`py-4 sm:py-8 ${activeTab === "benefits" ? "block" : "hidden"}`}>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                    <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
-                      <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
-                        {/* Sleep icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
-                      </div>
-                      <h3 className="text-lg font-medium mb-2">Better Sleep</h3>
-                      <p className="text-sm text-gray-700">Promotes quality sleep and helps establish better sleep patterns.</p>
-                    </div>
-                    <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
-                      <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
-                        {/* Pain relief icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                      </div>
-                      <h3 className="text-lg font-medium mb-2">Relieves Pain</h3>
-                      <p className="text-sm text-gray-700">Soothes sore muscles, melts away knots, and eases bodily aches for lasting comfort.</p>
-                    </div>
-                    <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
-                      <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
-                        {/* Blood circulation icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-                      </div>
-                      <h3 className="text-lg font-medium mb-2">Improves Blood Circulation</h3>
-                      <p className="text-sm text-gray-700">Enhances oxygen flow and promotes healthier, more energized tissues.</p>
-                    </div>
-                    <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
-                      <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
-                        {/* Energy flow icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                      </div>
-                      <h3 className="text-lg font-medium mb-2">Balances Energy Flow</h3>
-                      <p className="text-sm text-gray-700">Restores harmony to your body's energy pathways.</p>
-                    </div>
-                  </div>
-                </div>
-                {/* What to Expect content */}
-                <div className={`py-4 sm:py-8 ${activeTab === "expect" ? "block" : "hidden"}`}>
-                  <div className="bg-white rounded-lg p-6">
-                    <h3 className="text-xl font-medium mb-4">Before Your Massage</h3>
-                    <ul className="list-disc pl-5 mb-6 space-y-2">
-                      <li>Arrive 15 minutes before your appointment to complete paperwork</li>
-                      <li>Wear comfortable clothing that's easy to remove</li>
-                      <li>Avoid heavy meals or alcohol before your session</li>
-                      <li>Let your therapist know about any health concerns or preferences</li>
-                    </ul>
-                    <h3 className="text-xl font-medium mb-4">During Your Massage</h3>
-                    <ul className="list-disc pl-5 mb-6 space-y-2">
-                      <li>Your therapist will leave the room while you undress to your comfort level</li>
-                      <li>You'll lie on a padded massage table under a sheet</li>
-                      <li>Only the area being worked on will be exposed</li>
-                      <li>Your therapist will use a combination of kneading, long strokes, and circular movements</li>
-                      <li>Communication is encouraged - let your therapist know if pressure is too light or too firm</li>
-                    </ul>
-                    <h3 className="text-xl font-medium mb-4">After Your Massage</h3>
-                    <ul className="list-disc pl-5 space-y-2">
-                      <li>Take your time getting up from the table</li>
-                      <li>Drink plenty of water to help flush metabolic waste from tissues</li>
-                      <li>Avoid strenuous activity for the rest of the day if possible</li>
-                      <li>Notice how your body feels in the hours and days following your massage</li>
-                    </ul>
-                  </div>
-                </div>
-                {/* Reviews content */}
-                <div className={`py-4 sm:py-8 ${activeTab === "reviews" ? "block" : "hidden"}`}>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                    <div className="bg-white rounded-lg p-6 border border-gray-200">
-                      <div className="flex items-center mb-4">
-                        <div className="bg-[#a07735] text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
-                          <span className="font-medium">RP</span>
-                        </div>
-                        <div>
-                          <h4 className="font-medium">Rahul P.</h4>
-                          <div className="flex text-yellow-400">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-gray-700">
-                        "Absolutely amazing experience! The Swedish massage was exactly what I needed to relieve my back
-                        pain. The therapist was professional and attentive to my needs. Will definitely be back!"
-                      </p>
-                      <p className="text-sm text-gray-500 mt-2">2 weeks ago</p>
-                    </div>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background gradient */}
+      <div
+        className="fixed inset-0 -z-10"
+        style={{
+          background: "linear-gradient(120deg, #f5f1e8 0%, #e5e7eb 60%, #b2d5e4 100%)"
+        }}
+      />
+      {/* Subtle blurred circles */}
+      <div className="fixed top-20 -left-60 w-[600px] h-[600px] bg-[#e2c799] opacity-60 rounded-full -z-10 blur-3xl" />
 
-                    <div className="bg-white rounded-lg p-6 border border-gray-200">
-                      <div className="flex items-center mb-4">
-                        <div className="bg-[#a07735] text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
-                          <span className="font-medium">SM</span>
+      {/* Main content wrapper */}
+      <div className="relative z-10">
+        <Header />
+        
+        <div className={`min-h-screen ${isLocationModalOpen || showConfirmation ? "blur-sm" : ""}`}>
+          {/* Header */}
+          <main className="mx-auto px-4 sm:px-6 md:px-10 py-4 sm:py-6 md:py-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+              {/* Left: Image + Tabs/Content */}
+              <div className="flex flex-col">
+                <div className="rounded-lg overflow-hidden mb-4 sm:mb-6 relative">
+                  <Image
+                    src="/spa-swedish-massage.png"
+                    alt="Swedish Massage"
+                    width={600}
+                    height={400}
+                    className="object-cover w-full h-[200px] sm:h-[300px] md:h-[350px]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-transparent"></div>
+                  <h1 className="absolute bottom-4 left-4 text-xl sm:text-2xl md:text-3xl text-white font-medium">{serviceName}</h1>
+                </div>
+                {/* Tabs and Content below image */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
+                  <div className="border-b border-gray-300">
+                    <div className="flex flex-wrap gap-4 sm:gap-8">
+                      <button
+                        className={`font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "benefits" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}`}
+                        onClick={() => setActiveTab("benefits")}
+                      >
+                        Benefits
+                      </button>
+                      <button
+                        className={`font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "expect" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}`}
+                        onClick={() => setActiveTab("expect")}
+                      >
+                        What to Expect
+                      </button>
+                      <button
+                        className={`font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "reviews" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}`}
+                        onClick={() => setActiveTab("reviews")}
+                      >
+                        Reviews
+                      </button>
+                    </div>
+                  </div>
+                  {/* Tab Content */}
+                  <div className={`py-4 sm:py-8 ${activeTab === "benefits" ? "block" : "hidden"}`}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                        <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                          {/* Sleep icon */}
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                         </div>
-                        <div>
-                          <h4 className="font-medium">Sneha M.</h4>
-                          <div className="flex text-yellow-400">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
+                        <h3 className="text-lg font-medium mb-2">Better Sleep</h3>
+                        <p className="text-sm text-gray-700">Promotes quality sleep and helps establish better sleep patterns.</p>
+                      </div>
+                      <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                        <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                          {/* Pain relief icon */}
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                        </div>
+                        <h3 className="text-lg font-medium mb-2">Relieves Pain</h3>
+                        <p className="text-sm text-gray-700">Soothes sore muscles, melts away knots, and eases bodily aches for lasting comfort.</p>
+                      </div>
+                      <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                        <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                          {/* Blood circulation icon */}
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                        </div>
+                        <h3 className="text-lg font-medium mb-2">Improves Blood Circulation</h3>
+                        <p className="text-sm text-gray-700">Enhances oxygen flow and promotes healthier, more energized tissues.</p>
+                      </div>
+                      <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                        <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                          {/* Energy flow icon */}
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        </div>
+                        <h3 className="text-lg font-medium mb-2">Balances Energy Flow</h3>
+                        <p className="text-sm text-gray-700">Restores harmony to your body's energy pathways.</p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* What to Expect content */}
+                  <div className={`py-4 sm:py-8 ${activeTab === "expect" ? "block" : "hidden"}`}>
+                    <div className="bg-white rounded-lg p-6">
+                      <h3 className="text-xl font-medium mb-4">Before Your Massage</h3>
+                      <ul className="list-disc pl-5 mb-6 space-y-2">
+                        <li>Arrive 15 minutes before your appointment to complete paperwork</li>
+                        <li>Wear comfortable clothing that's easy to remove</li>
+                        <li>Avoid heavy meals or alcohol before your session</li>
+                        <li>Let your therapist know about any health concerns or preferences</li>
+                      </ul>
+                      <h3 className="text-xl font-medium mb-4">During Your Massage</h3>
+                      <ul className="list-disc pl-5 mb-6 space-y-2">
+                        <li>Your therapist will leave the room while you undress to your comfort level</li>
+                        <li>You'll lie on a padded massage table under a sheet</li>
+                        <li>Only the area being worked on will be exposed</li>
+                        <li>Your therapist will use a combination of kneading, long strokes, and circular movements</li>
+                        <li>Communication is encouraged - let your therapist know if pressure is too light or too firm</li>
+                      </ul>
+                      <h3 className="text-xl font-medium mb-4">After Your Massage</h3>
+                      <ul className="list-disc pl-5 space-y-2">
+                        <li>Take your time getting up from the table</li>
+                        <li>Drink plenty of water to help flush metabolic waste from tissues</li>
+                        <li>Avoid strenuous activity for the rest of the day if possible</li>
+                        <li>Notice how your body feels in the hours and days following your massage</li>
+                      </ul>
+                    </div>
+                  </div>
+                  {/* Reviews content */}
+                  <div className={`py-4 sm:py-8 ${activeTab === "reviews" ? "block" : "hidden"}`}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      <div className="bg-white rounded-lg p-6 border border-gray-200">
+                        <div className="flex items-center mb-4">
+                          <div className="bg-[#a07735] text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                            <span className="font-medium">RP</span>
+                          </div>
+                          <div>
+                            <h4 className="font-medium">Rahul P.</h4>
+                            <div className="flex text-yellow-400">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            </div>
                           </div>
                         </div>
+                        <p className="text-gray-700">
+                          "Absolutely amazing experience! The Swedish massage was exactly what I needed to relieve my back
+                          pain. The therapist was professional and attentive to my needs. Will definitely be back!"
+                        </p>
+                        <p className="text-sm text-gray-500 mt-2">2 weeks ago</p>
                       </div>
-                      <p className="text-gray-700">
-                        "I've tried many spas in the city, but ODE SPA stands out. The Swedish massage was incredibly
-                        relaxing and the ambiance was perfect. My therapist was knowledgeable and made me feel comfortable
-                        throughout the session."
-                      </p>
-                      <p className="text-sm text-gray-500 mt-2">1 month ago</p>
+
+                      <div className="bg-white rounded-lg p-6 border border-gray-200">
+                        <div className="flex items-center mb-4">
+                          <div className="bg-[#a07735] text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                            <span className="font-medium">SM</span>
+                          </div>
+                          <div>
+                            <h4 className="font-medium">Sneha M.</h4>
+                            <div className="flex text-yellow-400">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-gray-700">
+                          "I've tried many spas in the city, but ODE SPA stands out. The Swedish massage was incredibly
+                          relaxing and the ambiance was perfect. My therapist was knowledgeable and made me feel comfortable
+                          throughout the session."
+                        </p>
+                        <p className="text-sm text-gray-500 mt-2">1 month ago</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            {/* Right: Service details, slot selection, add-to-cart */}
-            <div className="flex flex-col justify-start">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl mb-2">{serviceName}</h1>
-             
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-                <div className="flex items-center space-x-4 sm:space-x-6">
+              {/* Right: Service details, slot selection, add-to-cart */}
+              <div className="flex flex-col justify-start space-y-3">
+                <h1 className="text-xl sm:text-2xl md:text-3xl mb-1">{serviceName}</h1>
+               
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                   <div className="flex items-center text-gray-700">
                     <Clock className="h-5 w-5 text-[#a07735] mr-2" />
                     <span>{duration} mins</span>
@@ -654,171 +665,164 @@ export default function Home() {
                     <span className="font-semibold">₹{servicePrice}</span>
                   </div>
                 </div>
-                <button
-                  className="flex items-center justify-center border border-[#a07735] text-[#a07735] px-4 py-2 rounded-md hover:bg-[#a07735] hover:text-white transition-colors w-full sm:w-auto"
-                  onClick={() => setIsLocationModalOpen(true)}
-                >
-                  <MapPin className="h-4 w-4 mr-2" />
-                  {selectedLocation ? (selectedLocation.outlet.name.length > 12 ? `${selectedLocation.outlet.name.slice(0, 15)}...` : selectedLocation.outlet.name) : "Location"}
-                </button>
-              </div>
-              <p className="text-gray-700 mb-4 sm:mb-6">
-                {description}
-              </p>
-              {/* Booking section */}
-              <div className="mt-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-                  <h2 className="text-xl text-[#a07735] font-medium">Select Slot</h2>
-                  <div className="flex items-center space-x-4 relative">
-                    <button 
-                      className="text-gray-400"
-                      onClick={() => setSelectedDate(addDays(selectedDate, -1))}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                      </svg>
-                    </button>
-                    <h3 className="text-xl font-medium">{format(selectedDate, 'MMMM yyyy')}</h3>
-                    <button
-                      onClick={() => setSelectedDate(addDays(selectedDate, 1))}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
-                    <div className="relative">
+                <p className="text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">
+                  {description}
+                </p>
+                {/* Booking section */}
+                <div className="mt-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                    <h2 className="text-xl text-[#a07735] font-medium">Select Slot</h2>
+                    <div className="flex items-center space-x-4 relative">
                       <button 
-                        onClick={() => setShowDatePicker(!showDatePicker)}
-                        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                        className="text-gray-400"
+                        onClick={() => setSelectedDate(addDays(selectedDate, -1))}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6 text-[#a07735]"
+                          className="h-6 w-6"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                       </button>
-                      {/* Date picker modal */}
-                      {showDatePicker && (
-                        <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-xl p-4 border border-gray-200 w-64 z-50">
-                          <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-medium text-gray-900">Select Date</h3>
-                            <button
-                              onClick={() => setShowDatePicker(false)}
-                              className="text-gray-400 hover:text-gray-500"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
+                      <h3 className="text-xl font-medium">{format(selectedDate, 'MMMM yyyy')}</h3>
+                      <button
+                        onClick={() => setSelectedDate(addDays(selectedDate, 1))}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                      <div className="relative">
+                        <button 
+                          onClick={() => setShowDatePicker(!showDatePicker)}
+                          className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-[#a07735]"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </button>
+                        {/* Date picker modal */}
+                        {showDatePicker && (
+                          <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-xl p-4 border border-gray-200 w-64 z-50">
+                            <div className="flex justify-between items-center mb-4">
+                              <h3 className="text-lg font-medium text-gray-900">Select Date</h3>
+                              <button
+                                onClick={() => setShowDatePicker(false)}
+                                className="text-gray-400 hover:text-gray-500"
                               >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            </button>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-5 w-5"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                            <input
+                              type="date"
+                              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#a07735] focus:border-[#a07735] outline-none transition-colors"
+                              value={format(selectedDate, 'yyyy-MM-dd')}
+                              onChange={(e) => handleDateSelect(new Date(e.target.value))}
+                              min={format(new Date(), 'yyyy-MM-dd')}
+                            />
+                            <div className="mt-4 text-sm text-gray-500">
+                              <p>Selected: {format(selectedDate, 'MMMM d, yyyy')}</p>
+                            </div>
                           </div>
-                          <input
-                            type="date"
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#a07735] focus:border-[#a07735] outline-none transition-colors"
-                            value={format(selectedDate, 'yyyy-MM-dd')}
-                            onChange={(e) => handleDateSelect(new Date(e.target.value))}
-                            min={format(new Date(), 'yyyy-MM-dd')}
-                          />
-                          <div className="mt-4 text-sm text-gray-500">
-                            <p>Selected: {format(selectedDate, 'MMMM d, yyyy')}</p>
-                          </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                {/* Date selection */}
-                <div className="flex gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2">
-                  {generateDates().map((date, index) => (
-                    <div
-                      key={index}
-                      className={`flex flex-col items-center justify-center px-3 sm:px-4 py-2 rounded-full cursor-pointer min-w-[50px] sm:min-w-[60px]
-                      ${date.selected ? "bg-[#a07735] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
-                      onClick={() => handleDateSelect(date.date)}
-                    >
-                      <span className="text-base sm:text-lg font-medium">{date.day}</span>
-                      <span className="text-xs">{date.weekday}</span>
-                    </div>
-                  ))}
-                </div>
-                {/* Time selection */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
-                  {isLoading ? (
-                    <div className="col-span-full text-center py-4">Loading available slots...</div>
-                  ) : error ? (
-                    <div className="col-span-full text-center py-4 text-red-500">{error}</div>
-                  ) : availableSlots.length > 0 ? (
-                    availableSlots.map((slotGroup, index) => (
-                      <div key={index} className="col-span-full">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          {slotGroup.times.map((time, timeIndex) => (
-                            <button
-                              key={timeIndex}
-                              className={`border rounded-md py-2 text-center
-                              ${
-                                time === selectedSlot
-                                  ? "bg-[#a07735] text-white border-[#a07735]"
-                                  : time === "⬅️ Back to date"
-                                    ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                    : "border-gray-300 text-gray-700 hover:border-[#a07735]"
-                              }`}
-                              onClick={() => {
-                                setSelectedSlot(time);
-                                // Directly redirect to cart page when slot is selected
-                                const params = new URLSearchParams({
-                                  serviceName: serviceName,
-                                  duration: duration,
-                                  price: servicePrice.toString(),
-                                  location: selectedLocation?.outlet.name || '',
-                                  date: format(selectedDate, 'yyyy-MM-dd'),
-                                  time: time
-                                });
-                                router.push(`/checkout?${params.toString()}`);
-                              }}
-                            >
-                              {time}
-                            </button>
-                          ))}
-                        </div>
+                  {/* Date selection */}
+                  <div className="flex gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2">
+                    {generateDates().map((date, index) => (
+                      <div
+                        key={index}
+                        className={`flex flex-col items-center justify-center px-3 sm:px-4 py-2 rounded-full cursor-pointer min-w-[50px] sm:min-w-[60px]
+                        ${date.selected ? "bg-[#a07735] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                        onClick={() => handleDateSelect(date.date)}
+                      >
+                        <span className="text-base sm:text-lg font-medium">{date.day}</span>
+                        <span className="text-xs">{date.weekday}</span>
                       </div>
-                    ))
-                  ) : (
-                    <div className="col-span-full text-center py-4">No slots available for selected date</div>
-                  )}
+                    ))}
+                  </div>
+                  {/* Time selection */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
+                    {isLoading ? (
+                      <div className="col-span-full text-center py-4">Loading available slots...</div>
+                    ) : error ? (
+                      <div className="col-span-full text-center py-4 text-red-500">{error}</div>
+                    ) : availableSlots.length > 0 ? (
+                      availableSlots.map((slotGroup, index) => (
+                        <div key={index} className="col-span-full">
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {slotGroup.times.map((time, timeIndex) => (
+                              <button
+                                key={timeIndex}
+                                className={`border rounded-md py-2 text-center
+                                ${
+                                  time === selectedSlot
+                                    ? "bg-[#a07735] text-white border-[#a07735]"
+                                    : time === "⬅️ Back to date"
+                                      ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                      : "border-gray-300 text-gray-700 hover:border-[#a07735]"
+                                }`}
+                                onClick={() => {
+                                  setSelectedSlot(time);
+                                  // Directly redirect to cart page when slot is selected
+                                  const params = new URLSearchParams({
+                                    serviceName: serviceName,
+                                    duration: duration,
+                                    price: servicePrice.toString(),
+                                    location: selectedLocation?.outlet.name || '',
+                                    date: format(selectedDate, 'yyyy-MM-dd'),
+                                    time: time
+                                  });
+                                  router.push(`/checkout?${params.toString()}`);
+                                }}
+                              >
+                                {time}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="col-span-full text-center py-4">No slots available for selected date</div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
 
       {/* Confirmation Dialog */}
@@ -914,6 +918,6 @@ export default function Home() {
         onSelectLocation={handleSelectLocation}
       />
       <Toaster />
-    </>
+    </div>
   )
 }

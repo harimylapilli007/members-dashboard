@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
+import Image from "next/image"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -19,9 +20,15 @@ export function DashboardLayout({ children, membershipType, fullName }: Dashboar
         {/* Middle pulsing circle */}
         <div className="absolute inset-2 animate-pulse rounded-full bg-amber-300/40" />
         
-        {/* Inner circle with text */}
-        <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg">
-          <span className="text-2xl font-bold text-white">Ode</span>
+        {/* Inner circle with logo */}
+        <div className="relative flex h-48 w-48 items-center justify-center rounded-full ">
+          <Image
+            src="/loading_logo.png"
+            alt="Loading Logo"
+            width={100}
+            height={100}
+            className="object-contain"
+          />
         </div>
       </div>
     </div>

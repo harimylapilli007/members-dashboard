@@ -221,9 +221,9 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
       {!showOutlets ? (
         // City selection modal
-        <div className="bg-white rounded-lg overflow-hidden w-full max-w-full sm:max-w-lg max-h-[90vh] sm:max-h-[70vh] flex flex-col">
-          <div className="bg-[#9E5F45] text-white p-4 flex justify-between items-center">
-            <h2 className="text-xl font-medium text-center">Select your city</h2>
+        <div className="bg-[#FAF5EB] rounded-lg overflow-hidden w-full max-w-full sm:max-w-lg max-h-[90vh] sm:max-h-[70vh] flex flex-col">
+          <div className="bg-[#ae7735] text-white p-4 flex justify-between items-center">
+            <h1 className="text-xl font-medium text-center">Select your city</h1>
             <button onClick={onClose} className="text-white hover:text-gray-200">
               <X className="h-6 w-6" />
             </button>
@@ -233,7 +233,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
               {/* Popular Cities Section */}
               <div
-                className="flex items-center p-4 bg-gradient-to-r from-[#9E5F45] to-[#a07735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
+                className="flex items-center p-4 bg-gradient-to-r bg-[#ae7735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
                 onClick={() => handleCitySelect("Mumbai")}
               >
                 <div className="w-10 h-10 sm:w-12 sm:h-12 mr-4 flex items-center justify-center bg-white rounded-full relative z-10">
@@ -252,7 +252,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
               </div>
 
               <div
-                className="flex items-center p-4 bg-gradient-to-r from-[#9E5F45] to-[#a07735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
+                className="flex items-center p-4 bg-gradient-to-r bg-[#ae7735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
                 onClick={() => handleCitySelect("Hyderabad")}
               >
                 <div className="w-12 h-12 mr-4 flex items-center justify-center bg-white rounded-full relative z-10">
@@ -271,7 +271,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
               </div>
 
               <div
-                className="flex items-center p-4 bg-gradient-to-r from-[#9E5F45] to-[#a07735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
+                className="flex items-center p-4 bg-gradient-to-r bg-[#ae7735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
                 onClick={() => handleCitySelect("Chennai")}
               >
                 <div className="w-12 h-12 mr-4 flex items-center justify-center bg-white rounded-full relative z-10">
@@ -290,7 +290,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
               </div>
 
               <div
-                className="flex items-center p-4 bg-gradient-to-r from-[#9E5F45] to-[#a07735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
+                className="flex items-center p-4 bg-gradient-to-r bg-[#ae7735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
                 onClick={() => handleCitySelect("NewDelhi")}
               >
                 <div className="w-12 h-12 mr-4 flex items-center justify-center bg-white rounded-full relative z-10">
@@ -309,7 +309,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
               </div>
 
               <div
-                className="flex items-center p-4 bg-gradient-to-r from-[#9E5F45] to-[#a07735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
+                className="flex items-center p-4 bg-gradient-to-r bg-[#ae7735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
                 onClick={() => handleCitySelect("Bangalore")}
               >
                 <div className="w-12 h-12 mr-4 flex items-center justify-center bg-white rounded-full relative z-10">
@@ -547,9 +547,9 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
         </div>
       ) : (
         // Outlet selection modal
-        <div className="bg-white rounded-lg overflow-hidden max-w-lg w-full max-h-[70vh] flex flex-col">
-          <div className="bg-[#9E5F45] text-white p-4 flex justify-between items-center">
-            <h2 className="text-xl font-medium">Select your Outlet</h2>
+        <div className="bg-[#FAF5EB] rounded-lg overflow-hidden max-w-lg w-full max-h-[70vh] flex flex-col">
+          <div className="bg-[#ae7735] text-white p-4 flex justify-between items-center">
+            <h1 className="text-xl font-medium">Select your Outlet</h1>
             <button onClick={onClose} className="text-white hover:text-gray-200">
               <X className="h-6 w-6" />
             </button>

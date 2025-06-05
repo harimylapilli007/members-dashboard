@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import Header from "../components/Header";
 import { fetchWithRetry, generateCacheKey } from '../utils/api';
+import { DashboardLayout } from "@/components/dashboard-layout";
 
 interface Service {
   id: string;
@@ -139,10 +140,12 @@ async function fetchAndCategorizeServices(area: string): Promise<CategorizedServ
 }
 
 const LoadingSpinner = () => (
-  <div className="flex items-center justify-center py-12">
-    <Loader2 className="h-8 w-8 text-[#a07735] animate-spin" />
-    <span className="ml-2 text-gray-600">Loading services...</span>
-  </div>
+  <DashboardLayout membershipType="loading">
+    <div className="flex items-center justify-center py-12">
+      <Loader2 className="h-8 w-8 text-[#a07735] animate-spin" />
+      <span className="ml-2 text-gray-600">Loading services...</span>
+    </div>
+  </DashboardLayout>
 );
 
 const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => void }) => (
@@ -260,11 +263,11 @@ const LocationSelector = memo(({
   selectedLocation: { city: string; outlet: { name: string } } | null;
   onOpen: () => void;
 }) => (
-  <div className="absolute top-4 right-4 md:top-6 md:right-6">
-    <button
-      onClick={onOpen}
-      className="flex items-center gap-2 px-4 py-2 bg-white/90 hover:bg-white transition-colors rounded-lg shadow-md backdrop-blur-sm"
-    >
+  <div 
+    onClick={onOpen}
+    className="absolute top-4 right-4 md:top-6 md:right-6 cursor-pointer"
+  >
+    <div className="flex items-center gap-2 px-4 py-2 bg-white/90 hover:bg-white transition-colors rounded-lg shadow-md backdrop-blur-sm">
       <MapPin className="h-4 w-4 text-[#a07735]" />
       <span className="text-sm font-medium text-gray-700">
         {selectedLocation ? `${selectedLocation.city} - ${selectedLocation.outlet.name}` : 'Select Location'}
@@ -272,7 +275,7 @@ const LocationSelector = memo(({
       <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
       </svg>
-    </button>
+    </div>
   </div>
 ));
 
@@ -380,114 +383,127 @@ export default function ServiceBookingPage() {
 
   return (
     <>
-      <div className={`min-h-screen bg-gray-50 ${isLocationModalOpen || selectedService ? "blur-sm" : ""}`}>
-        {/* Header */}
-        <Header />
-        {/* Hero Section */}
-        <div className="relative bg-gradient-to-r from-[#a07735] to-[#8a6930] p-4">
-          <div className="absolute inset-0 bg-black opacity-20"></div>
-          {/* Location Selector */}
-          <LocationSelector 
-            selectedLocation={selectedLocation} 
-            onOpen={handleLocationOpen} 
-          />
-          <div className="relative max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold text-white mb-4">Discover Our Services</h1>
-              <p className="text-xl text-white/90 mb-8">Experience luxury wellness treatments tailored for you</p>
-            </div>
+      <div className={`min-h-screen relative overflow-hidden ${isLocationModalOpen || selectedService ? "blur-sm" : ""}`}>
+        {/* Background gradient */}
+        <div
+          className="fixed inset-0 -z-10"
+          style={{
+            background: "linear-gradient(120deg, #f5f1e8 0%, #e5e7eb 60%, #b2d5e4 100%)"
+          }}
+        />
+        {/* Subtle blurred circles */}
+        <div className="fixed top-20 -left-60 w-[600px] h-[600px] bg-[#e2c799] opacity-60 rounded-full -z-10 blur-3xl" />
+        <div className="fixed bottom-20 right-0 w-[800px] h-[800px] bg-[#b2d5e4] opacity-50 rounded-full -z-10 blur-3xl" />
+        <div className="fixed top-1/3 left-1/2 w-[2000px] h-[2000px] bg-[#b2d5e4] opacity-40 rounded-full -z-10 blur-3xl" />
+
+        {/* Main content wrapper */}
+        <div className="relative z-10">
+          {/* Header */}
+          <div className="top-0 left-0 right-0 z-50">
+            <Header />
           </div>
-        </div>
 
-        {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        
-
-          {/* Replace the Categories Grid and Services List section with a sidebar layout */}
-          <div className="flex flex-col md:flex-row gap-8">
-            {/* Sidebar: Categories */}
-            <aside className="w-full md:w-72 flex-shrink-0 md:shadow-lg md:bg-white md:rounded-xl md:p-4 md:mt-2 md:mb-2">
-              <div className="sticky top-24">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Categories</h3>
-                <div className="space-y-3">
-                  {categories.map((category, index) => {
-                    const categoryInfo = categoryImages.find(img => img.name === category);
-                    return (
-                      <CategoryButton
-                        key={category}
-                        category={category}
-                        isSelected={selectedCategory === category}
-                        onClick={() => handleCategoryClick(category)}
-                        image={categoryInfo?.image || '/categories/default.jpg'}
-                      />
-                    );
-                  })}
+          {/* Main Content */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            {/* Replace the Categories Grid and Services List section with a sidebar layout */}
+            <div className="flex flex-col md:flex-row gap-8 h-fit">
+              {/* Sidebar: Categories */}
+              <aside className="w-full md:w-72 flex-shrink-0 md:shadow-lg md:bg-white/50 md:rounded-xl md:p-4 md:mt-2 md:mb-2 h-fit">
+                <div className="sticky top-24">
+                  <h2 className="text-lg font-semibold text-gray-800 mb-4">Categories</h2>
+                  <div className="space-y-3">
+                    {categories.map((category, index) => {
+                      const categoryInfo = categoryImages.find(img => img.name === category);
+                      return (
+                        <CategoryButton
+                          key={category}
+                          category={category}
+                          isSelected={selectedCategory === category}
+                          onClick={() => handleCategoryClick(category)}
+                          image={categoryInfo?.image || '/categories/default.jpg'}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            </aside>
+              </aside>
 
-            {/* Main Content: Services */}
-            <main className="flex-1 bg-gradient-to-br from-[#f7f3ec] via-white to-[#f7f3ec] rounded-xl p-2 md:p-8 shadow-sm relative">
-              {/* Divider for desktop */}
-              <div className="hidden md:block absolute left-0 top-0 h-full w-px bg-gray-200" style={{ marginLeft: '-2rem' }} />
-              {/* Sticky Search and Filter Section */}
-              <div className="mb-8 sticky top-0.5 z-20 bg-gradient-to-b from-white/90 to-white/60 backdrop-blur-md rounded-xl shadow-sm p-4">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1">
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder="Search services..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#a07735] focus:border-transparent"
-                      />
-                      <svg
-                        className="absolute right-3 top-3.5 h-5 w-5 text-gray-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+              {/* Main Content: Services */}
+              <main className="flex-1 bg-gradient-to-br from-[#f7f3ec] via-[#f7f3ec] to-[#f7f3ec] rounded-xl p-2 md:p-8 shadow-sm relative">
+                {/* Divider for desktop */}
+                <div className="hidden md:block absolute left-0 top-0 h-full w-px bg-gray-200" style={{ marginLeft: '-2rem' }} />
+               
+                <div className="flex flex-col gap-2 mt-4">
+                  <h1 className="text-2xl font-bold mb-4">Discover Our Services</h1>
+                  <p className="text-sm mb-8">Experience luxury wellness treatments tailored for you</p>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                <LocationSelector 
+              selectedLocation={selectedLocation} 
+              onOpen={handleLocationOpen} 
+             />
+             </div>
+               
+                {/* Sticky Search and Filter Section */}
+                <div className="mb-8 sticky top-0.5 z-10 bg-gradient-to-b from-white/90 to-white/60 backdrop-blur-md rounded-xl shadow-sm p-4">
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                      <div className="relative">
+                        <input
+                          type="text"
+                          placeholder="Search services..."
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                          className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#a07735] focus:border-transparent"
+                        />
+                        <svg
+                          className="absolute right-3 top-3.5 h-5 w-5 text-gray-400"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                    {/* <div className="flex gap-4">
+                      <select
+                        value={bookingFor}
+                        onChange={(e) => setBookingFor(e.target.value)}
+                        className="px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#a07735] focus:border-transparent"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
+                        <option value="just me">Just Me</option>
+                        <option value="someone else">Someone Else</option>
+                      </select>
+                    </div> */}
+                  </div>
+                </div>
+
+                {/* Services List */}
+                {selectedCategory && services[selectedCategory] && (
+                  <div className="space-y-6">
+                    <h2 className="text-2xl font-semibold text-gray-900 mb-6">{selectedCategory}</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {services[selectedCategory]
+                        .filter(service => 
+                          service.name.toLowerCase().includes(search.toLowerCase()) ||
+                          service.description?.toLowerCase().includes(search.toLowerCase())
+                        )
+                        .map((service) => (
+                          <ServiceCard
+                            key={service.id}
+                            service={service}
+                            categoryImage={categoryImages.find(img => img.name === selectedCategory)?.image || '/categories/default.jpg'}
+                            onBookNow={handleBookNow}
+                            onReadMore={handleReadMore}
+                          />
+                        ))}
                     </div>
                   </div>
-                  {/* <div className="flex gap-4">
-                    <select
-                      value={bookingFor}
-                      onChange={(e) => setBookingFor(e.target.value)}
-                      className="px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#a07735] focus:border-transparent"
-                    >
-                      <option value="just me">Just Me</option>
-                      <option value="someone else">Someone Else</option>
-                    </select>
-                  </div> */}
-                </div>
-              </div>
-
-              {/* Services List */}
-              {selectedCategory && services[selectedCategory] && (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-6">{selectedCategory}</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services[selectedCategory]
-                      .filter(service => 
-                        service.name.toLowerCase().includes(search.toLowerCase()) ||
-                        service.description?.toLowerCase().includes(search.toLowerCase())
-                      )
-                      .map((service) => (
-                        <ServiceCard
-                          key={service.id}
-                          service={service}
-                          categoryImage={categoryImages.find(img => img.name === selectedCategory)?.image || '/categories/default.jpg'}
-                          onBookNow={handleBookNow}
-                          onReadMore={handleReadMore}
-                        />
-                      ))}
-                  </div>
-                </div>
-              )}
-            </main>
+                )}
+              </main>
+            </div>
           </div>
         </div>
       </div>
