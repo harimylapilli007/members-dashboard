@@ -10,15 +10,25 @@ interface MembershipDetailsModalProps {
   isOpen: boolean
   onClose: () => void
   membership: MembershipDetail
+  handleTakeMembership: (membership: MembershipDetail) => void
 }
 
-export function MembershipDetailsModal({ isOpen, onClose, membership }: MembershipDetailsModalProps) {
+export function MembershipDetailsModal({ isOpen, onClose, membership, handleTakeMembership }: MembershipDetailsModalProps) {
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden rounded-xl">
-        <DialogTitle className="sr-only">Ode Spa Membership Details</DialogTitle>
-        <div className="bg-[#a07735] p-4 rounded-t-xl text-center relative">
-          <h1 className="text-2xl font-marcellus text-white mb-1">Odespa Membership</h1>
+        <DialogTitle className="sr-only">Ode Spa Membership</DialogTitle>
+        <div className="bg-[#a07735] p-4 rounded-t-l text-center">
+          <h1 className="text-2xl font-marcellus text-white mb-1">
+            {membership.price?.sales === 15000 ? "Bronze Membership" :
+             membership.price?.sales === 25000 ? "Silver Membership" :
+             membership.price?.sales === 35000 ? "Gold Membership" :
+             membership.price?.sales === 50000 ? "Platinum Membership" :
+             membership.price?.sales === 65000 ? "Diamond Membership" :
+             membership.price?.sales === 100000 ? "Ode Signature Elite" :
+             "Ode Spa Membership"}
+          </h1>
         </div>
         <div className="px-0 pt-0 pb-0 rounded-t-2xl text-center relative">
           <div className="flex items-center justify-between px-8 pt-6 pb-2">
@@ -31,9 +41,20 @@ export function MembershipDetailsModal({ isOpen, onClose, membership }: Membersh
               <span className="text-lg font-bold font-inter">Back</span>
             </button>
             <div className="flex-1 flex flex-col items-center">
-              <h1 className="text-2xl font-bold font-marcellus mb-1">₹{membership.price?.sales?.toLocaleString()}</h1>
+              <h1 className="text-2xl font-bold font-marcellus mb-1">
+                {typeof membership.price === 'object' && membership.price?.sales 
+                  ? `₹${membership.price.sales.toLocaleString()}`
+                  : String(membership.price || '')}
+              </h1>
             </div>
-            <div className="w-[140px]"></div>
+            <div className="w-[140px] flex justify-end">
+              <Button 
+                className="relative w-[300px] h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
+                onClick={() => handleTakeMembership(membership)}
+              >
+                Buy Membership
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -47,15 +68,15 @@ export function MembershipDetailsModal({ isOpen, onClose, membership }: Membersh
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Flat 5% OFF on all subsequent bookings after redemption</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">10% OFF on ODE skincare and wellness products</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Birthday month special: One free head massage</span>
               </li>
             </ul>
@@ -72,15 +93,15 @@ export function MembershipDetailsModal({ isOpen, onClose, membership }: Membersh
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Non-transferable</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Cannot be clubbed with other promotional offers</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Advance booking recommended on weekends</span>
               </li>
             </ul>
@@ -99,15 +120,15 @@ export function MembershipDetailsModal({ isOpen, onClose, membership }: Membersh
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Flat 5% OFF on all subsequent bookings after redemption</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">10% OFF on ODE skincare and wellness products</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Birthday month special: One free head massage</span>
               </li>
             </ul>
@@ -126,7 +147,7 @@ export function MembershipDetailsModal({ isOpen, onClose, membership }: Membersh
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">12 months from the date of activation</span>
               </li>
             </ul>

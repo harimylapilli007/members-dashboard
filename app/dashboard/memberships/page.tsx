@@ -127,6 +127,7 @@ function MembershipDashboardContent() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [userData, setUserData] = useState<any>(null)
+  const [showFirstOffer, setShowFirstOffer] = useState(true)
   const { toast } = useToast()
   const admincenterId = '92d41019-c790-4668-9158-a693e531c1a4'
   const router = useRouter()
@@ -193,6 +194,14 @@ function MembershipDashboardContent() {
       })
     }
   }, [toast])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowFirstOffer(prev => !prev)
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   const createMembershipInvoice = async (membershipId: string) => {
     try {
@@ -461,42 +470,29 @@ function MembershipDashboardContent() {
 
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-8 w-full">
-          <div className="mb-6 md:mb-8 max-w-[1000px] mx-auto">
+          <div className="mb-6 md:mb-8 max-w-[1100px] mx-auto">
             <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Membership Dashboard</h1>
             <h2 className="text-[#454545] font-inter">Welcome to your Ode Life membership dashboard.</h2>
           </div>
 
           {/* Membership Status Cards */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8 max-w-[1000px] mx-auto">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8 max-w-[1100px] mx-auto">
             {/* Membership Status Card */}
             <Card className="rounded-2xl border border-gray-300 bg-white flex flex-col justify-center p-6 shadow-lg hover:shadow-2xl hover:scale-[1.02]">
               <div className="flex flex-row items-center w-full">
                 <div className="flex items-center justify-center w-14 h-14 rounded-full bg-[#e2c799] mr-6">
-                  
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 0C31.0457 0 40 8.95431 40 20C40 31.0457 31.0457 40 20 40C8.95431 40 0 31.0457 0 20C0 8.95431 8.95431 0 20 0Z" fill="#F2DCAD"/>
-                <path d="M20 0C31.0457 0 40 8.95431 40 20C40 31.0457 31.0457 40 20 40C8.95431 40 0 31.0457 0 20C0 8.95431 8.95431 0 20 0Z" stroke="#E5E7EB"/>
-                <path d="M29 32H11V8H29V32Z" stroke="#E5E7EB"/>
-                <g clipPath="url(#clip0_963_4373)">
-                <path d="M14 8C12.3453 8 11 9.34531 11 11V29C11 30.6547 12.3453 32 14 32H26C27.6547 32 29 30.6547 29 29V11C29 9.34531 27.6547 8 26 8H14ZM18.5 23H21.5C23.5719 23 25.25 24.6781 25.25 26.75C25.25 27.1625 24.9125 27.5 24.5 27.5H15.5C15.0875 27.5 14.75 27.1625 14.75 26.75C14.75 24.6781 16.4281 23 18.5 23ZM17 18.5C17 17.7044 17.3161 16.9413 17.8787 16.3787C18.4413 15.8161 19.2044 15.5 20 15.5C20.7956 15.5 21.5587 15.8161 22.1213 16.3787C22.6839 16.9413 23 17.7044 23 18.5C23 19.2956 22.6839 20.0587 22.1213 20.6213C21.5587 21.1839 20.7956 21.5 20 21.5C19.2044 21.5 18.4413 21.1839 17.8787 20.6213C17.3161 20.0587 17 19.2956 17 18.5ZM17.75 11H22.25C22.6625 11 23 11.3375 23 11.75C23 12.1625 22.6625 12.5 22.25 12.5H17.75C17.3375 12.5 17 12.1625 17 11.75C17 11.3375 17.3375 11 17.75 11Z" fill="#A07735"/>
-                </g>
-                <defs>
-                <clipPath id="clip0_963_4373">
-                <path d="M11 8H29V32H11V8Z" fill="white"/>
-                </clipPath>
-                </defs>
-                </svg>
-
-
+                <svg width="34" height="24" viewBox="0 0 34 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18.2305 4.96094C18.8984 4.55078 19.3438 3.80664 19.3438 2.96875C19.3438 1.67383 18.2949 0.625 17 0.625C15.7051 0.625 14.6562 1.67383 14.6562 2.96875C14.6562 3.8125 15.1016 4.55078 15.7695 4.96094L12.4121 11.6758C11.8789 12.7422 10.4961 13.0469 9.56445 12.3027L4.34375 8.125C4.63672 7.73242 4.8125 7.24609 4.8125 6.71875C4.8125 5.42383 3.76367 4.375 2.46875 4.375C1.17383 4.375 0.125 5.42383 0.125 6.71875C0.125 8.01367 1.17383 9.0625 2.46875 9.0625C2.48047 9.0625 2.49805 9.0625 2.50977 9.0625L5.1875 23.793C5.50977 25.5742 7.0625 26.875 8.87891 26.875H25.1211C26.9316 26.875 28.4844 25.5801 28.8125 23.793L31.4902 9.0625C31.502 9.0625 31.5195 9.0625 31.5312 9.0625C32.8262 9.0625 33.875 8.01367 33.875 6.71875C33.875 5.42383 32.8262 4.375 31.5312 4.375C30.2363 4.375 29.1875 5.42383 29.1875 6.71875C29.1875 7.24609 29.3633 7.73242 29.6562 8.125L24.4355 12.3027C23.5039 13.0469 22.1211 12.7422 21.5879 11.6758L18.2305 4.96094Z" fill="#A07735"/>
+                  </svg>
 
                 </div>
                 <div className="flex flex-col">
-                  <div className="font-semibold font-inter text-lg text-[#232323] mb-2">Membership Status</div>
-                  <div className="flex mb-2">
+                  <div className="font-semibold font-marcellus text-lg text-[#232323]">Membership Status</div>
+                  <div className="flex mt-2">
                     <span className={`px-4 py-1 rounded-full text-sm font-medium ${membershipData?.status === 1 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>{getStatusText(membershipData?.status || 2)}</span>
                   </div>
-                  <div className="text-sm font-inter text-black mb-1">Valid until {expiryDate}</div>
-                  <div className="text-sm font-inter text-black">Member since {memberSince}</div>
+                  <div className="text-sm font-inter text-black mt-2">Valid until {expiryDate}</div>
+                  <div className="text-sm font-inter text-black mt-2">Member since {memberSince}</div>
                 </div>
               </div>
             </Card>
@@ -504,18 +500,14 @@ function MembershipDashboardContent() {
             <Card className="rounded-2xl border border-gray-300 bg-white flex flex-col justify-center p-6 shadow-lg hover:shadow-2xl hover:scale-[1.02]">
               <div className="flex flex-row items-center w-full">
                 <div className="flex items-center justify-center w-14 h-14 rounded-full bg-[#e2c799] mr-6">
-                  <Gift className="h-7 w-7 text-white" />
+                  <Gift className="h-7 w-7 text-[#A07735] font-bold" />
                 </div>
                 <div className="flex flex-col">
-                  <div className="font-semibold font-inter text-lg text-[#232323] mb-2">Credit Balance</div>
-                  <div className="text-xl font-bold font-inter text-[#232323] mb-2 pl-1">₹{membershipData?.credit_balance?.total?.toLocaleString() || 0}</div>
-                  <div className="flex flex-row gap-8 text-base font-inter text-[#232323] font-normal mt-2">
-                    <div>
-                      Products: <p className="font-inter">{membershipData?.credit_balance?.product?.toLocaleString() || 0}</p>
-                    </div>
-                    <div>
-                      Services: <p className="font-inter">{membershipData?.credit_balance?.service?.toLocaleString() || 0}</p>
-                    </div>
+                  <div className="font-semibold font-marcellus text-lg text-[#232323]">Credit Balance</div>
+                  <div className="text-xl font-bold font-inter text-[#232323] mt-2 pl-1">₹{membershipData?.credit_balance?.total?.toLocaleString() || 0}</div>
+                  <div className="flex flex-col gap-2 text-base font-inter text-[#232323] font-normal mt-2">
+                    <div>Products: {membershipData?.credit_balance?.product?.toLocaleString() || 0}</div>
+                    <div>Services: {membershipData?.credit_balance?.service?.toLocaleString() || 0}</div>
                   </div>
                 </div>
               </div>
@@ -534,24 +526,26 @@ function MembershipDashboardContent() {
           </div>
 
           {/* Available Memberships Section */}
-          <div className="mb-8 max-w-[1000px] mx-auto">
-          <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Available Memberships</h1>
-          <h2 className="text-[#454545] font-inter mb-6">Explore our membership options</h2>
+          <div className="mb-8 max-w-[1100px] mx-auto">
+            <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Available Memberships</h1>
+            <h2 className="text-[#454545] font-inter mb-6">Explore our membership options</h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 min-w-0 items-stretch max-w-[1100px] mx-auto">
               {membershipDetails.map((membership) => (
-                <Card key={membership.id} className="overflow-hidden shadow-lg border-0 bg-white rounded-lg h-[340px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
+                <Card key={membership.id} className="group overflow-hidden shadow-lg border-0 bg-white rounded-lg transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] min-w-0">
                   <CardContent className="p-0">
-                    <div className="relative h-40 w-full min-w-0 min-h-0">
-                      <Image
-                        src={`/membership/${membership.price?.sales || 'default'}.png`}
-                        alt="Ode Spa Membership"
-                        fill
-                        className="object-cover block"
-                      />
+                  <div className="relative aspect-[16/9] w-full min-w-0 min-h-0 overflow-hidden">
+                  <div className="absolute inset-0 transition-transform duration-300 group-hover:scale-110">
+                        <Image
+                          src={`/membership/${membership.price?.sales || 'default'}.png`}
+                          alt="Spa interior"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     </div>
-                    <div className="p-6">
-                      <h1 className=" font-semibold text-[22px] text-[#232323] mb-4">
+                    <div className="p-4">
+                      <h1 className="font-semibold text-[22px] text-[#232323] mb-2">
                         {membership.price?.sales === 15000 ? "Bronze Membership" :
                          membership.price?.sales === 25000 ? "Silver Membership" :
                          membership.price?.sales === 35000 ? "Gold Membership" :
@@ -560,22 +554,45 @@ function MembershipDashboardContent() {
                          membership.price?.sales === 100000 ? "Ode Signature Elite" :
                          "Ode Spa Membership"}
                       </h1>
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-lg font-bold text-[#a07735]">₹{membership.price?.sales?.toLocaleString()}</span>
-                        <button
-                          className="text-[#9d8c6a] hover:text-[#454545] flex items-center text-[18px] bg-transparent border-0 outline-none"
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-lg font-bold text-[#98564D]">₹{membership.price?.sales?.toLocaleString()}</span>
+                        <span className="text-[18px] font-inter">Validity: 12 months</span>
+                      </div>
+                      <div className="flex items-center mt-4 relative h-[24px]">
+                        <span className="text-[#232323] text-[18px] font-regular font-inter">
+                          {membership.price?.sales === 15000 ? (
+                            <>
+                              <span className={`absolute text-[#232323] font-regular text-[18px] transition-all duration-3000 delay-1000 ${showFirstOffer ? 'opacity-100' : 'opacity-0'}`} style={{ marginTop: '-10px' }}>
+                                35% off on all weekdays
+                              </span>
+                              <span className={`absolute text-[#232323] font-regular text-[18px] transition-all duration-3000 delay-1000 ${!showFirstOffer ? 'opacity-100' : 'opacity-0'}`} style={{ marginTop: '-10px' }}>
+                                20% off on weekends
+                              </span>
+                            </>
+                          ) : membership.price?.sales === 25000 ? "50% off on all services" :
+                             membership.price?.sales === 35000 ? "50% off on all services" :
+                             membership.price?.sales === 50000 ? "50% off on all services" :
+                             membership.price?.sales === 65000 ? "50% off on all services" :
+                             membership.price?.sales === 100000 ? "50% off on all services" :
+                             "Special offer available"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-center text-center mx-auto mt-4">
+                        <Button
+                          variant="outline"
+                          className="text-[#a07735] border-[#a07735] font-marcellus hover:text-[#a07735] flex items-center text-[18px] w-full"
                           onClick={() => handleMembershipClick(membership)}
                         >
                           View Details
                           <ChevronDown className="w-4 h-4 ml-1" />
-                        </button>
+                        </Button>
                       </div>
-                      <div className="flex justify-center mt-2">
+                      <div className="flex justify-center mt-4">
                         <Button 
-                          className="relative w-[300px] h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
+                          className="relative w-full h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
                           onClick={() => handleTakeMembership(membership)}
                         >
-                          Take Membership
+                          Buy Membership
                         </Button>
                       </div>
                     </div>
@@ -689,6 +706,10 @@ function MembershipDashboardContent() {
             isOpen={isDetailsModalOpen}
             onClose={() => setIsDetailsModalOpen(false)}
             membership={selectedMembership}
+            handleTakeMembership={(membership) => {
+              setIsDetailsModalOpen(false)
+              setIsModalOpen(true)
+            }}
           />
         </>
       )}

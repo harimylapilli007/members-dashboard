@@ -61,15 +61,13 @@ export function MembershipModal({ isOpen, onClose, membership, onConfirm, loadin
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-xl">
-        <div className="bg-[#A87A36] px-6 pt-8 pb-6 rounded-t-xl">
-          <DialogHeader className="p-0 bg-transparent">
-            <DialogTitle className="text-white text-center text-2xl font-semibold">Membership Details</DialogTitle>
-            <DialogDescription className="text-white text-center mt-2">
-              Review the membership details before proceeding
-            </DialogDescription>
-          </DialogHeader>
-        </div>
+      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-xl bg-[#A87A36]">
+        <DialogHeader className="p-0 bg-transparent pt-8 pb-6 px-6">
+          <DialogTitle className="text-white text-center text-2xl font-semibold">Membership Details</DialogTitle>
+          <DialogDescription className="text-white text-center mt-2">
+            Review the membership details before proceeding
+          </DialogDescription>
+        </DialogHeader>
         <div className="p-6 bg-white">
           <div className="relative h-48 mb-6 rounded-lg overflow-hidden">
             <Image

@@ -77,10 +77,10 @@ export default function Header() {
             className={cn(
               "relative px-4 py-2 rounded-lg font-bold font-inter text-sm md:text-base transition-all duration-300",
               "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
-              "hover:scale-105 hover:shadow-lg",
+              "hover:scale-105 hover:shadow-lg hover:outline hover:outline-2 hover:outline-[#a07735]",
               pathname?.includes('/dashboard/memberships')
                 ? "text-white before:bg-[#a07735]/80 before:backdrop-blur-md before:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] before:border before:border-[#a07735]/30"
-                : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm   hover:before:border-[#a07735]/30"
+                : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm hover:before:border-[#a07735]/30"
             )}
           >
             <span className="relative z-10 text-[16px]">MEMBERSHIP</span>
@@ -90,7 +90,7 @@ export default function Header() {
             className={cn(
               "relative px-4 py-2 rounded-lg font-bold font-inter text-sm md:text-base transition-all duration-300",
               "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
-              "hover:scale-105 hover:shadow-lg",
+              "hover:scale-105 hover:shadow-lg hover:outline hover:outline-2 hover:outline-[#a07735]",
               pathname?.includes('/ServiceBookingPage')
                 ? "text-white before:bg-[#a07735]/80 before:backdrop-blur-md before:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] before:border before:border-[#a07735]/30"
                 : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm hover:before:border-[#a07735]/30"
@@ -98,19 +98,21 @@ export default function Header() {
           >
             <span className="relative z-10 text-[16px]">BOOKING</span>
           </Link>
+          {user && (
           <Link 
             href="/view-bookings" 
             className={cn(
               "relative px-4 py-2 rounded-lg font-bold font-inter text-sm md:text-base transition-all duration-300",
               "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
-              "hover:scale-105 hover:shadow-lg",
+              "hover:scale-105 hover:shadow-lg hover:outline hover:outline-2 hover:outline-[#a07735]",
               pathname?.includes('/view-bookings')
                 ? "text-white before:bg-[#a07735]/80 before:backdrop-blur-md before:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] before:border before:border-[#a07735]/30"
-                : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm   hover:before:border-[#a07735]/30"
+                : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm hover:before:border-[#a07735]/30"
             )}
           >
             <span className="relative z-10 text-[16px]">VIEW BOOKINGS</span>
           </Link>
+          )}
         </nav>
 
 

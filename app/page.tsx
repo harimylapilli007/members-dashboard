@@ -86,7 +86,7 @@ export default function Component() {
       id: 4,
       price: "Rs. 50,000",
       image: "/membership/50000.png",
-      name:"Platinum membership",
+      name:"Platinum Membership",
       offer: "50% off on all services"
 
     },
@@ -152,15 +152,15 @@ export default function Component() {
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Flat 5% OFF on all subsequent bookings after redemption</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">10% OFF on ODE skincare and wellness products</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Birthday month special: One free head massage</span>
               </li>
             </ul>
@@ -181,15 +181,15 @@ export default function Component() {
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Non-transferable</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Cannot be clubbed with other promotional offers</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Advance booking recommended on weekends</span>
               </li>
             </ul>
@@ -218,15 +218,15 @@ export default function Component() {
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Flat 5% OFF on all subsequent bookings after redemption</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">10% OFF on ODE skincare and wellness products</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">Birthday month special: One free head massage</span>
               </li>
             </ul>
@@ -255,7 +255,7 @@ export default function Component() {
             </div>
             <ul className="space-y-2 text-sm text-[#454545]">
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-6 h-6 text-[#98564d]" />
+                <CheckCircle className="w-5 h-5 min-w-[20px] min-h-[20px] text-[#98564d]" />
                 <span className="font-inter text-sm">12 months from the date of activation</span>
               </li>
             </ul>
@@ -363,48 +363,45 @@ export default function Component() {
 
             {/* Main Content */}
             <main className="flex-1 p-4 md:p-8 w-full">
-              <div className="mb-6 md:mb-8 max-w-[1000px] mx-auto">
+              <div className="mb-6 md:mb-8 max-w-[1100px] mx-auto">
                 <h2 className="text-[#454545] mb-4 font-inter">{"Here's everything you need to live the Ode Life, seamlessly."}</h2>
 
                 <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Available Memberships</h1>
                 <h2 className="text-[#454545] font-inter">Explore our membership options</h2>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 min-w-0 items-stretch max-w-[1000px] mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 min-w-0 items-stretch max-w-[1100px] mx-auto">
                 {memberships.map((membership) => (
                   <Card
                     key={membership.id}
-                    className="overflow-hidden shadow-lg border-0 bg-white rounded-lg h-[380px] transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] min-w-0 w-[300px]"
+                    className="group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white rounded-lg transition-all duration-300 hover:shadow-[0_35px_35px_-5px_rgba(0,0,0,0.25),0_15px_15px_-5px_rgba(0,0,0,0.15),0_0_0_1px_rgba(0,0,0,0.1)] hover:scale-[1.02]"
                   >
                     <CardContent className="p-0">
-                      <div className="relative h-40 w-full min-w-0 min-h-0">
-                        <Image
-                          src={membership.image || "/placeholder.svg"}
-                          alt="Spa interior"
-                          fill
-                          className="object-cover block"
-                        />
+                      <div className="relative aspect-[16/9] w-full min-w-0 min-h-0 overflow-hidden">
+                        <div className="absolute inset-0 transition-transform duration-300 group-hover:scale-110">
+                          <Image
+                            src={membership.image || "/placeholder.svg"}
+                            alt="Spa interior"
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
                       </div>
-                      <div className="p-6">
+                      <div className="p-4">
                         <h1 className="font-semibold text-[22px] text-[#232323] mb-2">{membership.name}</h1>
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-lg font-bold text-[#98564D]">{membership.price}</span>
-                          <button
-                            className="text-[#9d8c6a]  hover:text-[#454545] flex items-center text-[18px]   bg-transparent border-0 outline-none"
-                            onClick={() => setSelectedMembership(membership)}
-                          >
-                            View Details
-                            <ChevronDown className="w-4 h-4 ml-1" />
-                          </button>
+                          <span className="text-[18px] font-inter ">Validity: 12 months</span>
+                          
                         </div>
-                        <div className="flex items-center mt-4 h-[22px] relative">
+                        <div className="flex items-center mt-4 relative h-[24px]">
                           <span className="text-[#232323] text-[18px] font-regular font-inter transition-opacity duration-1000">
                             {membership.price === "Rs. 15,000" ? (
                               <>
-                                <span className={`absolute text-[#232323] font-regular text-[18px] transition-all duration-3000 delay-1000 ${showFirstOffer ? 'opacity-100' : 'opacity-0'}`}>
+                                <span className={`absolute text-[#232323] font-regular text-[18px] transition-all duration-3000 delay-1000 ${showFirstOffer ? 'opacity-100' : 'opacity-0'}`} style={{ marginTop: '-10px' }}>
                                   {membership.offer}
                                 </span>
-                                <span className={`absolute text-[#232323] font-regular text-[18px] transition-all duration-3000 delay-1000 ${!showFirstOffer ? 'opacity-100' : 'opacity-0'}`}>
+                                <span className={`absolute text-[#232323] font-regular text-[18px] transition-all duration-3000 delay-1000 ${!showFirstOffer ? 'opacity-100' : 'opacity-0'}`} style={{ marginTop: '-10px' }}>
                                   {membership.offer2}
                                 </span>
                               </>
@@ -413,9 +410,19 @@ export default function Component() {
                             )}
                           </span>
                         </div>
+                        <div className="flex items-center justify-center text-center mx-auto mt-4">
+                          <Button
+                            variant="outline"
+                            className="text-[#a07735] border-[#a07735] font-marcellus hover:text-[#a07735] flex items-center text-[18px] w-full "
+                            onClick={() => setSelectedMembership(membership)}
+                          >
+                            View Details
+                            <ChevronDown className="w-4 h-4 ml-1" />
+                          </Button>
+                        </div>
                         <div className="flex justify-center mt-4">
                           <Button 
-                            className="relative w-[300px] h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
+                            className="relative w-full h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
                             onClick={() => router.push('/signin')}
                           >
                             Buy Membership
