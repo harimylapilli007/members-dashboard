@@ -67,6 +67,11 @@ export default function Home() {
         id: centerId 
       } 
     })
+    // Reset booking-related states when location changes
+    setBookingId(null)
+    setAvailableSlots([])
+    setSelectedSlot(null)
+    setSelectedDate(new Date())
   }
 
   const generateDates = () => {
@@ -161,6 +166,28 @@ export default function Home() {
         lastRequestTime.current = now
         
         try {
+          // First fetch the service details for the selected location
+          const serviceResponse = await fetchWithRetry(
+            `https://api.zenoti.com/v1/centers/${selectedLocation.outlet.id}/services/${serviceId}`,
+            {
+              headers: {
+                'Authorization': process.env.NEXT_PUBLIC_ZENOTI_API_KEY ?? '',
+                'accept': 'application/json'
+              }
+            },
+            generateCacheKey('service-details', { serviceId, centerId: selectedLocation.outlet.id })
+          )
+
+          // Update service details if they exist
+          if (serviceResponse) {
+            // Update the service details in the URL without refreshing the page
+            const params = new URLSearchParams(window.location.search)
+            params.set('price', serviceResponse.price?.toString() || servicePrice.toString())
+            params.set('duration', serviceResponse.duration?.toString() || duration)
+            params.set('description', serviceResponse.description || description)
+            window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`)
+          }
+
           await createBooking()
         } finally {
           requestInProgress.current = false
@@ -585,6 +612,18 @@ export default function Home() {
               <p className="text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">
                 {description}
               </p>
+              {/* Add this after the service details section and before the booking section */}
+              <div className="mb-4 flex justify-start md:justify-end">
+                <button
+                  onClick={() => setIsLocationModalOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-white/50 backdrop-blur-sm rounded-lg border border-gray-200 hover:bg-white/70 transition-colors"
+                >
+                  <MapPin className="h-5 w-5 text-[#a07735]" />
+                  <span className="text-gray-700">
+                    {selectedLocation ? `${selectedLocation.city} - ${selectedLocation.outlet.name}` : 'Select Location'}
+                  </span>
+                </button>
+              </div>
               {/* Booking section */}
               <div className="mt-2">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">

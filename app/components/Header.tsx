@@ -82,7 +82,7 @@ export default function Header() {
             alt="Ode Spa Logo"
             width={200}
             height={200}
-            className="w-[120px] md:w-[200px] h-auto"
+            className="w-[200px] md:w-[200px] h-auto"
           />
         </Link>
 

@@ -493,15 +493,9 @@ export default function ServiceBookingPage() {
             <Header />
           </div>
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
             <div className="flex flex-col md:flex-row  h-fit">
-              {/* Mobile Categories Dropdown */}
-              <MobileCategoriesDropdown
-                categories={categories}
-                selectedCategory={selectedCategory}
-                onSelectCategory={handleCategoryClick}
-                categoryImages={categoryImages}
-              />
+            
 
               {/* Desktop Categories Sidebar */}
               <aside className="hidden md:block w-72 flex-shrink-0 shadow-lg bg-white/50 rounded-xl p-4 mt-2 mb-2 h-fit mr-8">
@@ -527,9 +521,8 @@ export default function ServiceBookingPage() {
               {/* Main Content: Services */}
               <main className="flex-1 bg-transparent rounded-xl p-2 sm:p-4 md:p-8 shadow-sm relative">
                 {/* Divider for desktop */}
-                <div className="hidden md:block absolute left-0 top-0 h-full w-px bg-gray-200" style={{ marginLeft: '-2rem' }} />
                
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-x-6 mt-4 mb-4">
+                <div className="flex md:hidden flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-x-6 mt-4 mb-4">
                   <h1 className="text-xl sm:text-2xl font-bold m-0">Discover Our Services</h1>
                   <div className="w-full sm:w-auto flex-shrink-0">
                     <LocationSelector 
@@ -539,22 +532,39 @@ export default function ServiceBookingPage() {
                   </div>
                 </div>
 
-               
-               
-                {/* Sticky Search and Filter Section */}
-                <div className="mb-8 sticky top-0.5 z-10 bg-gradient-to-b from-white/90 to-white/60 backdrop-blur-md rounded-xl shadow-sm p-4">
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <div className="flex-1">
-                      <div className="relative">
-                        <input
-                          type="text"
-                          placeholder="Search services..."
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
-                          className="w-full px-4 py-3 rounded-lg border bg-white/20 backdrop-blur-sm border-gray-200 focus:outline-none focus:border-[#a07735]"
-                        />
+                {/* Mobile Header Section */}
+                <div className="md:hidden flex flex-col gap-4 mb-6">
+                 
+                 
+                  <MobileCategoriesDropdown
+                    categories={categories}
+                    selectedCategory={selectedCategory}
+                    onSelectCategory={handleCategoryClick}
+                    categoryImages={categoryImages}
+                  />
+                   <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#a07735]/20 to-[#b2d5e4]/20 rounded-lg blur transition-all duration-300 group-hover:blur-md group-focus-within:blur-md"></div>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Search services..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full px-4 py-2.5 rounded-lg border-2 bg-white/40 backdrop-blur-sm border-gray-200/50 focus:outline-none focus:border-[#a07735] focus:ring-2 focus:ring-[#a07735]/20 transition-all duration-300 placeholder:text-gray-500 text-gray-700"
+                      />
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                        {search && (
+                          <button
+                            onClick={() => setSearch('')}
+                            className="p-1 rounded-full hover:bg-gray-100/50 transition-colors"
+                          >
+                            <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        )}
                         <svg
-                          className="absolute right-3 top-3.5 h-5 w-5 text-gray-400"
+                          className="h-5 w-5 text-[#a07735] transition-transform duration-300 group-hover:scale-110"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -563,16 +573,52 @@ export default function ServiceBookingPage() {
                         </svg>
                       </div>
                     </div>
-                    {/* <div className="flex gap-4">
-                      <select
-                        value={bookingFor}
-                        onChange={(e) => setBookingFor(e.target.value)}
-                        className="px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#a07735] focus:border-transparent"
-                      >
-                        <option value="just me">Just Me</option>
-                        <option value="someone else">Someone Else</option>
-                      </select>
-                    </div> */}
+                    {search && (
+                      <div className="absolute left-0 right-0 top-full mt-2 bg-white/90 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 p-2 text-sm text-gray-500">
+                        Showing results for "{search}"
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Desktop Search Section */}
+                <div className="hidden md:block mb-8 sticky top-0.5 z-10 bg-gradient-to-b from-white/90 to-white/60 backdrop-blur-md rounded-xl shadow-sm p-4">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex-1">
+                      <div className="relative group">
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#a07735]/20 to-[#b2d5e4]/20 rounded-lg blur transition-all duration-300 group-hover:blur-md group-focus-within:blur-md"></div>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            placeholder="Search services..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="w-full px-4 py-3.5 rounded-lg border-2 bg-white/40 backdrop-blur-sm border-gray-200/50 focus:outline-none focus:border-[#a07735] focus:ring-2 focus:ring-[#a07735]/20 transition-all duration-300 placeholder:text-gray-500 text-gray-700"
+                          />
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                            {search && (
+                              <button
+                                onClick={() => setSearch('')}
+                                className="p-1 rounded-full hover:bg-gray-100/50 transition-colors"
+                              >
+                                <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                              </button>
+                            )}
+                            <svg
+                              className="h-5 w-5 text-[#a07735] transition-transform duration-300 group-hover:scale-110"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                          </div>
+                        </div>
+                       
+                      </div>
+                    </div>
                   </div>
                 </div>
 
