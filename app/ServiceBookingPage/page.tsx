@@ -506,7 +506,7 @@ export default function ServiceBookingPage() {
               {/* Desktop Categories Sidebar */}
               <aside className="hidden md:block w-72 flex-shrink-0 shadow-lg bg-white/50 rounded-xl p-4 mt-2 mb-2 h-fit mr-8">
                 <div className="sticky top-24">
-                  <h1 className="text-lg font-semibold text-gray-800 mb-4">Categories</h1>
+                  <h1 className="text-lg font-semibold text-gray-800 mb-4">Select Category</h1>
                   <div className="space-y-3">
                     {categories.map((category, index) => {
                       const categoryInfo = categoryImages.find(img => img.name === category);
