@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, memo } from "react";
-import { MapPin, Clock, Tag, Phone } from "lucide-react";
+import { MapPin, Clock, Tag, Phone, ChevronDown } from "lucide-react";
 import LocationModal from "@/components/location-modal";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -172,7 +172,7 @@ const ServiceCard = memo(({
   onBookNow: (service: any) => void;
   onReadMore: (service: any) => void;
 }) => (
-  <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 hover:border-[#a07735]/40 group">
+  <div  onClick={() => onBookNow(service)} className="bg-white/50 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 hover:border-[#a07735]/40 group">
     <div className="relative h-48 w-full">
       <Image
         src={categoryImage}
@@ -265,7 +265,7 @@ const LocationSelector = memo(({
 }) => (
   <div 
     onClick={onOpen}
-    className="absolute top-4 right-4 md:top-6 md:right-6 cursor-pointer"
+    className="cursor-pointer"
   >
     <div className="flex items-center gap-2 px-4 py-2 bg-white/90 hover:bg-white transition-colors rounded-lg shadow-md backdrop-blur-sm">
       <MapPin className="h-4 w-4 text-[#a07735]" />
@@ -278,6 +278,86 @@ const LocationSelector = memo(({
     </div>
   </div>
 ));
+
+// Add this new component for mobile categories dropdown
+const MobileCategoriesDropdown = memo(({ 
+  categories, 
+  selectedCategory, 
+  onSelectCategory, 
+  categoryImages 
+}: { 
+  categories: string[]; 
+  selectedCategory: string; 
+  onSelectCategory: (category: string) => void;
+  categoryImages: CategoryImage[];
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="md:hidden w-full mb-2">
+      <h1 className="text-xl sm:text-2xl font-bold mb-2">Categories</h1>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between p-3 bg-white/50 hover:bg-white/70 transition-colors rounded-lg shadow-md backdrop-blur-sm border border-gray-100"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 bg-white/50">
+            <Image
+              src={categoryImages.find(img => img.name === selectedCategory)?.image || '/categories/default.jpg'}
+              alt={selectedCategory}
+              width={40}
+              height={40}
+              className="object-cover w-full h-full"
+            />
+          </div>
+          <span className="text-base font-medium text-gray-900">{selectedCategory}</span>
+        </div>
+        <ChevronDown className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="z-50 w-full mt-1 bg-white/50 backdrop-blur-md rounded-lg shadow-lg border border-gray-100 overflow-hidden"
+          >
+            <div className="max-h-[60vh] overflow-y-auto">
+              {categories.map((category) => {
+                const categoryInfo = categoryImages.find(img => img.name === category);
+                return (
+                  <button
+                    key={category}
+                    onClick={() => {
+                      onSelectCategory(category);
+                      setIsOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3 p-3 hover:bg-white/50 transition-colors ${
+                      selectedCategory === category ? 'bg-[#a07735]/10' : ''
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 bg-white/50 flex-shrink-0">
+                      <Image
+                        src={categoryInfo?.image || '/categories/default.jpg'}
+                        alt={category}
+                        width={40}
+                        height={40}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                    <span className="text-base font-medium text-gray-900 truncate">{category}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+});
 
 export default function ServiceBookingPage() {
   const router = useRouter();
@@ -408,21 +488,25 @@ export default function ServiceBookingPage() {
       <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 rounded-full -z-30" />
 
       <div className={`min-h-screen relative overflow-hidden ${isLocationModalOpen || selectedService ? "blur-sm" : ""}`}>
-        {/* Main content wrapper */}
         <div className="relative z-10">
-          {/* Header */}
           <div className="top-0 left-0 right-0 z-50">
             <Header />
           </div>
 
-          {/* Main Content */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            {/* Replace the Categories Grid and Services List section with a sidebar layout */}
-            <div className="flex flex-col md:flex-row gap-8 h-fit">
-              {/* Sidebar: Categories */}
-              <aside className="w-full md:w-72 flex-shrink-0 md:shadow-lg md:bg-white/50 md:rounded-xl md:p-4 md:mt-2 md:mb-2 h-fit">
+            <div className="flex flex-col md:flex-row  h-fit">
+              {/* Mobile Categories Dropdown */}
+              <MobileCategoriesDropdown
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onSelectCategory={handleCategoryClick}
+                categoryImages={categoryImages}
+              />
+
+              {/* Desktop Categories Sidebar */}
+              <aside className="hidden md:block w-72 flex-shrink-0 shadow-lg bg-white/50 rounded-xl p-4 mt-2 mb-2 h-fit mr-8">
                 <div className="sticky top-24">
-                  <h2 className="text-lg font-semibold text-gray-800 mb-4">Categories</h2>
+                  <h1 className="text-lg font-semibold text-gray-800 mb-4">Categories</h1>
                   <div className="space-y-3">
                     {categories.map((category, index) => {
                       const categoryInfo = categoryImages.find(img => img.name === category);
@@ -441,21 +525,21 @@ export default function ServiceBookingPage() {
               </aside>
 
               {/* Main Content: Services */}
-              <main className="flex-1 bg-gradient-to-br from-[#f7f3ec] via-[#f7f3ec] to-[#f7f3ec] rounded-xl p-2 md:p-8 shadow-sm relative">
+              <main className="flex-1 bg-transparent rounded-xl p-2 sm:p-4 md:p-8 shadow-sm relative">
                 {/* Divider for desktop */}
                 <div className="hidden md:block absolute left-0 top-0 h-full w-px bg-gray-200" style={{ marginLeft: '-2rem' }} />
                
-                <div className="flex flex-col gap-2 mt-4">
-                  <h1 className="text-2xl font-bold mb-4">Discover Our Services</h1>
-                  <p className="text-sm mb-8">Experience luxury wellness treatments tailored for you</p>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-x-6 mt-4 mb-4">
+                  <h1 className="text-xl sm:text-2xl font-bold m-0">Discover Our Services</h1>
+                  <div className="w-full sm:w-auto flex-shrink-0">
+                    <LocationSelector 
+                      selectedLocation={selectedLocation} 
+                      onOpen={handleLocationOpen} 
+                    />
+                  </div>
                 </div>
 
-                <div className="flex flex-col gap-2">
-                <LocationSelector 
-              selectedLocation={selectedLocation} 
-              onOpen={handleLocationOpen} 
-             />
-             </div>
+               
                
                 {/* Sticky Search and Filter Section */}
                 <div className="mb-8 sticky top-0.5 z-10 bg-gradient-to-b from-white/90 to-white/60 backdrop-blur-md rounded-xl shadow-sm p-4">
@@ -467,7 +551,7 @@ export default function ServiceBookingPage() {
                           placeholder="Search services..."
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
-                          className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#a07735] focus:border-transparent"
+                          className="w-full px-4 py-3 rounded-lg border bg-white/20 backdrop-blur-sm border-gray-200 focus:outline-none focus:border-[#a07735]"
                         />
                         <svg
                           className="absolute right-3 top-3.5 h-5 w-5 text-gray-400"
@@ -495,7 +579,7 @@ export default function ServiceBookingPage() {
                 {/* Services List */}
                 {selectedCategory && services[selectedCategory] && (
                   <div className="space-y-6">
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-6">{selectedCategory}</h2>
+                    <h1 className="text-2xl font-semibold text-gray-900 mb-6">{selectedCategory}</h1>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {services[selectedCategory]
                         .filter(service => 

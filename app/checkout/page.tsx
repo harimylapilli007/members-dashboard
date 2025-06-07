@@ -29,10 +29,8 @@ export default function CheckoutPage() {
   const [bookingType, setBookingType] = useState("self")
   const [serviceData, setServiceData] = useState<ServiceData | null>(null)
   const [slotData, setSlotData] = useState<SlotData | null>(null)
-  const [showConfirmation, setShowConfirmation] = useState(false)
   const [isBookingConfirmed, setIsBookingConfirmed] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
-  const [termsAccepted, setTermsAccepted] = useState(false)
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -86,25 +84,27 @@ export default function CheckoutPage() {
   }
 
   // Calculate convenience fee and GST
-  const convenienceFee = 60
-  const gstAmount = Math.round(convenienceFee * 0.18)
-  const totalAmount = serviceData.price + convenienceFee + gstAmount
+  const gstAmount = Math.round(serviceData.price * 0.18)
+  const totalAmount = serviceData.price + gstAmount
 
   // Add handleConfirmBooking function
   const handleConfirmBooking = async () => {
-    // Check for auth token
+    // Step 1: Authentication Check
+    // Check if user is logged in by looking for auth token in cookies
     const authToken = document.cookie.split('; ').find(row => row.startsWith('auth-token='));
     if (!authToken) {
-      // Store the current URL to redirect back after login
+      // If not logged in, store current URL and redirect to login page
       const currentUrl = window.location.href;
       localStorage.setItem('redirectAfterLogin', currentUrl);
       router.push('/spa-signin');
       return;
     }
 
+    // Step 2: Start Booking Process
     setIsConfirming(true);
     try {
-      // Get guest ID from localStorage
+      // Step 3: Get Guest Information
+      // Retrieve guest ID from either dashboard params or localStorage
       const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
       const guestId = dashboardParams.get('id') || localStorage.getItem('guestId')
 
@@ -112,7 +112,8 @@ export default function CheckoutPage() {
         throw new Error('Guest ID is missing')
       }
 
-      // Create the booking
+      // Step 4: Create Initial Booking
+      // Prepare booking payload with service details
       const payload = {
         is_only_catalog_employees: true,
         center_id: searchParams.get('outletId'),
@@ -127,6 +128,8 @@ export default function CheckoutPage() {
         }]
       }
 
+      // Step 5: Make API Call to Create Booking
+      // Call Zenoti API to create the booking
       const result = await fetchWithRetry(
         'https://api.zenoti.com/v1/bookings?is_double_booking_enabled=true',
         {
@@ -145,7 +148,8 @@ export default function CheckoutPage() {
         })
       )
 
-      // Reserve the slot
+      // Step 6: Format Time for Slot Reservation
+      // Convert 12-hour time format to 24-hour format for API
       const formattedTime = slotData?.time.replace(' AM', '').replace(' PM', '')
       const [hours, minutes] = formattedTime?.split(':') || []
       const isPM = slotData?.time.includes('PM')
@@ -153,6 +157,8 @@ export default function CheckoutPage() {
       const time24 = `${hour24.toString().padStart(2, '0')}:${minutes}`
       const slotTime = `${slotData?.date}T${time24}`
 
+      // Step 7: Reserve the Time Slot
+      // Call API to reserve the specific time slot
       await fetchWithRetry(
         `https://api.zenoti.com/v1/bookings/${result.id}/slots/reserve`,
         {
@@ -170,7 +176,8 @@ export default function CheckoutPage() {
         generateCacheKey('reserve-slot', { bookingId: result.id, slotTime })
       )
 
-      // Confirm the booking
+      // Step 8: Confirm the Booking
+      // Final API call to confirm the booking
       await fetchWithRetry(
         `https://api.zenoti.com/v1/bookings/${result.id}/slots/confirm`,
         {
@@ -184,8 +191,18 @@ export default function CheckoutPage() {
         generateCacheKey('confirm-booking', { bookingId: result.id })
       )
 
+      // Step 9: Handle Successful Booking
+      // Update state and show success message
       setIsBookingConfirmed(true);
+      toast({
+        title: "Booking Successful!",
+        description: "Your appointment has been confirmed. You can view your booking details in your account.",
+      })
+      // Redirect to bookings page
+      router.push('/bookings');
     } catch (error) {
+      // Step 10: Error Handling
+      // Log error and show error message to user
       console.error('Booking confirmation error:', error);
       toast({
         variant: "destructive",
@@ -193,6 +210,8 @@ export default function CheckoutPage() {
         description: "Failed to confirm booking. Please try again.",
       })
     } finally {
+      // Step 11: Cleanup
+      // Reset confirming state regardless of success/failure
       setIsConfirming(false);
     }
   };
@@ -330,12 +349,7 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <div className="text-[#1f2937] font-medium">Convenience Fee:</div>
-                  <div className="text-[#a07735] font-semibold">₹ {convenienceFee.toLocaleString()}</div>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <div className="text-[#1f2937] font-medium">GST on Fee(18%):</div>
+                  <div className="text-[#1f2937] font-medium">GST(18%):</div>
                   <div className="text-[#a07735] font-semibold">₹ {gstAmount.toLocaleString()}</div>
                 </div>
 
@@ -370,7 +384,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Terms & Conditions */}
-              <div className="mt-10 flex items-start space-x-3">
+              {/* <div className="mt-10 flex items-start space-x-3">
                 <Checkbox 
                   id="terms" 
                   className="mt-1 border-gray-300 h-4 w-4 data-[state=checked]:bg-[#a07735] data-[state=checked]:border-[#a07735]" 
@@ -380,7 +394,7 @@ export default function CheckoutPage() {
                 <label htmlFor="terms" className="text-sm text-[#4b5563]">
                   I agree to Odespa <span className="text-[#a07735] font-medium">Terms & Conditions</span>
                 </label>
-              </div>
+              </div> */}
 
               {/* Refund Policy */}
               <div className="mt-8 bg-[#faf5eb] rounded-xl p-6">
@@ -411,96 +425,16 @@ export default function CheckoutPage() {
                       router.push('/spa-signin');
                       return;
                     }
-                    setShowConfirmation(true);
+                    handleConfirmBooking();
                   }}
-                  disabled={!termsAccepted}
                   className="w-full bg-[#a07735] text-white py-4 rounded-lg font-medium hover:bg-[#8a6830] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Confirm Booking
+                  {isConfirming ? 'Confirming...' : 'Confirm Booking'}
                 </button>
               </div>
             </div>
           </div>
         </main>
-
-        {/* Confirmation Dialog */}
-        {showConfirmation && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full mx-4">
-              {!isBookingConfirmed ? (
-                <>
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Booking Confirmation</h2>
-                  <div className="space-y-3">
-                    <p className="font-inter"><span className="font-medium">Service:</span> {serviceData?.name}</p>
-                    <p className="font-inter"><span className="font-medium">Location:</span> {serviceData?.location}</p>
-                    <p className="font-inter"><span className="font-medium">Date & Time:</span> {slotData?.formattedDate} ⏰ {slotData?.time}</p>
-                    <p className="font-inter"><span className="font-medium">Duration:</span> {serviceData?.duration} mins</p>
-                    <p className="font-inter"><span className="font-medium">Price:</span> ₹{serviceData?.price.toLocaleString()}</p>
-                  </div>
-                  <div className="mt-6 flex justify-end space-x-4">
-                    <button
-                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                      onClick={() => setShowConfirmation(false)}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] disabled:opacity-50"
-                      onClick={handleConfirmBooking}
-                      disabled={isConfirming}
-                    >
-                      {isConfirming ? 'Confirming...' : 'Continue'}
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div className="text-center">
-                  <div className="mb-4">
-                    <svg
-                      className="mx-auto h-12 w-12 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">Booking Successful!</h2>
-                  <p className="text-gray-600 mb-6">
-                    Your appointment has been confirmed. You can view your booking details in your account.
-                  </p>
-                  <div className="flex justify-center space-x-4">
-                    <button
-                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                      onClick={() => {
-                        setShowConfirmation(false)
-                        setIsBookingConfirmed(false)
-                        router.push('/')
-                      }}
-                    >
-                      Back to Home
-                    </button>
-                    <button
-                      className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930]"
-                      onClick={() => {
-                        setShowConfirmation(false)
-                        setIsBookingConfirmed(false)
-                        router.push('/bookings')
-                      }}
-                    >
-                      View Bookings
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )

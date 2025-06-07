@@ -6,7 +6,8 @@ import { AuthProvider } from "@/lib/auth-context"
 export const metadata: Metadata = {
   title: "ODE SPA",
   description: "Luxury spa treatments and wellness services",
-    generator: 'v0.dev'
+  generator: 'v0.dev',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1'
 }
 
 export default function RootLayout({

@@ -399,39 +399,31 @@ export default function SignIn() {
       <div className="fixed top-1/3 left-1/2 w-[2000px] h-[2000px] bg-[#b2d5e4] opacity-40 rounded-full -z-10 blur-3xl" />
 
       {/* Main content wrapper */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen">
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl shadow-xl bg-white w-[450px] relative z-10"
+          className="rounded-2xl shadow-xl bg-white w-full max-w-[450px] relative z-10"
         >
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="rounded-t-2xl bg-gradient-to-b from-[#a87b3c] to-[#b9935a] px-8 pt-8 pb-6 text-center"
+            className="rounded-t-2xl bg-gradient-to-b from-[#a87b3c] to-[#b9935a] px-4 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6 text-center"
           >
             <motion.h1
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.3 }}
-              className="text-2xl font-bold text-white mb-1"
+              className="text-xl sm:text-2xl font-bold text-white mb-1"
             >
-             Login
+              Login
             </motion.h1>
-            {/* <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-white text-base"
-            >
-              Enter your phone number to continue
-            </motion.p> */}
           </motion.div>
 
-          <div className="px-8 pb-8 pt-6">
+          <div className="px-4 sm:px-8 pb-6 sm:pb-8 pt-4 sm:pt-6">
             <AnimatePresence mode="wait">
               {!showOtpInput ? (
                 <motion.form
@@ -444,10 +436,10 @@ export default function SignIn() {
                   className="space-y-6"
                 >
                   <div className="space-y-4">
-                    <h1 className="text-[#454545] text-center font-inter text-[22px] font-bold mb-4">Welcome Back...!</h1>
-                    <Label htmlFor="phone" className="text-gray-700 text-sm text-[18px] font-400 flex items-center gap-2 mb-4">
-                      <Phone className="w-4 h-4" />
-                     <span className="font-['Marcellus'] text-[18px] font-400"> Please enter your phone number</span>
+                    <h1 className="text-[#454545] text-center font-inter text-lg sm:text-[22px] font-bold mb-4">Welcome Back...!</h1>
+                    <Label htmlFor="phone" className="text-gray-700 text-sm text-base sm:text-[18px] font-400 flex items-center gap-2 mb-4">
+                      <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="font-['Marcellus'] text-base sm:text-[18px] font-400"> Please enter your phone number</span>
                     </Label>
                     <Input
                       id="phone"
@@ -457,13 +449,13 @@ export default function SignIn() {
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       required
                       disabled={loading}
-                      className="border-gray-300 focus:border-[#b9935a] focus:ring-2 focus:ring-[#b9935a]/20 focus:ring-offset-0 focus:outline-none h-11 rounded-lg bg-white transition-all duration-200"
+                      className="border-gray-300 focus:border-[#b9935a] focus:ring-2 focus:ring-[#b9935a]/20 focus:ring-offset-0 focus:outline-none h-10 sm:h-11 rounded-lg bg-white transition-all duration-200 text-base sm:text-lg"
                     />
                   </div>
-                  <div ref={recaptchaContainerRef} id="recaptcha-container" className="flex justify-center py-2"></div>
+                  <div ref={recaptchaContainerRef} id="recaptcha-container" className="flex justify-center py-2 scale-90 sm:scale-100"></div>
                   <Button 
                     type="submit" 
-                    className="w-full h-11 rounded-lg bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)]  font-['Marcellus'] text-[#98564D] font-bold text-[20px] leading-[17px] text-center  disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
+                    className="w-full h-10 sm:h-11 rounded-lg bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] font-['Marcellus'] text-[#98564D] font-bold text-base sm:text-[20px] leading-[17px] text-center disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
                     disabled={loading || !recaptchaReady}
                     style={{ boxShadow: 'none' }}
                   >
@@ -476,7 +468,7 @@ export default function SignIn() {
                     ) : (
                       <>
                         Send OTP
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
                   </Button>
@@ -493,10 +485,10 @@ export default function SignIn() {
                 >
                   <div className="space-y-6">
                     <Label className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span className="font-['Marcellus'] text-[18px] font-400"> Enter OTP</span>
+                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="font-['Marcellus'] text-base sm:text-[18px] font-400"> Enter OTP</span>
                     </Label>
-                    <div className="flex gap-2.5 justify-center">
+                    <div className="flex gap-2 sm:gap-2.5 justify-center">
                       {otp.map((digit, index) => (
                         <motion.div
                           key={index}
@@ -513,7 +505,7 @@ export default function SignIn() {
                             value={digit}
                             onChange={(e) => handleOtpChange(index, e.target.value)}
                             onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                            className="w-12 h-12 text-center text-lg border border-gray-300 focus:border-[#b9935a] focus:ring-2 focus:ring-[#b9935a]/20 focus:ring-offset-0 focus:outline-none rounded-lg bg-white transition-all duration-200"
+                            className="w-10 h-10 sm:w-12 sm:h-12 text-center text-base sm:text-lg border border-gray-300 focus:border-[#b9935a] focus:ring-2 focus:ring-[#b9935a]/20 focus:ring-offset-0 focus:outline-none rounded-lg bg-white transition-all duration-200"
                             disabled={loading}
                           />
                         </motion.div>
@@ -522,7 +514,7 @@ export default function SignIn() {
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full h-11 rounded-lg bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)]  font-['Marcellus'] text-[#98564D] font-bold text-[20px] leading-[17px] text-center  disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
+                    className="w-full h-10 sm:h-11 rounded-lg bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] font-['Marcellus'] text-[#98564D] font-bold text-base sm:text-[20px] leading-[17px] text-center disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
                     disabled={loading}
                     style={{ boxShadow: 'none' }}
                   >
@@ -535,14 +527,14 @@ export default function SignIn() {
                     ) : (
                       <>
                         Verify OTP
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-11 rounded-lg font-['Marcellus'] text-[18px] font-400   border-[#a07735] hover:bg-gray-50  text-[#a07735] transition-all duration-200"
+                    className="w-full h-10 sm:h-11 rounded-lg font-['Marcellus'] text-base sm:text-[18px] font-400 border-[#a07735] hover:bg-gray-50 text-[#a07735] transition-all duration-200"
                     onClick={() => {
                       setShowOtpInput(false);
                       setOtp(['', '', '', '', '', '']);

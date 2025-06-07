@@ -437,8 +437,8 @@ export default function Home() {
         
         <main className="mx-auto px-4 sm:px-6 md:px-10 py-4 sm:py-6 md:py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-            {/* Left: Image + Tabs/Content */}
-            <div className="flex flex-col">
+            {/* Left: Image only on mobile, Image + Tabs on desktop */}
+            <div className="flex flex-col order-1 lg:order-1">
               <div className="rounded-lg overflow-hidden mb-4 sm:mb-6 relative">
                 <Image
                   src="/spa-swedish-massage.png"
@@ -450,8 +450,8 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-transparent"></div>
                 <h1 className="absolute bottom-4 left-4 text-xl sm:text-2xl md:text-3xl text-white font-medium">{serviceName}</h1>
               </div>
-              {/* Tabs and Content below image */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
+              {/* Tabs and Content below image - hidden on mobile */}
+              <div className="hidden lg:block bg-white/50 backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
                 <div className="border-b border-gray-300">
                   <div className="flex flex-wrap gap-4 sm:gap-8">
                     <button
@@ -549,96 +549,17 @@ export default function Home() {
                         <div>
                           <h4 className="font-medium">Rahul P.</h4>
                           <div className="flex text-yellow-400">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center mb-4">
-                        <div className="bg-[#a07735] text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
-                          <span className="font-medium">SM</span>
-                        </div>
-                        <div>
-                          <h4 className="font-medium">Sneha M.</h4>
-                          <div className="flex text-yellow-400">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
+                            {[...Array(5)].map((_, i) => (
+                              <svg
+                                key={i}
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ))}
                           </div>
                         </div>
                       </div>
@@ -648,7 +569,7 @@ export default function Home() {
               </div>
             </div>
             {/* Right: Service details, slot selection, add-to-cart */}
-            <div className="flex flex-col justify-start space-y-3">
+            <div className="flex flex-col justify-start space-y-3 order-2 lg:order-2">
               <h1 className="text-xl sm:text-2xl md:text-3xl mb-1">{serviceName}</h1>
              
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
@@ -670,7 +591,7 @@ export default function Home() {
                   <h2 className="text-xl text-[#a07735] font-medium">Select Slot</h2>
                   <div className="flex items-center space-x-4 relative">
                     <button 
-                      className="text-gray-400"
+                      className="text-gray-400 hover:text-[#a07735] transition-colors p-2 rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30"
                       onClick={() => setSelectedDate(addDays(selectedDate, -1))}
                     >
                       <svg
@@ -815,6 +736,120 @@ export default function Home() {
                   ) : (
                     <div className="col-span-full text-center py-4">No slots available for selected date</div>
                   )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs and Content for mobile - shown at the end */}
+          <div className="lg:hidden mt-8 bg-white/80 backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
+            <div className="border-b border-gray-300">
+              <div className="flex flex-wrap gap-4 sm:gap-8">
+                <button
+                  className={`font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "benefits" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}`}
+                  onClick={() => setActiveTab("benefits")}
+                >
+                  Benefits
+                </button>
+                <button
+                  className={`font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "expect" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}`}
+                  onClick={() => setActiveTab("expect")}
+                >
+                  What to Expect
+                </button>
+                <button
+                  className={`font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "reviews" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}`}
+                  onClick={() => setActiveTab("reviews")}
+                >
+                  Reviews
+                </button>
+              </div>
+            </div>
+            {/* Tab Content */}
+            <div className={`py-4 sm:py-8 ${activeTab === "benefits" ? "block" : "hidden"}`}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                  <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                  </div>
+                  <h3 className="text-lg font-medium mb-2">Better Sleep</h3>
+                  <p className="text-sm text-gray-700">Promotes quality sleep and helps establish better sleep patterns.</p>
+                </div>
+                <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                  <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                  </div>
+                  <h3 className="text-lg font-medium mb-2">Relieves Pain</h3>
+                  <p className="text-sm text-gray-700">Soothes sore muscles, melts away knots, and eases bodily aches for lasting comfort.</p>
+                </div>
+                <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                  <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                  </div>
+                  <h3 className="text-lg font-medium mb-2">Improves Blood Circulation</h3>
+                  <p className="text-sm text-gray-700">Enhances oxygen flow and promotes healthier, more energized tissues.</p>
+                </div>
+                <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                  <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                  </div>
+                  <h3 className="text-lg font-medium mb-2">Balances Energy Flow</h3>
+                  <p className="text-sm text-gray-700">Restores harmony to your body's energy pathways.</p>
+                </div>
+              </div>
+            </div>
+            {/* What to Expect content */}
+            <div className={`py-4 sm:py-8 ${activeTab === "expect" ? "block" : "hidden"}`}>
+              <div className="bg-white rounded-lg p-6">
+                <h3 className="text-xl font-medium mb-4">Before Your Massage</h3>
+                <ul className="list-disc pl-5 mb-6 space-y-2">
+                  <li>Arrive 15 minutes before your appointment to complete paperwork</li>
+                  <li>Wear comfortable clothing that's easy to remove</li>
+                  <li>Avoid heavy meals or alcohol before your session</li>
+                  <li>Let your therapist know about any health concerns or preferences</li>
+                </ul>
+                <h3 className="text-xl font-medium mb-4">During Your Massage</h3>
+                <ul className="list-disc pl-5 mb-6 space-y-2">
+                  <li>Your therapist will leave the room while you undress to your comfort level</li>
+                  <li>You'll lie on a padded massage table under a sheet</li>
+                  <li>Only the area being worked on will be exposed</li>
+                  <li>Your therapist will use a combination of kneading, long strokes, and circular movements</li>
+                  <li>Communication is encouraged - let your therapist know if pressure is too light or too firm</li>
+                </ul>
+                <h3 className="text-xl font-medium mb-4">After Your Massage</h3>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li>Take your time getting up from the table</li>
+                  <li>Drink plenty of water to help flush metabolic waste from tissues</li>
+                  <li>Avoid strenuous activity for the rest of the day if possible</li>
+                  <li>Notice how your body feels in the hours and days following your massage</li>
+                </ul>
+              </div>
+            </div>
+            {/* Reviews content */}
+            <div className={`py-4 sm:py-8 ${activeTab === "reviews" ? "block" : "hidden"}`}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-white rounded-lg p-6 border border-gray-200">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-[#a07735] text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                      <span className="font-medium">RP</span>
+                    </div>
+                    <div>
+                      <h4 className="font-medium">Rahul P.</h4>
+                      <div className="flex text-yellow-400">
+                        {[...Array(5)].map((_, i) => (
+                          <svg
+                            key={i}
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

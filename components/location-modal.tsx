@@ -574,7 +574,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                     <button
                       key={index}
                       className={`w-full p-3 rounded-md text-left transition-colors ${
-                          "bg-white border border-gray-300 text-gray-700 hover:border-[#a07735]"
+                          "bg-white/20 font-marcellus backdrop-blur-sm border border-gray-300 text-gray-700 hover:border-[#a07735] hover:bg-[#a07735]/10"
                       }`}
                       onClick={() => handleOutletSelect(outlet)}
                     >
