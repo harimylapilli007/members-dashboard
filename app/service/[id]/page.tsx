@@ -743,14 +743,26 @@ export default function Home() {
                           {slotGroup.times.map((time, timeIndex) => (
                             <button
                               key={timeIndex}
-                              className={`border rounded-md py-2 text-center
-                              ${
-                                time === selectedSlot
-                                  ? "bg-[#a07735] text-white border-[#a07735]"
-                                  : time === "⬅️ Back to date"
-                                    ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                    : "border-gray-300 text-gray-700 hover:border-[#a07735]"
-                              }`}
+                              className={`
+                                border-2 
+                                rounded-lg 
+                                py-2 
+                                text-center 
+                                bg-white/30 
+                                backdrop-blur-md 
+                                shadow-md 
+                                transition 
+                                duration-200 
+                                outline-none
+                                hover:bg-white/60 
+                                hover:shadow-lg
+                                hover:border-[#a07735]
+                               
+                                ${time === selectedSlot
+                                  ? "bg-[#a07735] border-[#a07735] shadow-lg"
+                                  : "text-gray-700"
+                                }
+                              `}
                               onClick={() => {
                                 setSelectedSlot(time);
                                 // Directly redirect to cart page when slot is selected
