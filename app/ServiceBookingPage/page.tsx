@@ -295,7 +295,7 @@ const MobileCategoriesDropdown = memo(({
 
   return (
     <div className="md:hidden w-full mb-2">
-      <h1 className="text-xl sm:text-2xl font-bold mb-2">Categories</h1>
+      <h1 className="text-xl sm:text-2xl font-bold mb-2">Select Category</h1>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-3 bg-white/50 hover:bg-white/70 transition-colors rounded-lg shadow-md backdrop-blur-sm border border-gray-100"
@@ -506,7 +506,7 @@ export default function ServiceBookingPage() {
               {/* Desktop Categories Sidebar */}
               <aside className="hidden md:block w-72 flex-shrink-0 shadow-lg bg-white/50 rounded-xl p-4 mt-2 mb-2 h-fit mr-8">
                 <div className="sticky top-24">
-                  <h1 className="text-lg font-semibold text-gray-800 mb-4">Select Category</h1>
+                  <h1 className="text-lg font-semibold text-gray-800 mb-4">Categories</h1>
                   <div className="space-y-3">
                     {categories.map((category, index) => {
                       const categoryInfo = categoryImages.find(img => img.name === category);
