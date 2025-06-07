@@ -104,13 +104,32 @@ const config: Config = {
           to: {
             opacity: '1'
           }
+        },
+        'fade-in-out': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(-10px)'
+          },
+          '20%': {
+            opacity: '1',
+            transform: 'translateY(0)'
+          },
+          '80%': {
+            opacity: '1',
+            transform: 'translateY(0)'
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateY(-10px)'
+          }
         }
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
         'slideDown': 'slideDown 0.3s ease-out',
-        'fadeIn': 'fadeIn 0.3s ease-out'
+        'fadeIn': 'fadeIn 0.3s ease-out',
+        'fade-in-out': 'fade-in-out 3s ease-in-out'
   		}
   	}
   },

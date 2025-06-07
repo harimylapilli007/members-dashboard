@@ -540,35 +540,35 @@ export default function Home() {
                 </div>
                 {/* What to Expect content */}
                 <div className={`py-4 sm:py-8 ${activeTab === "expect" ? "block" : "hidden"}`}>
-                  <div className="bg-white rounded-lg p-6">
+                  <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 font-inter">
                     <h3 className="text-xl font-medium mb-4">Before Your Massage</h3>
                     <ul className="list-disc pl-5 mb-6 space-y-2">
-                      <li>Arrive 15 minutes before your appointment to complete paperwork</li>
-                      <li>Wear comfortable clothing that's easy to remove</li>
-                      <li>Avoid heavy meals or alcohol before your session</li>
-                      <li>Let your therapist know about any health concerns or preferences</li>
+                      <li className="text-sm text-gray-700 font-inter">Arrive 15 minutes before your appointment to complete paperwork</li>
+                      <li className="text-sm text-gray-700 font-inter">Wear comfortable clothing that's easy to remove</li>
+                      <li className="text-sm text-gray-700 font-inter">Avoid heavy meals or alcohol before your session</li>
+                      <li className="text-sm text-gray-700 font-inter">Let your therapist know about any health concerns or preferences</li>
                     </ul>
                     <h3 className="text-xl font-medium mb-4">During Your Massage</h3>
                     <ul className="list-disc pl-5 mb-6 space-y-2">
-                      <li>Your therapist will leave the room while you undress to your comfort level</li>
-                      <li>You'll lie on a padded massage table under a sheet</li>
-                      <li>Only the area being worked on will be exposed</li>
-                      <li>Your therapist will use a combination of kneading, long strokes, and circular movements</li>
-                      <li>Communication is encouraged - let your therapist know if pressure is too light or too firm</li>
+                      <li className="text-sm text-gray-700 font-inter">Your therapist will leave the room while you undress to your comfort level</li>
+                      <li className="text-sm text-gray-700 font-inter">You'll lie on a padded massage table under a sheet</li>
+                      <li className="text-sm text-gray-700 font-inter">Only the area being worked on will be exposed</li>
+                      <li className="text-sm text-gray-700 font-inter">Your therapist will use a combination of kneading, long strokes, and circular movements</li>
+                      <li className="text-sm text-gray-700 font-inter">Communication is encouraged - let your therapist know if pressure is too light or too firm</li>
                     </ul>
                     <h3 className="text-xl font-medium mb-4">After Your Massage</h3>
                     <ul className="list-disc pl-5 space-y-2">
-                      <li>Take your time getting up from the table</li>
-                      <li>Drink plenty of water to help flush metabolic waste from tissues</li>
-                      <li>Avoid strenuous activity for the rest of the day if possible</li>
-                      <li>Notice how your body feels in the hours and days following your massage</li>
+                      <li className="text-sm text-gray-700 font-inter">Take your time getting up from the table</li>
+                      <li className="text-sm text-gray-700 font-inter">Drink plenty of water to help flush metabolic waste from tissues</li>
+                      <li className="text-sm text-gray-700 font-inter">Avoid strenuous activity for the rest of the day if possible</li>
+                      <li className="text-sm text-gray-700 font-inter">Notice how your body feels in the hours and days following your massage</li>
                     </ul>
                   </div>
                 </div>
                 {/* Reviews content */}
                 <div className={`py-4 sm:py-8 ${activeTab === "reviews" ? "block" : "hidden"}`}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                    <div className="bg-white rounded-lg p-6 border border-gray-200">
+                    <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 border border-gray-200">
                       <div className="flex items-center mb-4">
                         <div className="bg-[#a07735] text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
                           <span className="font-medium">RP</span>
@@ -590,6 +590,7 @@ export default function Home() {
                           </div>
                         </div>
                       </div>
+                      <p className="text-sm text-gray-700 font-inter">Great experience! The massage was very relaxing and the therapist was professional.</p>
                     </div>
                   </div>
                 </div>
@@ -812,14 +813,14 @@ export default function Home() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                   </div>
                   <h3 className="text-lg font-medium mb-2">Better Sleep</h3>
-                  <p className="text-sm text-gray-700">Promotes quality sleep and helps establish better sleep patterns.</p>
+                  <p className="text-sm text-gray-700 font-inter">Promotes quality sleep and helps establish better sleep patterns.</p>
                 </div>
                 <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
                   <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                   </div>
                   <h3 className="text-lg font-medium mb-2">Relieves Pain</h3>
-                  <p className="text-sm text-gray-700">Soothes sore muscles, melts away knots, and eases bodily aches for lasting comfort.</p>
+                  <p className="text-sm text-gray-700 font-inter">Soothes sore muscles, melts away knots, and eases bodily aches for lasting comfort.</p>
                 </div>
                 <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
                   <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
@@ -839,28 +840,28 @@ export default function Home() {
             </div>
             {/* What to Expect content */}
             <div className={`py-4 sm:py-8 ${activeTab === "expect" ? "block" : "hidden"}`}>
-              <div className="bg-white rounded-lg p-6">
+              <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6">
                 <h3 className="text-xl font-medium mb-4">Before Your Massage</h3>
                 <ul className="list-disc pl-5 mb-6 space-y-2">
-                  <li>Arrive 15 minutes before your appointment to complete paperwork</li>
-                  <li>Wear comfortable clothing that's easy to remove</li>
-                  <li>Avoid heavy meals or alcohol before your session</li>
-                  <li>Let your therapist know about any health concerns or preferences</li>
+                  <li className="text-sm text-gray-700 font-inter">Arrive 15 minutes before your appointment to complete paperwork</li>
+                  <li className="text-sm text-gray-700 font-inter">Wear comfortable clothing that's easy to remove</li>
+                  <li className="text-sm text-gray-700 font-inter">Avoid heavy meals or alcohol before your session</li>
+                  <li className="text-sm text-gray-700 font-inter">Let your therapist know about any health concerns or preferences</li>
                 </ul>
                 <h3 className="text-xl font-medium mb-4">During Your Massage</h3>
                 <ul className="list-disc pl-5 mb-6 space-y-2">
-                  <li>Your therapist will leave the room while you undress to your comfort level</li>
-                  <li>You'll lie on a padded massage table under a sheet</li>
-                  <li>Only the area being worked on will be exposed</li>
-                  <li>Your therapist will use a combination of kneading, long strokes, and circular movements</li>
-                  <li>Communication is encouraged - let your therapist know if pressure is too light or too firm</li>
+                  <li className="text-sm text-gray-700 font-inter">Your therapist will leave the room while you undress to your comfort level</li>
+                  <li className="text-sm text-gray-700 font-inter">You'll lie on a padded massage table under a sheet</li>
+                  <li className="text-sm text-gray-700 font-inter">Only the area being worked on will be exposed</li>
+                  <li className="text-sm text-gray-700 font-inter">Your therapist will use a combination of kneading, long strokes, and circular movements</li>
+                  <li className="text-sm text-gray-700 font-inter">Communication is encouraged - let your therapist know if pressure is too light or too firm</li>
                 </ul>
                 <h3 className="text-xl font-medium mb-4">After Your Massage</h3>
                 <ul className="list-disc pl-5 space-y-2">
-                  <li>Take your time getting up from the table</li>
-                  <li>Drink plenty of water to help flush metabolic waste from tissues</li>
-                  <li>Avoid strenuous activity for the rest of the day if possible</li>
-                  <li>Notice how your body feels in the hours and days following your massage</li>
+                  <li className="text-sm text-gray-700 font-inter">Take your time getting up from the table</li>
+                  <li className="text-sm text-gray-700 font-inter">Drink plenty of water to help flush metabolic waste from tissues</li>
+                  <li className="text-sm text-gray-700 font-inter">Avoid strenuous activity for the rest of the day if possible</li>
+                  <li className="text-sm text-gray-700 font-inter">Notice how your body feels in the hours and days following your massage</li>
                 </ul>
               </div>
             </div>
@@ -889,6 +890,7 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
+                  <p className="text-sm text-gray-700 font-inter">Great experience! The massage was very relaxing and the therapist was professional.</p>
                 </div>
               </div>
             </div>
