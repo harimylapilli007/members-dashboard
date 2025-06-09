@@ -229,7 +229,7 @@ function PaymentFailureContent() {
           </CardContent>
           <CardFooter className="flex flex-col gap-2">
             <Button 
-              className="w-full" 
+              className="w-full bg-[#a07735]/90 hover:bg-[#a07735]" 
               onClick={handleDashboardClick}
             >
               Go to Dashboard

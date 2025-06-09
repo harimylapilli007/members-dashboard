@@ -18,6 +18,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import Header from "@/app/components/Header"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { formatPrice } from "@/app/utils/formatPrice"
 
 interface CreditBalance {
   total: number;
@@ -172,16 +173,10 @@ function MembershipDashboardContent() {
 
   useEffect(() => {
     try {
-      const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
-      if (dashboardParams.toString()) {
-        const userData = {
-          id: dashboardParams.get('id'),
-          center_id: dashboardParams.get('center_id'),
-          first_name: dashboardParams.get('first_name'),
-          last_name: dashboardParams.get('last_name'),
-          email: dashboardParams.get('email'),
-          phone: dashboardParams.get('phone')
-        }
+      // Get user data from localStorage
+      const storedUserData = localStorage.getItem('userData')
+      if (storedUserData) {
+        const userData = JSON.parse(storedUserData)
         setUserData(userData)
       } else {
         throw new Error('No user data found')
@@ -193,7 +188,7 @@ function MembershipDashboardContent() {
         title: "Error",
         description: "Please sign in to view your memberships.",
       })
-      router.push('/spa-signin')
+      router.push('/signin')
     }
   }, [])
 
@@ -247,9 +242,41 @@ function MembershipDashboardContent() {
     setIsDetailsModalOpen(true)
   }
 
-  const handleTakeMembership = (membership: MembershipDetail) => {
-    setSelectedMembership(membership)
-    setIsModalOpen(true)
+  const handleTakeMembership = async (membership: MembershipDetail) => {
+    setIsProcessing(true)
+    try {
+      const data = await createMembershipInvoice(membership.id)
+      toast({
+        title: "Success",
+        description: `Membership invoice created successfully!`,
+      })
+      
+      // Get membership name based on price
+      const membershipName = membership.price?.sales === 15000 ? "Bronze Membership" :
+        membership.price?.sales === 25000 ? "Silver Membership" :
+        membership.price?.sales === 35000 ? "Gold Membership" :
+        membership.price?.sales === 50000 ? "Platinum Membership" :
+        membership.price?.sales === 65000 ? "Diamond Membership" :
+        membership.price?.sales === 100000 ? "Ode Signature Elite" :
+        "Ode Spa Membership"
+
+      // Encode parameters for URL
+      const params = new URLSearchParams({
+        invoice_id: data.invoice_id,
+        membership_name: membershipName,
+        price: membership.price?.sales?.toString() || '0'
+      })
+
+      router.push(`/payment?${params.toString()}`)
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to create membership invoice",
+      })
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   const handleConfirmMembership = async () => {
@@ -263,6 +290,7 @@ function MembershipDashboardContent() {
         description: `Membership invoice created successfully!`,
       })
       setIsModalOpen(false)
+      setIsDetailsModalOpen(false)
       router.push(`/payment?invoice_id=${data.invoice_id}`)
       return data
     } catch (error) {
@@ -392,6 +420,18 @@ function MembershipDashboardContent() {
   const expiryDate = membershipData?.expiry_date ? new Date(membershipData.expiry_date).toLocaleDateString() : 'N/A'
   const memberSince = membershipData?.member_since ? new Date(membershipData.member_since).toLocaleDateString() : 'N/A'
 
+  if (isProcessing) {
+    return (
+      <DashboardLayout membershipType="membership">
+        <div className="container p-4 md:p-8">
+          <div className="flex items-center justify-center h-64">
+            <p>Processing your membership purchase...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
+  }
+
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background image */}
@@ -414,9 +454,9 @@ function MembershipDashboardContent() {
         }}
       />
       {/* Subtle blurred circles */}
-      <div className="absolute top-20 -left-60 w-96 h-96 bg-[#e2c799] opacity-40 rounded-full -z-30" />
+      <div className="absolute top-20 -left-60 w-96 h-96 bg-[#e2c799] opacity-40 rounded-full blur-sm -z-30" />
       <div className="absolute bottom-20 right-0 w-[500px] h-[400px] bg-[#b2d5e4] opacity-30 rounded-full blur-xl -z-30" />
-      <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 rounded-full -z-30" />
+      <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 blur-3xl rounded-full -z-30" />
 
       <Header />
 
@@ -485,7 +525,7 @@ function MembershipDashboardContent() {
                 <div className="flex items-center justify-center w-14 h-14 rounded-full bg-[#e2c799] mr-6">
                 <svg width="34" height="24" viewBox="0 0 34 27" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M18.2305 4.96094C18.8984 4.55078 19.3438 3.80664 19.3438 2.96875C19.3438 1.67383 18.2949 0.625 17 0.625C15.7051 0.625 14.6562 1.67383 14.6562 2.96875C14.6562 3.8125 15.1016 4.55078 15.7695 4.96094L12.4121 11.6758C11.8789 12.7422 10.4961 13.0469 9.56445 12.3027L4.34375 8.125C4.63672 7.73242 4.8125 7.24609 4.8125 6.71875C4.8125 5.42383 3.76367 4.375 2.46875 4.375C1.17383 4.375 0.125 5.42383 0.125 6.71875C0.125 8.01367 1.17383 9.0625 2.46875 9.0625C2.48047 9.0625 2.49805 9.0625 2.50977 9.0625L5.1875 23.793C5.50977 25.5742 7.0625 26.875 8.87891 26.875H25.1211C26.9316 26.875 28.4844 25.5801 28.8125 23.793L31.4902 9.0625C31.502 9.0625 31.5195 9.0625 31.5312 9.0625C32.8262 9.0625 33.875 8.01367 33.875 6.71875C33.875 5.42383 32.8262 4.375 31.5312 4.375C30.2363 4.375 29.1875 5.42383 29.1875 6.71875C29.1875 7.24609 29.3633 7.73242 29.6562 8.125L24.4355 12.3027C23.5039 13.0469 22.1211 12.7422 21.5879 11.6758L18.2305 4.96094Z" fill="#A07735"/>
-                  </svg>
+                </svg>
 
                 </div>
                 <div className="flex flex-col">
@@ -493,8 +533,12 @@ function MembershipDashboardContent() {
                   <div className="flex mt-2">
                     <span className={`px-4 py-1 rounded-full text-sm font-medium ${membershipData?.status === 1 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>{getStatusText(membershipData?.status || 2)}</span>
                   </div>
-                  <div className="text-sm font-inter text-black mt-2">Valid until {expiryDate}</div>
-                  <div className="text-sm font-inter text-black mt-2">Member since {memberSince}</div>
+                  {membershipData?.status === 1 && (
+                    <>
+                      <div className="text-sm font-inter text-black mt-2">Valid until {expiryDate}</div>
+                      <div className="text-sm font-inter text-black mt-2">Member since {memberSince}</div>
+                    </>
+                  )}
                 </div>
               </div>
             </Card>
@@ -557,7 +601,7 @@ function MembershipDashboardContent() {
                          "Ode Spa Membership"}
                       </h1>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-lg font-bold text-[#98564D]">₹{membership.price?.sales?.toLocaleString()}</span>
+                        <span className="text-lg font-bold text-[#98564D]">{formatPrice(membership.price?.sales || 0)}</span>
                         <span className="text-[18px] font-inter">Validity: 12 months</span>
                       </div>
                       <div className="flex items-center mt-4 relative h-[24px]">
@@ -591,12 +635,15 @@ function MembershipDashboardContent() {
                       </div>
                       <div className="flex justify-center mt-4">
                         <Button 
-                          className="relative w-[140px] sm:w-[300px] h-[32px] sm:h-[36px] px-2 sm:p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-sm sm:text-[20px] leading-[17px] text-center text-[#98564D] whitespace-nowrap"
-                          onClick={() => handleTakeMembership(membership)}
+                            className="relative w-full h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
+                            onClick={() => handleTakeMembership(membership)}
                         >
                           Buy Membership
                         </Button>
                       </div>
+                      <div className="w-full sm:w-[140px] flex justify-center sm:justify-end">
+                  
+                </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -740,7 +787,15 @@ const MembershipDetailsModal = ({
     <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden rounded-2xl w-[92%] sm:w-full mx-auto max-h-[90vh] sm:max-h-[85vh] overflow-y-auto">
       <DialogTitle className="sr-only">Membership Details</DialogTitle>
       <div className="bg-[#a07735] p-3 sm:p-4 rounded-t-lg text-center relative">
-        <h1 className="text-xl sm:text-2xl font-marcellus text-white mb-1">{membership.name}</h1>
+      <h1 className="text-lg sm:text-2xl font-marcellus text-white mb-0.5 sm:mb-1">
+            {membership.price?.sales === 15000 ? "Bronze Membership" :
+             membership.price?.sales === 25000 ? "Silver Membership" :
+             membership.price?.sales === 35000 ? "Gold Membership" :
+             membership.price?.sales === 50000 ? "Platinum Membership" :
+             membership.price?.sales === 65000 ? "Diamond Membership" :
+             membership.price?.sales === 100000 ? "Ode Signature Elite" :
+             "Ode Spa Membership"}
+          </h1>
       </div>
       <div className="px-0 pt-0 pb-0 rounded-t-2xl text-center relative">
         <div className="flex items-center justify-between px-4 sm:px-8 pt-4 sm:pt-6 pb-2">
@@ -755,13 +810,15 @@ const MembershipDetailsModal = ({
             <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="text-base sm:text-lg font-bold font-inter">Back</span>
           </button>
-          <h1 className="text-xl sm:text-2xl font-bold font-marcellus">₹{membership.price?.sales?.toLocaleString()}</h1>
-          <Button 
-            className="relative w-[140px] sm:w-[300px] h-[32px] sm:h-[36px] px-2 sm:p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-sm sm:text-[20px] leading-[17px] text-center text-[#98564D] whitespace-nowrap"
-            onClick={onConfirm}
-          >
-            Buy Membership
-          </Button>
+          <h1 className="text-xl sm:text-2xl font-bold font-marcellus">{formatPrice(membership.price?.sales || 0)}</h1>
+          <div className="w-full sm:w-[140px] flex justify-center sm:justify-end">
+                  <Button 
+                    className="relative w-full sm:w-[300px] h-[32px] sm:h-[36px] p-4 sm:p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-base sm:text-[20px] leading-[17px] text-center text-[#98564D]"
+                    onClick={onConfirm}
+                    >
+                    Buy Membership
+                  </Button>
+                </div>
         </div>
       </div>
       {/* Details Grid */}

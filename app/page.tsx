@@ -10,6 +10,7 @@ import { usePathname, useRouter } from "next/navigation"
 import Header from "./components/Header"
 import { useState, useEffect, useRef } from "react"
 import Draggable from 'react-draggable'
+import { formatPrice } from "./utils/formatPrice"
 
 export default function Component() {
   const pathname = usePathname()
@@ -63,7 +64,7 @@ export default function Component() {
   const memberships = [
     {
       id: 1,
-      price: "Rs. 15,000",
+      price: formatPrice(15000),
       image: "/membership/15000.png",
       name:"Bronze Membership",
       offer: "35% off on all weekdays",
@@ -71,36 +72,35 @@ export default function Component() {
     },
     {
       id: 2,
-      price: "Rs. 25,000",
+      price: formatPrice(25000),
       image: "/membership/25000.png",
       name:"Silver Membership",
       offer: "50% off on all services"
     },
     {
       id: 3,
-      price: "Rs. 35,000",
+      price: formatPrice(35000),
       image: "/membership/35000.png",
       name:"Gold Membership",
       offer: "50% off on all services"
     },
     {
       id: 4,
-      price: "Rs. 50,000",
+      price: formatPrice(50000),
       image: "/membership/50000.png",
       name:"Platinum Membership",
       offer: "50% off on all services"
-
     },
     {
       id: 5,
-      price: "Rs. 65,000",
+      price: formatPrice(65000),
       image: "/membership/65000.png",
       name:"Diamond Membership",
       offer: "50% off on all services"
     },
     {
       id: 6,
-      price: "Rs. 1,00,000",
+      price: formatPrice(100000),
       image: "/membership/100000.png",
       name:"Ode Signature Elite",
       offer: "50% off on all services"
@@ -173,8 +173,8 @@ export default function Component() {
             <div className="px-0 pt-0 pb-0 rounded-t-2xl text-center relative">
               <div className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 pt-4 sm:pt-6 pb-2 gap-3">
                 <button
-                  className="hidden sm:flex hover:text-[#a07735] text-base sm:text-lg font-bold font-inter items-center gap-2"
-                  onClick={onClose}
+                  className="flex hover:text-[#a07735] text-base sm:text-lg font-bold font-inter items-center gap-2 cursor-pointer"
+                  onClick={() => onClose()}
                   aria-label="Back"
                 >
                   <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -331,9 +331,9 @@ export default function Component() {
             }}
           />
           {/* Subtle blurred circles */}
-          <div className="absolute top-20 -left-60 w-96 h-96 bg-[#e2c799] opacity-40 rounded-full -z-30" />
+          <div className="absolute top-20 -left-60 w-96 h-96 bg-[#e2c799] opacity-40 rounded-full blur-sm -z-30" />
           <div className="absolute bottom-20 right-0 w-[500px] h-[400px] bg-[#b2d5e4] opacity-30 rounded-full blur-xl -z-30" />
-          <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 rounded-full -z-30" />
+          <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 blur-3xl  rounded-full -z-30" />
 
           <Header />
 

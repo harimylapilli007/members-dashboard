@@ -422,7 +422,7 @@ export default function CheckoutPage() {
                       // Store the current URL to redirect back after login
                       const currentUrl = window.location.href;
                       localStorage.setItem('redirectAfterLogin', currentUrl);
-                      router.push('/spa-signin');
+                      router.push('/signin');
                       return;
                     }
                     handleConfirmBooking();

@@ -301,6 +301,17 @@ export default function SignIn() {
         // Set the auth token cookie with proper domain and path
         document.cookie = `auth-token=${idToken}; path=/; max-age=3600; secure; samesite=strict`;
         
+        // Store user data in localStorage
+        const userData = {
+          id: guests[0].id,
+          center_id: guests[0].center_id,
+          first_name: guests[0].personal_info.first_name,
+          last_name: guests[0].personal_info.last_name,
+          email: guests[0].personal_info.email ?? '',
+          phone: guests[0].personal_info.mobile_phone.number ?? ''
+        }
+        localStorage.setItem('userData', JSON.stringify(userData));
+        
         toast({
           title: "Success",
           description: "Successfully verified!",
@@ -308,17 +319,6 @@ export default function SignIn() {
         
         // If only one account, navigate directly
         if (guests.length === 1) {
-          // Store parameters in localStorage before navigation
-          const userData = {
-            id: guests[0].id,
-            center_id: guests[0].center_id,
-            first_name: guests[0].personal_info.first_name,
-            last_name: guests[0].personal_info.last_name,
-            email: guests[0].personal_info.email ?? '',
-            phone: guests[0].personal_info.mobile_phone.number ?? ''
-          }
-          localStorage.setItem('userData', JSON.stringify(userData))
-
           // Force a hard navigation to ensure proper state reset
           window.location.href = '/dashboard/memberships';
         } else {

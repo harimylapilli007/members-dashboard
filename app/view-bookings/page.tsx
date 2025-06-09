@@ -120,24 +120,30 @@ export default function BookingsPage() {
       const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
       const guestId = dashboardParams.get('id') || localStorage.getItem('guestId')
 
+      console.log('Guest ID:', guestId) // Debug log
+
       if (!guestId) {
         throw new Error('Guest ID not found')
       }
+
+      const apiKey = process.env.NEXT_PUBLIC_ZENOTI_API_KEY
+      console.log('API Key exists:', !!apiKey) // Debug log (don't log the actual key)
 
       const data = await fetchWithRetry(
         `https://api.zenoti.com/v1/guests/${guestId}/appointments`,
         {
           headers: {
-            'Authorization': process.env.NEXT_PUBLIC_ZENOTI_API_KEY ?? '',
+            'Authorization': apiKey ?? '',
             'accept': 'application/json'
           }
         },
         generateCacheKey('guest-appointments', { guestId })
       )
       
-      console.log('API Response:', data)
+      console.log('API Response:', data) // Debug log
 
       if (!data) {
+        console.error('API returned null or undefined')
         throw new Error('No data received from server')
       }
 
@@ -266,12 +272,11 @@ export default function BookingsPage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-semibold text-gray-900">My Bookings</h1>
-              <p className="mt-1 text-sm text-gray-500">View and manage your spa appointments</p>
-            </div>
+              <h2 className="mt-1 gray-500">View and manage your spa appointments</h2>
+           </div>
             <button
-              onClick={() => router.push('/')}
-              className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"
-            >
+              onClick={() => router.push('/ServiceBookingPage?openModal=true')}
+              className="px-4 py-2 font-marcellus bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"            >
               Book New Service
             </button>
           </div>
@@ -286,7 +291,7 @@ export default function BookingsPage() {
               <div className="text-red-500 mb-4">{error}</div>
               <button
                 onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"
+                className="px-4 py-2 bg-[#a07735] font-marcellus text-white rounded-md hover:bg-[#8a6930] transition-colors"
               >
                 Try Again
               </button>
@@ -295,7 +300,7 @@ export default function BookingsPage() {
             <div className="text-center py-12">
               <div className="text-gray-500 mb-4">No bookings found</div>
               <button
-                onClick={() => router.push('/')}
+                onClick={() => router.push('/ServiceBookingPage?openModal=true')}
                 className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"
               >
                 Book Your First Service
