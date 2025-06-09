@@ -584,6 +584,13 @@ export default function ServiceBookingPage() {
                 {/* Desktop Search Section */}
                 <div className="hidden md:block mb-8 sticky top-0.5 z-10 bg-gradient-to-b from-white/90 to-white/60 backdrop-blur-md rounded-xl shadow-sm p-4">
                   <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between gap-4">
+                      <h1 className="text-2xl font-bold">Discover Our Services</h1>
+                      <LocationSelector 
+                        selectedLocation={selectedLocation} 
+                        onOpen={handleLocationOpen} 
+                      />
+                    </div>
                     <div className="flex-1">
                       <div className="relative group">
                         <div className="absolute inset-0 bg-gradient-to-r from-[#a07735]/20 to-[#b2d5e4]/20 rounded-lg blur transition-all duration-300 group-hover:blur-md group-focus-within:blur-md"></div>

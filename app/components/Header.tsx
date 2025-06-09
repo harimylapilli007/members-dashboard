@@ -154,14 +154,14 @@ export default function Header() {
             <>
               <Button 
                 variant="outline" 
-                className="bg-transparent text-[20px] hover:bg-[#a07735] w-36 font-marcellus line-height-24 hover:text-white border-[#a07735] text-[#a07735] group" 
+                className="bg-transparent text-[20px] text-[#a07735]  w-36 font-marcellus line-height-24 hover:text-[#a07735] border-[#a07735]  " 
                 onClick={() => router.push('/signin')}
               >
                 Login
               </Button>
               <Button 
                 variant="outline"
-                className="bg-transparent text-[20px] hover:bg-[#a07735] w-36 font-marcellus line-height-24 hover:text-white border-[#a07735] text-[#a07735] group" 
+                className="bg-[#a07735] text-[20px] text-white hover:bg-[#a07735] w-36 font-marcellus line-height-24 hover:text-white border-[#a07735] hover:scale-105 transition-transform duration-300" 
                 onClick={() => router.push('/signin')}
               >
                 Signup
@@ -249,7 +249,7 @@ export default function Header() {
                   <>
                     <Button 
                       variant="outline" 
-                      className="w-full bg-white/50 text-[#a07735] hover:bg-[#a07735] font-marcellus hover:text-white border-[#a07735] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]" 
+                      className="w-full bg-white/50 text-[#a07735] font-marcellus hover:bg-[#a07735] hover:text-white border-[#a07735] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]" 
                       onClick={() => {
                         router.push('/signin')
                         setIsMobileMenuOpen(false)
