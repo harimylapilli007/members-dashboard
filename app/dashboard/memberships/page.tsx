@@ -171,29 +171,31 @@ function MembershipDashboardContent() {
   }
 
   useEffect(() => {
-    // Get user data from localStorage
     try {
-      const storedUserData = localStorage.getItem('userData')
-      if (storedUserData) {
-        const parsedData = JSON.parse(storedUserData)
-        if (!parsedData.id || !parsedData.center_id) {
-          throw new Error('Invalid user data format')
+      const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
+      if (dashboardParams.toString()) {
+        const userData = {
+          id: dashboardParams.get('id'),
+          center_id: dashboardParams.get('center_id'),
+          first_name: dashboardParams.get('first_name'),
+          last_name: dashboardParams.get('last_name'),
+          email: dashboardParams.get('email'),
+          phone: dashboardParams.get('phone')
         }
-        setUserData(parsedData)
+        setUserData(userData)
       } else {
         throw new Error('No user data found')
       }
     } catch (error) {
       console.error('Error loading user data:', error)
-      setError(error instanceof Error ? error.message : 'Failed to load user data')
-      setLoading(false)
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load user data. Please try logging in again.",
+        description: "Please sign in to view your memberships.",
       })
+      router.push('/spa-signin')
     }
-  }, [toast])
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
