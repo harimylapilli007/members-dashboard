@@ -32,42 +32,55 @@ export const initiatePayment = (membershipData: {
   email: string
   phone: string
   invoiceId: string
-}) => {
-  const paymentData: PaymentData = {
-    key: '26sF13CI',
-    txnid: membershipData.invoiceId,
-    // amount: membershipData.price.toString(),
-    amount: '1',
-    productinfo: membershipData.name,
-    firstname: membershipData.firstName,
-    email: membershipData.email,
-    phone: membershipData.phone,
-    salt: '0Rd0lVQEvO',
-    surl: `${window.location.protocol}//${window.location.host}/api/payment/success`,
-    furl: `${window.location.protocol}//${window.location.host}/api/payment/failure`,
-  }
+}): Promise<void> => {
+  return new Promise((resolve) => {
+    const paymentData: PaymentData = {
+      key: '26sF13CI',
+      txnid: membershipData.invoiceId,
+      // amount: membershipData.price.toString(),
+      amount: '1',
+      productinfo: membershipData.name,
+      firstname: membershipData.firstName,
+      email: membershipData.email,
+      phone: membershipData.phone,
+      salt: '0Rd0lVQEvO',
+      surl: `${window.location.protocol}//${window.location.host}/api/payment/success`,
+      furl: `${window.location.protocol}//${window.location.host}/api/payment/failure`,
+    }
 
-  // Generate the hash for the payment
-  const hash = generateHash(paymentData, paymentData.salt)
-  paymentData.hash = hash
+    // Generate the hash for the payment
+    const hash = generateHash(paymentData, paymentData.salt)
+    paymentData.hash = hash
 
-  // Create a form dynamically
-  const form = document.createElement('form')
-  form.action = 'https://secure.payu.in/_payment'
-  form.method = 'POST'
+    // Store payment details in localStorage for retry functionality
+    localStorage.setItem('paymentDetails', JSON.stringify({
+      amount: paymentData.amount,
+      productinfo: paymentData.productinfo,
+      firstname: paymentData.firstname,
+      email: paymentData.email,
+      phone: paymentData.phone,
+      txnid: paymentData.txnid
+    }))
 
-  // Append payment data to the form as hidden inputs
-  Object.entries(paymentData).forEach(([key, value]) => {
-    const input = document.createElement('input')
-    input.type = 'hidden'
-    input.name = key
-    input.value = value
-    form.appendChild(input)
+    // Create a form dynamically
+    const form = document.createElement('form')
+    form.action = 'https://secure.payu.in/_payment'
+    form.method = 'POST'
+
+    // Append payment data to the form as hidden inputs
+    Object.entries(paymentData).forEach(([key, value]) => {
+      const input = document.createElement('input')
+      input.type = 'hidden'
+      input.name = key
+      input.value = value
+      form.appendChild(input)
+    })
+
+    // Append the form to the body and submit it
+    document.body.appendChild(form)
+    form.submit()
+    resolve()
   })
-
-  // Append the form to the body and submit it
-  document.body.appendChild(form)
-  form.submit()
 }
 
 export const verifyPayUResponse = (responseData: {

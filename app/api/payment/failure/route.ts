@@ -36,13 +36,13 @@ export async function POST(request: Request) {
       allParams: Object.fromEntries(formData.entries())
     })
 
-    // Update membership status in the backend
-    try {
-      const updateResult = await updateMembershipStatus(responseData)
-      console.log('Membership status update result:', updateResult)
-    } catch (updateError) {
-      console.error('Error updating membership status:', updateError)
-    }
+    // // Update membership status in the backend
+    // try {
+    //   const updateResult = await updateMembershipStatus(responseData)
+    //   console.log('Membership status update result:', updateResult)
+    // } catch (updateError) {
+    //   console.error('Error updating membership status:', updateError)
+    // }
 
     // Construct the redirect URL with error details
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'

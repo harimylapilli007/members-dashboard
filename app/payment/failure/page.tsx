@@ -114,26 +114,57 @@ function PaymentFailureContent() {
     try {
       // Get the stored payment details from localStorage
       const storedPaymentDetails = localStorage.getItem('paymentDetails')
-      if (storedPaymentDetails) {
-        const paymentDetails = JSON.parse(storedPaymentDetails)
-        // Re-initiate payment with stored details
-        initiatePayment(paymentDetails)
-      } else {
+      if (!storedPaymentDetails) {
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Unable to retry payment. Please try again from the membership page.",
+          title: "Payment Details Not Found",
+          description: "Unable to find previous payment details. Please try again from the membership page.",
         })
         router.push('/dashboard/memberships')
+        return
       }
+
+      const paymentDetails = JSON.parse(storedPaymentDetails)
+      
+      // Validate payment details
+      if (!paymentDetails.amount || !paymentDetails.productinfo || !paymentDetails.txnid) {
+        toast({
+          variant: "destructive",
+          title: "Invalid Payment Details",
+          description: "The stored payment details are incomplete. Please try again from the membership page.",
+        })
+        router.push('/dashboard/memberships')
+        return
+      }
+
+      // Initiate payment with stored details
+      await initiatePayment({
+        name: paymentDetails.productinfo,
+        price: parseFloat(paymentDetails.amount),
+        firstName: paymentDetails.firstname,
+        email: paymentDetails.email,
+        phone: paymentDetails.phone,
+        invoiceId: paymentDetails.txnid // Reuse the same transaction ID
+      })
+
     } catch (error) {
-      console.error('Error retrying payment:', error)
+      console.error('Error preparing payment retry:', error)
+      
+      // Show appropriate error message based on the error type
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "Failed to prepare payment retry. Please try again from the membership page."
+
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to retry payment. Please try again from the membership page.",
+        title: "Payment Retry Failed",
+        description: errorMessage,
       })
-      router.push('/dashboard/memberships')
+
+      // Navigate back to memberships page after a short delay
+      setTimeout(() => {
+        router.push('/dashboard/memberships')
+      }, 2000)
     } finally {
       setIsRetrying(false)
       setShowRetryDialog(false)
@@ -198,58 +229,79 @@ function PaymentFailureContent() {
   }
 
   return (
-    <>
-      <div className="container mx-auto flex items-center justify-center min-h-screen py-12 px-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <div className="flex items-center justify-center mb-4">
-              <XCircle className="h-16 w-16 text-red-500" />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background gradient */}
+      <div
+        className="fixed inset-0 -z-10"
+        style={{
+          background: "linear-gradient(120deg, #f5f1e8 0%, #e5e7eb 60%, #b2d5e4 100%)"
+        }}
+      />
+      {/* Subtle blurred circles */}
+      <div className="fixed top-20 -left-60 w-[600px] h-[600px] bg-[#e2c799] opacity-60 rounded-full -z-10 blur-3xl" />
+      <div className="fixed bottom-20 right-0 w-[800px] h-[800px] bg-[#b2d5e4] opacity-50 rounded-full -z-10 blur-3xl" />
+      <div className="fixed top-1/3 left-1/2 w-[2000px] h-[2000px] bg-[#b2d5e4] opacity-40 rounded-full -z-10 blur-3xl" />
+
+      {/* Main content wrapper */}
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 sm:px-6">
+        <div className="rounded-2xl shadow-xl bg-[#FAF5EB] w-full max-w-[550px] relative z-10">
+          {/* Header */}
+          <div className="rounded-t-2xl px-4 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6 text-center">
+            <div className="flex flex-col items-center">
+              <div className="flex items-center justify-center mb-4">
+                <XCircle className="h-16 w-16 text-red-500" />
+              </div>
+              <h1 className="text-xl sm:text-2xl font-bold mb-1 font-['Marcellus']">Payment Failed</h1>
+              <p className="text-opacity-90 font-['Marcellus'] text-sm sm:text-base">We couldn't process your payment. Please try again.</p>
             </div>
-            <CardTitle className="text-center">Payment Failed</CardTitle>
-            <CardDescription className="text-center">
-              We couldn't process your payment. Please try again.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2 text-center">
-              {errorDetails.transactionId && (
-                <p className="text-sm text-muted-foreground">
-                  Transaction ID: {errorDetails.transactionId}
-                </p>
-              )}
-              {errorDetails.code && (
-                <p className="text-sm text-muted-foreground">
-                  Error Code: {errorDetails.code}
-                </p>
-              )}
-              <p className="text-sm text-muted-foreground">
-                {errorDetails.message}
-              </p>
+          </div>
+
+          <div className="px-4 sm:px-8 pb-6 sm:pb-8 pt-4 sm:pt-6">
+            <div className="bg-[#FAF9F6] rounded-xl p-6 mb-8">
+              <div className="flex flex-col gap-6">
+                {errorDetails.transactionId && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground font-['Marcellus']">Transaction ID</span>
+                    <span className="font-mono text-base">{errorDetails.transactionId}</span>
+                  </div>
+                )}
+                {errorDetails.code && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground font-['Marcellus']">Error Code</span>
+                    <span className="text-base font-['Marcellus']">{errorDetails.code}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground font-['Marcellus']">Error Message</span>
+                  <span className="text-base font-['Marcellus'] text-red-600">{errorDetails.message}</span>
+                </div>
+              </div>
             </div>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-2">
-            <Button 
-              className="w-full bg-[#a07735]/90 hover:bg-[#a07735]" 
-              onClick={handleDashboardClick}
-            >
-              Go to Dashboard
-            </Button>
-            <Button 
-              variant="outline" 
-              className="w-full"
-              onClick={() => setShowRetryDialog(true)}
-            >
-              Try Again
-            </Button>
-          </CardFooter>
-        </Card>
+
+            <div className="flex flex-col gap-4">
+              <Button 
+                className="w-full h-11 rounded-lg bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow font-['Marcellus'] text-[#98564D] font-bold text-base sm:text-[20px] leading-[17px] text-center disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
+                onClick={handleDashboardClick}
+              >
+                Go to Dashboard
+              </Button>
+              <Button 
+                variant="outline"
+                className="w-full h-11 rounded-lg border-[#E6B980] text-[#98564D] font-['Marcellus'] font-bold text-base sm:text-[20px] leading-[17px] hover:bg-[#FAF5EB]"
+                onClick={() => setShowRetryDialog(true)}
+              >
+                Try Again
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Dialog open={showRetryDialog} onOpenChange={setShowRetryDialog}>
-        <DialogContent>
+        <DialogContent className="bg-[#FAF5EB] border-[#E6B980]">
           <DialogHeader>
-            <DialogTitle>Retry Payment</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="font-['Marcellus'] text-[#98564D]">Retry Payment</DialogTitle>
+            <DialogDescription className="font-['Marcellus']">
               Would you like to retry the payment? This will initiate a new payment attempt.
             </DialogDescription>
           </DialogHeader>
@@ -258,37 +310,42 @@ function PaymentFailureContent() {
               variant="outline"
               onClick={handleCancel}
               disabled={isRetrying}
+              className="border-[#E6B980] text-[#98564D] font-['Marcellus'] hover:bg-[#FAF5EB]"
             >
               Cancel
             </Button>
             <Button
               onClick={handleRetry}
               disabled={isRetrying}
+              className="bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] text-[#98564D] font-['Marcellus'] font-bold hover:!bg-[#b9935a]"
             >
               {isRetrying ? 'Processing...' : 'Retry Payment'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   )
 }
 
 export default function PaymentFailure() {
   return (
     <Suspense fallback={
-      <div className="flex items-center justify-center min-h-screen py-12">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <div className="flex items-center justify-center mb-4">
-              <XCircle className="h-16 w-16 text-red-500" />
+      <div className="min-h-screen relative overflow-hidden">
+        <div
+          className="fixed inset-0 -z-10"
+          style={{
+            background: "linear-gradient(120deg, #f5f1e8 0%, #e5e7eb 60%, #b2d5e4 100%)"
+          }}
+        />
+        <div className="relative z-10 flex items-center justify-center min-h-screen px-4 sm:px-6">
+          <div className="rounded-2xl shadow-xl bg-[#FAF5EB] w-full max-w-[550px] relative z-10 p-8">
+            <div className="flex flex-col items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E6B980]"></div>
+              <p className="mt-4 text-center font-['Marcellus'] text-[#98564D]">Loading payment status...</p>
             </div>
-            <CardTitle className="text-center">Loading...</CardTitle>
-            <CardDescription className="text-center">
-              Please wait while we process your payment status.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+          </div>
+        </div>
       </div>
     }>
       <PaymentFailureContent />

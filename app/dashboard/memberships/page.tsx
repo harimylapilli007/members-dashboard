@@ -200,43 +200,6 @@ function MembershipDashboardContent() {
     return () => clearInterval(interval)
   }, [])
 
-  const createMembershipInvoice = async (membershipId: string) => {
-    try {
-      if (!userData?.id || !admincenterId) {
-        throw new Error('Guest ID and Center ID are required')
-      }
-
-      const response = await fetch('https://api.zenoti.com/v1/invoices/memberships', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283',
-          'accept': 'application/json',
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          center_id: admincenterId,
-          user_id: userData.id,
-          membership_ids: membershipId
-        })
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      if (!data.success) {
-        throw new Error(data.error?.message || 'Failed to create invoice')
-      }
-
-      return data
-    } catch (error) {
-      console.error('Error creating invoice:', error)
-      throw error
-    }
-  }
-
   const handleMembershipClick = (membership: MembershipDetail) => {
     setSelectedMembership(membership)
     setIsDetailsModalOpen(true)
@@ -245,12 +208,6 @@ function MembershipDashboardContent() {
   const handleTakeMembership = async (membership: MembershipDetail) => {
     setIsProcessing(true)
     try {
-      const data = await createMembershipInvoice(membership.id)
-      toast({
-        title: "Success",
-        description: `Membership invoice created successfully!`,
-      })
-      
       // Get membership name based on price
       const membershipName = membership.price?.sales === 15000 ? "Bronze Membership" :
         membership.price?.sales === 25000 ? "Silver Membership" :
@@ -262,17 +219,18 @@ function MembershipDashboardContent() {
 
       // Encode parameters for URL
       const params = new URLSearchParams({
-        invoice_id: data.invoice_id,
+        membership_id: membership.id,
         membership_name: membershipName,
         price: membership.price?.sales?.toString() || '0'
       })
 
       router.push(`/payment?${params.toString()}`)
     } catch (error) {
+      console.error('Error processing membership:', error)
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create membership invoice",
+        description: "Failed to process membership. Please try again.",
       })
     } finally {
       setIsProcessing(false)
@@ -281,25 +239,34 @@ function MembershipDashboardContent() {
 
   const handleConfirmMembership = async () => {
     if (!selectedMembership) return
-
     setIsProcessing(true)
     try {
-      const data = await createMembershipInvoice(selectedMembership.id)
-      toast({
-        title: "Success",
-        description: `Membership invoice created successfully!`,
+      // Get membership name based on price
+      const membershipName = selectedMembership.price?.sales === 15000 ? "Bronze Membership" :
+        selectedMembership.price?.sales === 25000 ? "Silver Membership" :
+        selectedMembership.price?.sales === 35000 ? "Gold Membership" :
+        selectedMembership.price?.sales === 50000 ? "Platinum Membership" :
+        selectedMembership.price?.sales === 65000 ? "Diamond Membership" :
+        selectedMembership.price?.sales === 100000 ? "Ode Signature Elite" :
+        "Ode Spa Membership"
+
+      // Encode parameters for URL
+      const params = new URLSearchParams({
+        membership_id: selectedMembership.id,
+        membership_name: membershipName,
+        price: selectedMembership.price?.sales?.toString() || '0'
       })
+
       setIsModalOpen(false)
       setIsDetailsModalOpen(false)
-      router.push(`/payment?invoice_id=${data.invoice_id}`)
-      return data
+      router.push(`/payment?${params.toString()}`)
     } catch (error) {
+      console.error('Error processing membership:', error)
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create membership invoice",
+        description: "Failed to process membership. Please try again.",
       })
-      throw error
     } finally {
       setIsProcessing(false)
     }
@@ -640,10 +607,18 @@ function MembershipDashboardContent() {
                       </div>
                       <div className="flex justify-center mt-4">
                         <Button 
-                            className="relative w-full h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
-                            onClick={() => handleTakeMembership(membership)}
+                          className="relative w-full h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D] disabled:opacity-50 disabled:cursor-not-allowed"
+                          onClick={() => handleTakeMembership(membership)}
+                          disabled={isProcessing}
                         >
-                          Buy Membership
+                          {isProcessing ? (
+                            <div className="flex items-center justify-center">
+                              <div className="w-5 h-5 border-2 border-[#98564D] border-t-transparent rounded-full animate-spin mr-2"></div>
+                              Processing...
+                            </div>
+                          ) : (
+                            "Buy Membership"
+                          )}
                         </Button>
                       </div>
                       <div className="w-full sm:w-[140px] flex justify-center sm:justify-end">
@@ -749,13 +724,13 @@ function MembershipDashboardContent() {
 
       {selectedMembership && (
         <>
-          <MembershipModal
+          {/* <MembershipModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             membership={selectedMembership}
             onConfirm={handleConfirmMembership}
             loading={isProcessing}
-          />
+          /> */}
           <MembershipDetailsModal
             isOpen={isDetailsModalOpen}
             onClose={() => setIsDetailsModalOpen(false)}
@@ -818,10 +793,18 @@ const MembershipDetailsModal = ({
           <h1 className="text-xl sm:text-2xl font-bold font-marcellus">{formatPrice(membership.price?.sales || 0)}</h1>
           <div className="w-full sm:w-[140px] flex justify-center sm:justify-end">
                   <Button 
-                    className="relative w-full sm:w-[300px] h-[32px] sm:h-[36px] p-4 sm:p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-base sm:text-[20px] leading-[17px] text-center text-[#98564D]"
+                    className="relative w-full sm:w-[300px] h-[32px] sm:h-[36px] p-4 sm:p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-base sm:text-[20px] leading-[17px] text-center text-[#98564D] disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={onConfirm}
-                    >
-                    Buy Membership
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <div className="flex items-center justify-center">
+                        <div className="w-5 h-5 border-2 border-[#98564D] border-t-transparent rounded-full animate-spin mr-2"></div>
+                        Processing...
+                      </div>
+                    ) : (
+                      "Buy Membership"
+                    )}
                   </Button>
                 </div>
         </div>

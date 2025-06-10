@@ -80,35 +80,56 @@ export default function PaymentPage() {
   useEffect(() => {
     const fetchInvoice = async () => {
       const invoiceId = searchParams.get('invoice_id')
+      const membershipId = searchParams.get('membership_id')
       
-      if (!invoiceId) {
-        setError("No invoice ID provided")
+      if (!invoiceId && !membershipId) {
+        setError("No membership or invoice ID provided")
         setLoading(false)
         return
       }
 
       try {
-        const response = await getInvoiceDetails(invoiceId) as InvoiceResponse
-        
-        if (!response.success || !response.data) {
-          throw new Error(response.error?.message || "Failed to fetch invoice details")
-        }
+        // If we have an invoice ID, fetch the invoice details
+        if (invoiceId) {
+          const response = await getInvoiceDetails(invoiceId) as InvoiceResponse
+          
+          if (!response.success || !response.data) {
+            throw new Error(response.error?.message || "Failed to fetch invoice details")
+          }
 
-        // Calculate GST (18%) and total amount
-        const baseAmount = membershipPrice ? parseInt(membershipPrice) : response.data.amount || 0
-        const gstAmount = Math.round(baseAmount * 0.18) // 18% GST
-        const totalAmount = baseAmount + gstAmount
+          // Calculate GST (18%) and total amount
+          const baseAmount = membershipPrice ? parseInt(membershipPrice) : response.data.amount || 0
+          const gstAmount = Math.round(baseAmount * 0.18) // 18% GST
+          const totalAmount = baseAmount + gstAmount
 
-        // Merge invoice data with membership details
-        const invoiceData: InvoiceData = {
-          ...response.data,
-          membershipName: membershipName || undefined,
-          amount: baseAmount,
-          gst: gstAmount,
-          total: totalAmount,
-          total_amount: totalAmount
+          // Merge invoice data with membership details
+          const invoiceData: InvoiceData = {
+            ...response.data,
+            membershipName: membershipName || undefined,
+            amount: baseAmount,
+            gst: gstAmount,
+            total: totalAmount,
+            total_amount: totalAmount
+          }
+          setInvoice(invoiceData)
+        } else {
+          // If we only have a membership ID, create a temporary invoice object
+          const baseAmount = membershipPrice ? parseInt(membershipPrice) : 0
+          const gstAmount = Math.round(baseAmount * 0.18) // 18% GST
+          const totalAmount = baseAmount + gstAmount
+
+          const tempInvoice: InvoiceData = {
+            id: 'pending',
+            receipt_no: 'pending',
+            status: 0,
+            membershipName: membershipName || undefined,
+            amount: baseAmount,
+            gst: gstAmount,
+            total: totalAmount,
+            total_amount: totalAmount
+          }
+          setInvoice(tempInvoice)
         }
-        setInvoice(invoiceData)
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred")
         toast({
@@ -124,36 +145,87 @@ export default function PaymentPage() {
     fetchInvoice()
   }, [searchParams, toast, membershipName, membershipPrice])
 
-  const handlePayment = async () => {
-    if (!invoice) return
+  const createMembershipInvoice = async (membershipId: string) => {
+    try {
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}')
+      const admincenterId = '92d41019-c790-4668-9158-a693e531c1a4'
 
-    if (!userInfo.firstName || !userInfo.phone) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Missing user information. Please ensure you are logged in with complete details.",
+      if (!userData?.id || !admincenterId) {
+        throw new Error('Guest ID and Center ID are required')
+      }
+
+      const response = await fetch('https://api.zenoti.com/v1/invoices/memberships', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283',
+          'accept': 'application/json',
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          center_id: admincenterId,
+          user_id: userData.id,
+          membership_ids: membershipId
+        })
       })
-      return
-    }
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      if (!data.success) {
+        throw new Error(data.error?.message || 'Failed to create invoice')
+      }
+
+      return data
+    } catch (error) {
+      console.error('Error creating invoice:', error)
+      throw error
+    }
+  }
+
+  const handlePayment = async () => {
     try {
       setIsProcessing(true)
       
+      // Get membership_id from URL params
+      const params = new URLSearchParams(window.location.search)
+      const membershipId = params.get('membership_id')
+
+      if (!membershipId) {
+        throw new Error('Membership ID is required')
+      }
+
+      if (!userInfo.firstName || !userInfo.phone) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Missing user information. Please ensure you are logged in with complete details.",
+        })
+        return
+      }
+
+      // Create membership invoice
+      const invoiceData = await createMembershipInvoice(membershipId)
+      
+      // Continue with payment flow using the created invoice
       await initiatePayment({
-        name: invoice.membershipName || "Ode Spa Membership",
-        price: invoice.total || invoice.total_amount || 0,
+        name: membershipName || "Ode Spa Membership",
+        price: Number(membershipPrice) || 0,
         firstName: userInfo.firstName,
         email: userInfo.email,
         phone: userInfo.phone,
-        invoiceId: invoice.id
+        invoiceId: invoiceData.invoice_id
       })
-    } catch (err) {
-      setIsProcessing(false)
+    } catch (error) {
       toast({
         variant: "destructive",
-        title: "Payment Error",
-        description: err instanceof Error ? err.message : "Failed to initiate payment. Please try again.",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to process payment",
       })
+    } finally {
+      setIsProcessing(false)
     }
   }
 
