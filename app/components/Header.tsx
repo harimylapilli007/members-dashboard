@@ -102,7 +102,7 @@ export default function Header() {
               "relative px-4 py-2 rounded-lg font-bold font-inter text-sm md:text-base transition-all duration-300",
               "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
               "hover:scale-105 hover:shadow-lg hover:outline hover:outline-2 hover:outline-[#a07735]",
-              pathname?.includes('/dashboard/memberships') || pathname === '/'
+              pathname?.includes('/dashboard/memberships') || pathname === '/' || pathname==="/payment"
                 ? "text-[#a07735] before:bg-[#a07735]/20 before:backdrop-blur-sm before:border before:border-[#a07735]/20 outline outline-2 outline-[#a07735]"
                 : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm hover:before:bg-[#a07735]/20 hover:before:border-[#a07735]/30"
             )}

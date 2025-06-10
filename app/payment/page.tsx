@@ -56,8 +56,26 @@ export default function PaymentPage() {
   const [invoice, setInvoice] = useState<InvoiceData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [userInfo, setUserInfo] = useState({
+    firstName: '',
+    email: '',
+    phone: ''
+  })
   const membershipName = searchParams.get('membership_name')
   const membershipPrice = searchParams.get('price')
+
+  useEffect(() => {
+    // Load user info from localStorage when component mounts
+    const storedUserData = localStorage.getItem('userData')
+    if (storedUserData) {
+      const userData = JSON.parse(storedUserData)
+      setUserInfo({
+        firstName: userData.first_name || '',
+        email: userData.email || '',
+        phone: userData.phone || ''
+      })
+    }
+  }, [])
 
   useEffect(() => {
     const fetchInvoice = async () => {
@@ -109,16 +127,24 @@ export default function PaymentPage() {
   const handlePayment = async () => {
     if (!invoice) return
 
+    if (!userInfo.firstName || !userInfo.phone) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Missing user information. Please ensure you are logged in with complete details.",
+      })
+      return
+    }
+
     try {
       setIsProcessing(true)
       
-      // Use the initiatePayment function with the same parameters as before
       await initiatePayment({
         name: invoice.membershipName || "Ode Spa Membership",
         price: invoice.total || invoice.total_amount || 0,
-        firstName: invoice.customer_name || '',
-        email: invoice.customer_email || '',
-        phone: invoice.customer_phone || '',
+        firstName: userInfo.firstName,
+        email: userInfo.email,
+        phone: userInfo.phone,
         invoiceId: invoice.id
       })
     } catch (err) {

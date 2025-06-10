@@ -113,12 +113,14 @@ export default function BookingsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [cancellingBookingId, setCancellingBookingId] = useState<string | null>(null)
+  const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData') || '{}') : {}
+
 
   const fetchBookings = async () => {
     try {
       // Get guest ID from localStorage
       const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
-      const guestId = dashboardParams.get('id') || localStorage.getItem('guestId')
+      const guestId = dashboardParams.get('id') || localStorage.getItem('guestId') || userData?.id
 
       console.log('Guest ID:', guestId) // Debug log
 
@@ -268,27 +270,28 @@ export default function BookingsPage() {
         {/* Header */}
         <Header />
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex items-center justify-between mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
             <div>
-              <h1 className="text-3xl font-semibold text-gray-900">My Bookings</h1>
-              <h2 className="mt-1 gray-500">View and manage your spa appointments</h2>
-           </div>
+              <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">My Bookings</h1>
+              <h2 className="mt-1 text-sm sm:text-base text-gray-500">View and manage your spa appointments</h2>
+            </div>
             <button
               onClick={() => router.push('/ServiceBookingPage?openModal=true')}
-              className="px-4 py-2 font-marcellus bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"            >
+              className="w-full sm:w-auto px-4 py-2 font-marcellus bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"
+            >
               Book New Service
             </button>
           </div>
 
           {isLoading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#a07735] mx-auto"></div>
-              <p className="mt-4 text-gray-500">Loading your bookings...</p>
+            <div className="text-center py-8 sm:py-12">
+              <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[#a07735] mx-auto"></div>
+              <p className="mt-4 text-sm sm:text-base text-gray-500">Loading your bookings...</p>
             </div>
           ) : error ? (
-            <div className="text-center py-12">
-              <div className="text-red-500 mb-4">{error}</div>
+            <div className="text-center py-8 sm:py-12">
+              <div className="text-sm sm:text-base text-red-500 mb-4">{error}</div>
               <button
                 onClick={() => window.location.reload()}
                 className="px-4 py-2 bg-[#a07735] font-marcellus text-white rounded-md hover:bg-[#8a6930] transition-colors"
@@ -297,8 +300,8 @@ export default function BookingsPage() {
               </button>
             </div>
           ) : bookings.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-gray-500 mb-4">No bookings found</div>
+            <div className="text-center py-8 sm:py-12">
+              <div className="text-sm sm:text-base text-gray-500 mb-4">No bookings found</div>
               <button
                 onClick={() => router.push('/ServiceBookingPage?openModal=true')}
                 className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"
@@ -307,44 +310,44 @@ export default function BookingsPage() {
               </button>
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {bookings.map((booking) => (
                 <div
                   key={booking.id}
-                  className="bg-white/50 backdrop-blur-sm rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow flex flex-col"
+                  className="bg-white/50 backdrop-blur-sm rounded-lg shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow flex flex-col"
                 >
                   <div className="flex flex-col h-full">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-medium text-gray-900 line-clamp-1">{booking.service_name}</h3>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap ${getStatusColor(booking.status)}`}>
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                      <h3 className="text-base sm:text-lg font-medium text-gray-900 line-clamp-1">{booking.service_name}</h3>
+                      <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap ${getStatusColor(booking.status)}`}>
                         {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
                       </span>
                     </div>
-                    <div className="space-y-3 flex-grow">
-                      <div className="flex items-center text-gray-600">
-                        <Calendar className="h-5 w-5 text-[#a07735] mr-2 flex-shrink-0" />
+                    <div className="space-y-2 sm:space-y-3 flex-grow">
+                      <div className="flex items-center text-sm sm:text-base text-gray-600">
+                        <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-[#a07735] mr-2 flex-shrink-0" />
                         <span className="line-clamp-1">{booking.date}</span>
                       </div>
-                      <div className="flex items-center text-gray-600">
-                        <Clock className="h-5 w-5 text-[#a07735] mr-2 flex-shrink-0" />
+                      <div className="flex items-center text-sm sm:text-base text-gray-600">
+                        <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-[#a07735] mr-2 flex-shrink-0" />
                         <span>{booking.time} ({booking.duration} mins)</span>
                       </div>
-                      <div className="flex items-center text-gray-600">
-                        <MapPin className="h-5 w-5 text-[#a07735] mr-2 flex-shrink-0" />
+                      <div className="flex items-center text-sm sm:text-base text-gray-600">
+                        <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-[#a07735] mr-2 flex-shrink-0" />
                         <span className="line-clamp-1">{booking.city} - {booking.outlet}</span>
                       </div>
                     </div>
-                    <div className="mt-4 pt-4 border-t border-gray-100">
+                    <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                          <Tag className="h-5 w-5 text-[#a07735] mr-2" />
-                          <span className="font-semibold text-[#a07735]">₹{booking.price}</span>
+                          <Tag className="h-4 w-4 sm:h-5 sm:w-5 text-[#a07735] mr-2" />
+                          <span className="text-sm sm:text-base font-semibold text-[#a07735]">₹{booking.price}</span>
                         </div>
                         {booking.status === 'confirmed' && (
                           <button
                             onClick={() => handleCancelBooking(booking.id, booking.appointment_id)}
                             disabled={cancellingBookingId === booking.id}
-                            className={`px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50 transition-colors ${
+                            className={`px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base border border-red-500 text-red-500 rounded-md hover:bg-red-50 transition-colors ${
                               cancellingBookingId === booking.id ? 'opacity-50 cursor-not-allowed' : ''
                             }`}
                           >

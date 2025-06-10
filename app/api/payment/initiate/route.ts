@@ -17,8 +17,8 @@ export async function POST(request: Request) {
       )
     }
 
-    // Generate a unique transaction ID
-    const txnid = `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    // Use invoice_id as transaction ID
+    const txnid = invoice_id
 
     // Create hash for PayU
     const hashString = `${PAYU_MERCHANT_KEY}|${txnid}|${amount}|${product_info}|John Doe|john@example.com|||||||||||${PAYU_MERCHANT_SALT}`
@@ -30,9 +30,9 @@ export async function POST(request: Request) {
       txnid,
       amount,
       productinfo: product_info,
-      firstname: 'John Doe',
-      email: 'john@example.com',
-      phone: '9876543210',
+      firstname: body.firstname || 'Guest User',
+      email: body.email || 'guest@example.com',
+      phone: body.phone || '0000000000',
       surl: `${process.env.NEXT_PUBLIC_APP_URL}/payment/success`,
       furl: `${process.env.NEXT_PUBLIC_APP_URL}/payment/failure`,
       hash,
