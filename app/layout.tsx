@@ -1,13 +1,18 @@
 import type React from "react"
 import "@/styles/globals.css"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { AuthProvider } from "@/lib/auth-context"
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}
 
 export const metadata: Metadata = {
   title: "ODE SPA",
   description: "Luxury spa treatments and wellness services",
   generator: 'v0.dev',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
   icons: {
     icon: [
       { url: '/loading_logo.png', sizes: '32x32' },

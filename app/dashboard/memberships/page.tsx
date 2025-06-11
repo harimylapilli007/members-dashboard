@@ -767,21 +767,31 @@ const MembershipDetailsModal = ({
     <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden rounded-2xl w-[92%] sm:w-full mx-auto max-h-[90vh] sm:max-h-[85vh] overflow-y-auto">
       <DialogTitle className="sr-only">Membership Details</DialogTitle>
       <div className="bg-[#a07735] p-3 sm:p-4 rounded-t-lg text-center relative">
-      <h1 className="text-lg sm:text-2xl font-marcellus text-white mb-0.5 sm:mb-1">
-            {membership.price?.sales === 15000 ? "Bronze Membership" :
-             membership.price?.sales === 25000 ? "Silver Membership" :
-             membership.price?.sales === 35000 ? "Gold Membership" :
-             membership.price?.sales === 50000 ? "Platinum Membership" :
-             membership.price?.sales === 65000 ? "Diamond Membership" :
-             membership.price?.sales === 100000 ? "Ode Signature Elite" :
-             "Ode Spa Membership"}
-          </h1>
+        <button
+          className="md:hidden absolute left-4 top-1/2 -translate-y-1/2 hover:text-[#f5f1e8] text-white"
+          onClick={() => {
+            onClose();
+            setIsDetailsModalOpen(false);
+          }}
+          aria-label="Back"
+        >
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+        </button>
+        <h1 className="text-lg sm:text-2xl font-marcellus text-white mb-0.5 sm:mb-1">
+          {membership.price?.sales === 15000 ? "Bronze Membership" :
+           membership.price?.sales === 25000 ? "Silver Membership" :
+           membership.price?.sales === 35000 ? "Gold Membership" :
+           membership.price?.sales === 50000 ? "Platinum Membership" :
+           membership.price?.sales === 65000 ? "Diamond Membership" :
+           membership.price?.sales === 100000 ? "Ode Signature Elite" :
+           "Ode Spa Membership"}
+        </h1>
       </div>
       <div className="px-0 pt-0 pb-0 rounded-t-2xl text-center relative">
-        <div className="flex items-center justify-between px-4 sm:px-8 pt-4 sm:pt-6 pb-2">
-          <button
-            className="hover:text-[#a07735] text-base sm:text-lg font-bold font-inter flex items-center gap-2"
-            onClick={() => {
+      <div className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 pt-4 sm:pt-6 pb-2 gap-3">
+      <button
+                  className="hidden sm:flex hover:text-[#a07735] text-base sm:text-lg font-bold font-inter items-center gap-2 cursor-pointer"
+                  onClick={() => {
               onClose();
               setIsDetailsModalOpen(false);
             }}
@@ -790,23 +800,27 @@ const MembershipDetailsModal = ({
             <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="text-base sm:text-lg font-bold font-inter">Back</span>
           </button>
-          <h1 className="text-xl sm:text-2xl font-bold font-marcellus">{formatPrice(membership.price?.sales || 0)}</h1>
+          <div className="flex-1 flex flex-col items-center">
+           
+            <h1 className="text-xl sm:text-2xl font-bold font-marcellus mb-1">{membership.price?.sales?.toLocaleString() || "0"}</h1>
+
+          </div>
           <div className="w-full sm:w-[140px] flex justify-center sm:justify-end">
-                  <Button 
-                    className="relative w-full sm:w-[300px] h-[32px] sm:h-[36px] p-4 sm:p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-base sm:text-[20px] leading-[17px] text-center text-[#98564D] disabled:opacity-50 disabled:cursor-not-allowed"
+          <Button 
+                    className="relative w-full sm:w-[300px] h-[32px] sm:h-[36px] p-4 sm:p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-base sm:text-[20px] leading-[17px] text-center text-[#98564D]"
                     onClick={onConfirm}
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <div className="flex items-center justify-center">
-                        <div className="w-5 h-5 border-2 border-[#98564D] border-t-transparent rounded-full animate-spin mr-2"></div>
-                        Processing...
-                      </div>
-                    ) : (
-                      "Buy Membership"
-                    )}
-                  </Button>
+              disabled={loading}
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-[#98564D] border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Processing...
                 </div>
+              ) : (
+                "Buy Membership"
+              )}
+            </Button>
+          </div>
         </div>
       </div>
       {/* Details Grid */}

@@ -261,7 +261,7 @@ function PaymentFailureContent() {
               <div className="flex flex-col gap-6">
                 {errorDetails.transactionId && (
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground font-['Marcellus']">Transaction ID</span>
+                    <span className="text-sm text-muted-foreground font-['Marcellus'] min-w-[120px]">Transaction ID</span>
                     <span className="font-mono text-base">{errorDetails.transactionId}</span>
                   </div>
                 )}
@@ -272,7 +272,7 @@ function PaymentFailureContent() {
                   </div>
                 )}
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground font-['Marcellus']">Error Message</span>
+                  <span className="text-sm text-muted-foreground font-['Marcellus'] min-w-[120px]">Error Message</span>
                   <span className="text-base font-['Marcellus'] text-red-600">{errorDetails.message}</span>
                 </div>
               </div>

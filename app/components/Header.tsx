@@ -74,7 +74,7 @@ export default function Header() {
   }, [isMobileMenuOpen]);
 
   return (
-    <header className="z-10 flex items-center justify-between bg-white/20 backdrop-blur-md border-b border-white/20 shadow-lg px-4 md:px-6 py-2 sticky top-0 max-w-[1305px] mx-auto rounded-2xl mt-4">
+    <header className="z-10 flex items-center justify-between bg-white/20 backdrop-blur-md border-b border-white/20 shadow-lg px-4 md:px-6 lg:px-8 py-2 sticky top-0 max-w-[1305px] mx-auto rounded-2xl mt-4">
       <div className="flex items-center justify-between w-full">
         <Link href="/" className="flex items-center">
           <Image
@@ -82,7 +82,7 @@ export default function Header() {
             alt="Ode Spa Logo"
             width={200}
             height={200}
-            className="w-[200px] md:w-[200px] h-auto"
+            className="w-[150px] sm:w-[180px] md:w-[200px] h-auto"
           />
         </Link>
 
@@ -95,11 +95,11 @@ export default function Header() {
         </button>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-4 md:gap-8">
+        <nav className="hidden md:flex items-center gap-3 lg:gap-8">
           <Link 
             href={user ? "/dashboard/memberships" : "/"}
             className={cn(
-              "relative px-4 py-2 rounded-lg font-bold font-inter text-sm md:text-base transition-all duration-300",
+              "relative px-3 lg:px-4 py-2 rounded-lg font-bold font-inter text-sm lg:text-base transition-all duration-300",
               "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
               "hover:scale-105 hover:shadow-lg hover:outline hover:outline-2 hover:outline-[#a07735]",
               pathname?.includes('/dashboard/memberships') || pathname === '/' || pathname==="/payment"
@@ -107,12 +107,12 @@ export default function Header() {
                 : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm hover:before:bg-[#a07735]/20 hover:before:border-[#a07735]/30"
             )}
           >
-            <span className="relative z-10 text-[16px]">MEMBERSHIP</span>
+            <span className="relative z-10 text-[14px] lg:text-[16px]">MEMBERSHIP</span>
           </Link>
           <Link 
             href={`/ServiceBookingPage?openModal=true&guestId=${userData?.id}`}
             className={cn(
-              "relative px-4 py-2 rounded-lg font-bold font-inter text-sm md:text-base transition-all duration-300",
+              "relative px-3 lg:px-4 py-2 rounded-lg font-bold font-inter text-sm lg:text-base transition-all duration-300",
               "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
               "hover:scale-105 hover:shadow-lg hover:outline hover:outline-2 hover:outline-[#a07735]",
               pathname?.includes('/ServiceBookingPage') || pathname?.includes('/checkout') || pathname?.includes('/service')
@@ -120,13 +120,13 @@ export default function Header() {
                 : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm hover:before:bg-[#a07735]/20 hover:before:border-[#a07735]/30"
             )}
           >
-            <span className="relative z-10 text-[16px]">BOOKING</span>
+            <span className="relative z-10 text-[14px] lg:text-[16px]">BOOKING</span>
           </Link>
           {user && (
             <Link 
               href="/view-bookings" 
               className={cn(
-                "relative px-4 py-2 rounded-lg font-bold font-inter text-sm md:text-base transition-all duration-300",
+                "relative px-3 lg:px-4 py-2 rounded-lg font-bold font-inter text-sm lg:text-base transition-all duration-300",
                 "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
                 "hover:scale-105 hover:shadow-lg hover:outline hover:outline-2 hover:outline-[#a07735]",
                 pathname?.includes('/view-bookings')
@@ -134,17 +134,17 @@ export default function Header() {
                   : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm hover:before:bg-[#a07735]/20 hover:before:border-[#a07735]/30"
               )}
             >
-              <span className="relative z-10 text-[16px]">VIEW BOOKINGS</span>
+              <span className="relative z-10 text-[14px] lg:text-[16px]">VIEW BOOKINGS</span>
             </Link>
           )}
         </nav>
 
         {/* Desktop Auth Buttons */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-2 lg:gap-4">
           {user ? (
             <Button 
               variant="outline" 
-              className="border-[#a07735] text-[#a07735] bg-transparent w-36 font-marcellus line-height-24 font-bold hover:bg-[#a07735] hover:text-white text-sm md:text-base mr-8"
+              className="border-[#a07735] text-[#a07735] bg-transparent w-28 lg:w-36 font-marcellus line-height-24 font-bold hover:bg-[#a07735] hover:text-white text-sm lg:text-base mr-4 lg:mr-8"
               onClick={handleLogout}
             >
               <LogOut className="w-4 h-4 mr-2" />
@@ -154,14 +154,14 @@ export default function Header() {
             <>
               <Button 
                 variant="outline" 
-                className="bg-transparent text-[20px] text-[#a07735]  w-36 font-marcellus line-height-24 hover:text-[#a07735] border-[#a07735]  " 
+                className="bg-transparent text-[16px] lg:text-[20px] text-[#a07735] w-28 lg:w-36 font-marcellus line-height-24 hover:text-[#a07735] border-[#a07735]" 
                 onClick={() => router.push('/signin')}
               >
                 Login
               </Button>
               <Button 
                 variant="outline"
-                className="bg-[#a07735] text-[20px] text-white hover:bg-[#a07735] w-36 font-marcellus line-height-24 hover:text-white border-[#a07735] hover:scale-105 transition-transform duration-300" 
+                className="bg-[#a07735] text-[16px] lg:text-[20px] text-white hover:bg-[#a07735] w-28 lg:w-36 font-marcellus line-height-24 hover:text-white border-[#a07735] hover:scale-105 transition-transform duration-300" 
                 onClick={() => router.push('/signin')}
               >
                 Signup
