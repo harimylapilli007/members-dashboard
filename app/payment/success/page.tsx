@@ -50,17 +50,17 @@ function PaymentSuccessContent() {
         }
 
 
-        // const isValid = verifyPayUResponse(responseData)
+        const isValid = verifyPayUResponse(responseData)
         
-        // if (!isValid) {
-        //   toast({
-        //     variant: "destructive",
-        //     title: "Payment Verification Failed",
-        //     description: "The payment response could not be verified. Please contact support.",
-        //   })
-        //   router.push('/payment/failure')
-        //   return
-        // }
+        if (!isValid) {
+          toast({
+            variant: "destructive",
+            title: "Payment Verification Failed",
+            description: "The payment response could not be verified. Please contact support.",
+          })
+          router.push('/payment/failure')
+          return
+        }
 
         // Check if this is a test payment (coming from test-success route)
         const isTestPayment = responseData.txnid.startsWith('TEST_TXN_')
@@ -103,10 +103,7 @@ function PaymentSuccessContent() {
           description: "Your payment has been processed successfully.",
         });
 
-        // Wait for 5 seconds before redirecting
-        // setTimeout(() => {
-        //   handleDashboardClick()
-        // }, 5000);
+       
 
       } catch (error) {
         console.error('Error verifying payment:', error)
@@ -214,9 +211,7 @@ function PaymentSuccessContent() {
                   </div>
                 </div>
               </div>
-              <p className="text-sm text-center  text-muted-foreground mt-4">
-                  Redirecting to dashboard in 5 seconds...
-                </p>
+              
             </div>
            
             <Button

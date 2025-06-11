@@ -110,29 +110,43 @@ export default function SignIn() {
   }, []);
 
   const formatPhoneNumber = (phone: string) => {
-    // Remove all non-digit characters
-    const cleaned = phone.replace(/\D/g, '');
+    // Remove all non-digit characters except the plus sign
+    const cleaned = phone.replace(/[^\d+]/g, '');
     
-    // If the number doesn't start with a country code, assume it's a US number
-    if (!phone.startsWith('+')) {
-      return `+1${cleaned}`; // Default to US (+1)
+    // If the number doesn't start with a plus sign, add it
+    if (!cleaned.startsWith('+')) {
+      // For Indian numbers (assuming most users are from India)
+      if (cleaned.length === 10) {
+        return `+91${cleaned}`;
+      }
+      // For other numbers, add +1 (US) as default
+      return `+1${cleaned}`;
     }
     
-    // If it starts with +, keep the + and add the cleaned number
-    return `+${cleaned}`;
+    return cleaned;
   };
 
   const validatePhoneNumber = (phone: string) => {
-    // Remove all non-digit characters for validation
-    const cleaned = phone.replace(/\D/g, '');
+    // Must start with +
+    if (!phone.startsWith('+')) {
+      return false;
+    }
+    
+    // Remove the plus sign and check the remaining digits
+    const digits = phone.slice(1);
     
     // Check if the number is too short (less than 10 digits)
-    if (cleaned.length < 10) {
+    if (digits.length < 10) {
       return false;
     }
     
     // Check if the number is too long (more than 15 digits)
-    if (cleaned.length > 15) {
+    if (digits.length > 15) {
+      return false;
+    }
+    
+    // Check if it contains only digits after the plus sign
+    if (!/^\d+$/.test(digits)) {
       return false;
     }
     

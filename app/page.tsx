@@ -157,7 +157,7 @@ export default function Component() {
             <div className="absolute top-2 left-1/2 transform -translate-x-1/2 flex flex-col items-center md:hidden">
               <div className="w-12 h-1.5 bg-gray-300 rounded-full animate-pulse" />
               {showHint && (
-                <div className="mt-2 text-xs text-gray-500 animate-fade-in-out">
+                <div className="mt-2 text-xs text-white animate-fade-in-out">
                   Drag down to close
                 </div>
               )}
@@ -173,7 +173,7 @@ export default function Component() {
             <div className="px-0 pt-0 pb-0 rounded-t-2xl text-center relative">
               <div className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 pt-4 sm:pt-6 pb-2 gap-3">
                 <button
-                  className="flex hover:text-[#a07735] text-base sm:text-lg font-bold font-inter items-center gap-2 cursor-pointer"
+                  className="hidden sm:flex hover:text-[#a07735] text-base sm:text-lg font-bold font-inter items-center gap-2 cursor-pointer"
                   onClick={() => onClose()}
                   aria-label="Back"
                 >
