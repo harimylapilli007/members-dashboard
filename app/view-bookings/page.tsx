@@ -301,10 +301,10 @@ export default function BookingsPage() {
             </div>
           ) : bookings.length === 0 ? (
             <div className="text-center py-8 sm:py-12">
-              <div className="text-sm sm:text-base text-gray-500 mb-4">No bookings found</div>
+              <div className="text-sm  sm:text-base text-gray-500 mb-4">No bookings found</div>
               <button
                 onClick={() => router.push('/ServiceBookingPage?openModal=true')}
-                className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] transition-colors"
+                className="px-4 py-2 bg-[#a07735] text-white font-marcellus rounded-md hover:bg-[#8a6930] transition-colors"
               >
                 Book Your First Service
               </button>

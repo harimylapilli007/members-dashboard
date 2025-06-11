@@ -113,26 +113,25 @@ export default function SignIn() {
     // Remove all non-digit characters
     const cleaned = phone.replace(/\D/g, '');
     
+    // If the number starts with 9 and is 10 digits, assume it's an Indian number
+    if (cleaned.length === 10 && cleaned.startsWith('9')) {
+      return `+91${cleaned}`;
+    }
+    
     // If the number doesn't start with a country code, assume it's a US number
     if (!phone.startsWith('+')) {
       return `+1${cleaned}`; // Default to US (+1)
     }
     
-    // If it starts with +, keep the + and add the cleaned number
     return `+${cleaned}`;
   };
 
   const validatePhoneNumber = (phone: string) => {
-    // Remove all non-digit characters for validation
-    const cleaned = phone.replace(/\D/g, '');
+    // Must start with + and have at least 10 digits after the country code
+    const phoneRegex = /^\+\d{10,15}$/;
     
-    // Check if the number is too short (less than 10 digits)
-    if (cleaned.length < 10) {
-      return false;
-    }
-    
-    // Check if the number is too long (more than 15 digits)
-    if (cleaned.length > 15) {
+    if (!phoneRegex.test(phone)) {
+      console.log('Phone validation failed:', phone);
       return false;
     }
     
@@ -149,6 +148,8 @@ export default function SignIn() {
       }
 
       const formattedPhone = formatPhoneNumber(phoneNumber);
+      console.log('Original phone:', phoneNumber);
+      console.log('Formatted phone:', formattedPhone);
       
       // Validate phone number
       if (!validatePhoneNumber(formattedPhone)) {
