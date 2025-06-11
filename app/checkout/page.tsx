@@ -33,6 +33,8 @@ export default function CheckoutPage() {
   const [isConfirming, setIsConfirming] = useState(false)
   const searchParams = useSearchParams()
   const router = useRouter()
+  const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData') || '{}') : {}
+
 
   useEffect(() => {
     // Get service data from URL params
@@ -106,7 +108,7 @@ export default function CheckoutPage() {
       // Step 3: Get Guest Information
       // Retrieve guest ID from either dashboard params or localStorage
       const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
-      const guestId = dashboardParams.get('id') || localStorage.getItem('guestId')
+      const guestId = dashboardParams.get('id') || localStorage.getItem('guestId') || userData?.id
 
       if (!guestId) {
         throw new Error('Guest ID is missing')
@@ -199,7 +201,7 @@ export default function CheckoutPage() {
         description: "Your appointment has been confirmed. You can view your booking details in your account.",
       })
       // Redirect to bookings page
-      router.push('/bookings');
+      router.push('/view-bookings');
     } catch (error) {
       // Step 10: Error Handling
       // Log error and show error message to user
