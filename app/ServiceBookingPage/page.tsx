@@ -172,8 +172,8 @@ const ServiceCard = memo(({
   onBookNow: (service: any) => void;
   onReadMore: (service: any) => void;
 }) => (
-  <div  onClick={() => onBookNow(service)} className="bg-white/50 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 hover:border-[#a07735]/40 group">
-    <div className="relative h-48 w-full">
+  <div onClick={() => onBookNow(service)} className="bg-white/50 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 hover:border-[#a07735]/40 group">
+    <div className="relative h-40 md:h-48 w-full">
       <Image
         src={categoryImage}
         alt={service.name}
@@ -181,35 +181,35 @@ const ServiceCard = memo(({
         className="object-cover group-hover:scale-105 transition-transform duration-300"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 p-4">
-        <h1 className="text-[1rem] font-semibold text-white mb-1 leading-0">{service.name}</h1>
+      <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+        <h1 className="text-[0.9rem] md:text-[1rem] font-semibold text-white mb-1 leading-0">{service.name}</h1>
         <div className="flex items-center text-white/90">
-          <Clock className="h-4 w-4 mr-1" />
-          <span className="text-sm text-white">{service.duration} mins</span>
+          <Clock className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+          <span className="text-xs md:text-sm text-white">{service.duration} mins</span>
         </div>
       </div>
     </div>
-    <div className="p-4">
+    <div className="p-3 md:p-4">
       <div className="relative">
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+        <p className="text-gray-600 text-xs md:text-sm mb-3 md:mb-4 line-clamp-2">
           {service.description || 'Experience our premium service designed to enhance your well-being and relaxation.'}
         </p>
         {service.description && service.description.length > 100 && (
           <button
             onClick={() => onReadMore(service)}
-            className="text-[#a07735] text-sm font-medium hover:text-[#8a6930] transition-colors focus:outline-none"
+            className="text-[#a07735] text-xs md:text-sm font-medium hover:text-[#8a6930] transition-colors focus:outline-none"
           >
             Read More
           </button>
         )}
       </div>
-      <div className="flex items-center justify-between mt-4">
-        <span className="text-[#a07735] font-semibold flex items-center text-lg">
-          <Tag className="h-5 w-5 mr-1" />₹{Math.round(service.final_price)}
+      <div className="flex items-center justify-between mt-3 md:mt-4">
+        <span className="text-[#a07735] font-semibold flex items-center text-base md:text-lg">
+          <Tag className="h-4 w-4 md:h-5 md:w-5 mr-1" />₹{Math.round(service.final_price)}
         </span>
         <button
           onClick={() => onBookNow(service)}
-          className="px-4 py-2 bg-[#a07735] text-white rounded-lg hover:bg-[#8a6930] transition-colors font-semibold shadow hover:scale-105 hover:shadow-lg focus:outline-none"
+          className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base bg-[#a07735] text-white rounded-lg hover:bg-[#8a6930] transition-colors font-semibold shadow hover:scale-105 hover:shadow-lg focus:outline-none"
         >
           Book Now
         </button>
@@ -348,6 +348,86 @@ const MobileCategoriesDropdown = memo(({
                       />
                     </div>
                     <span className="text-base font-medium text-gray-900 truncate">{category}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+});
+
+// Add this new component for tablet categories dropdown
+const TabletCategoriesDropdown = memo(({ 
+  categories, 
+  selectedCategory, 
+  onSelectCategory, 
+  categoryImages 
+}: { 
+  categories: string[]; 
+  selectedCategory: string; 
+  onSelectCategory: (category: string) => void;
+  categoryImages: CategoryImage[];
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="hidden md:block lg:hidden w-full mb-6">
+      <div className="flex items-center justify-between mb-4 bg-white/50 backdrop-blur-sm rounded-lg p-4 shadow-lg border border-gray-100">
+        <h1 className="text-xl font-semibold text-gray-800">Select Category</h1>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center gap-2 px-4 py-2 bg-white/50 hover:bg-white/70 transition-colors rounded-lg shadow-sm backdrop-blur-sm border border-gray-100"
+        >
+          <div className="w-8 h-8 rounded-lg overflow-hidden border border-gray-100 bg-white/50">
+            <Image
+              src={categoryImages.find(img => img.name === selectedCategory)?.image || '/categories/default.jpg'}
+              alt={selectedCategory}
+              width={32}
+              height={32}
+              className="object-cover w-full h-full"
+            />
+          </div>
+          <span className="text-base font-medium text-gray-900">{selectedCategory}</span>
+          <ChevronDown className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+      </div>
+      
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="z-50 w-full bg-white/50 backdrop-blur-md rounded-lg shadow-lg border border-gray-100 overflow-hidden"
+          >
+            <div className="grid grid-cols-2 gap-2 p-2">
+              {categories.map((category) => {
+                const categoryInfo = categoryImages.find(img => img.name === category);
+                return (
+                  <button
+                    key={category}
+                    onClick={() => {
+                      onSelectCategory(category);
+                      setIsOpen(false);
+                    }}
+                    className={`flex items-center gap-3 p-3 hover:bg-white/50 transition-colors rounded-lg ${
+                      selectedCategory === category ? 'bg-[#a07735]/10' : ''
+                    }`}
+                  >
+                    <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-100 bg-white/50 flex-shrink-0">
+                      <Image
+                        src={categoryInfo?.image || '/categories/default.jpg'}
+                        alt={category}
+                        width={48}
+                        height={48}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-gray-900 truncate">{category}</span>
                   </button>
                 );
               })}
@@ -498,7 +578,7 @@ export default function ServiceBookingPage() {
             
 
               {/* Desktop Categories Sidebar */}
-              <aside className="hidden md:block w-72 flex-shrink-0 shadow-lg bg-white/50 rounded-xl p-4 mt-2 mb-2 h-fit mr-8">
+              <aside className="hidden lg:block w-72 flex-shrink-0 shadow-lg bg-white/50 rounded-xl p-4 mt-2 mb-2 h-fit mr-8">
                 <div className="sticky top-24">
                   <h1 className="text-lg font-semibold text-gray-800 mb-4">Categories</h1>
                   <div className="space-y-3">
@@ -519,7 +599,7 @@ export default function ServiceBookingPage() {
               </aside>
 
               {/* Main Content: Services */}
-              <main className="flex-1 bg-transparent rounded-xl p-2 sm:p-4 md:p-8 shadow-sm relative">
+              <main className="flex-1 bg-transparent rounded-xl p-2 sm:p-4 md:p-6 lg:p-8 shadow-sm relative">
                 {/* Divider for desktop */}
                
                 <div className="flex md:hidden flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-x-6 mt-4 mb-4">
@@ -581,11 +661,13 @@ export default function ServiceBookingPage() {
                   </div>
                 </div>
 
-                {/* Desktop Search Section */}
+               
+
+                {/* Tablet and Desktop Search Section */}
                 <div className="hidden md:block mb-8 sticky top-0.5 z-10 bg-gradient-to-b from-white/90 to-white/60 backdrop-blur-md rounded-xl shadow-sm p-4">
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between gap-4">
-                      <h1 className="text-2xl font-bold">Discover Our Services</h1>
+                      <h1 className="text-xl lg:text-2xl font-bold">Discover Our Services</h1>
                       <LocationSelector 
                         selectedLocation={selectedLocation} 
                         onOpen={handleLocationOpen} 
@@ -600,7 +682,7 @@ export default function ServiceBookingPage() {
                             placeholder="Search services..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full px-4 py-3.5 rounded-lg border-2 bg-white/40 backdrop-blur-sm border-gray-200/50 focus:outline-none focus:border-[#a07735] focus:ring-2 focus:ring-[#a07735]/20 transition-all duration-300 placeholder:text-gray-500 text-gray-700"
+                            className="w-full px-4 py-3 lg:py-3.5 rounded-lg border-2 bg-white/40 backdrop-blur-sm border-gray-200/50 focus:outline-none focus:border-[#a07735] focus:ring-2 focus:ring-[#a07735]/20 transition-all duration-300 placeholder:text-gray-500 text-gray-700"
                           />
                           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
                             {search && (
@@ -629,11 +711,19 @@ export default function ServiceBookingPage() {
                   </div>
                 </div>
 
+                 {/* Tablet Categories Dropdown */}
+                 <TabletCategoriesDropdown
+                  categories={categories}
+                  selectedCategory={selectedCategory}
+                  onSelectCategory={handleCategoryClick}
+                  categoryImages={categoryImages}
+                />
+
                 {/* Services List */}
                 {selectedCategory && services[selectedCategory] && (
                   <div className="space-y-6">
-                    <h1 className="text-2xl font-semibold text-gray-900 mb-6">{selectedCategory}</h1>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <h1 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-6">{selectedCategory}</h1>
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
                       {services[selectedCategory]
                         .filter(service => 
                           service.name.toLowerCase().includes(search.toLowerCase()) ||

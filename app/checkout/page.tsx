@@ -270,7 +270,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="mt-10 flex space-x-10">
+              {/* <div className="mt-10 flex space-x-10">
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <div className="relative flex items-center">
                     <input 
@@ -312,7 +312,7 @@ export default function CheckoutPage() {
                   </div>
                   <span className="text-[#1f2937]">Book for someone else</span>
                 </label>
-              </div>
+              </div> */}
 
               {/* Apply Coupon */}
               <div className="mt-12 bg-[#faf5eb] rounded-xl p-8">
