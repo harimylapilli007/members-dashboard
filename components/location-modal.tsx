@@ -549,21 +549,24 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
         // Outlet selection modal
         <div className="bg-[#FAF5EB] rounded-lg overflow-hidden max-w-lg w-full max-h-[70vh] flex flex-col">
           <div className="bg-[#ae7735] text-white p-4 flex justify-between items-center">
+            <div className="w-6"></div>
             <h1 className="text-xl font-medium">Select your Outlet</h1>
             <button onClick={onClose} className="text-white hover:text-gray-200">
               <X className="h-6 w-6" />
             </button>
           </div>
           <div className="p-8 overflow-y-auto scrollbar-hide">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-start items-center mb-6">
               <button
                 onClick={handleBack}
                 className="flex items-center text-gray-700 hover:text-[#a07735] transition-colors"
               >
-                <ArrowLeft className="h-4 w-4 mr-1" />
-                <span>Back</span>
+                <ArrowLeft className="h-4 w-4 " />
+                <span className="text-[16px]">Back</span>
               </button>
-              <span className="text-gray-700 font-medium">{selectedCity}</span>
+              <div className="flex-1"></div>
+              <span className="font-bold text-center ">{selectedCity}</span>
+              <div className="flex-1"></div>
             </div>
 
             <div className="space-y-3">
@@ -573,8 +576,8 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                   .map((outlet, index) => (
                     <button
                       key={index}
-                      className={`w-full p-3 rounded-md text-left transition-colors ${
-                          "bg-white/20 font-marcellus backdrop-blur-sm border border-gray-300 text-gray-700 hover:border-[#a07735] hover:bg-[#a07735]/10"
+                      className={`w-full p-3 rounded-md text-center transition-colors ${
+                          "bg-white/20 font-marcellus backdrop-blur-sm border border-gray-300 text-gray-700 hover:bg-[#a07735] hover:text-white"
                       }`}
                       onClick={() => handleOutletSelect(outlet)}
                     >

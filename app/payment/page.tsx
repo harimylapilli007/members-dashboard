@@ -185,6 +185,7 @@ export default function PaymentPage() {
     }
   }
 
+
   const handlePayment = async () => {
     try {
       setIsProcessing(true)
@@ -208,11 +209,13 @@ export default function PaymentPage() {
 
       // Create membership invoice
       const invoiceData = await createMembershipInvoice(membershipId)
+
+    
       
       // Continue with payment flow using the created invoice
       await initiatePayment({
         name: membershipName || "Ode Spa Membership",
-        price: Number(membershipPrice) || 0,
+        price: Number(invoice?.total_amount) || 0,
         firstName: userInfo.firstName,
         email: userInfo.email,
         phone: userInfo.phone,

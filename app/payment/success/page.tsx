@@ -21,18 +21,7 @@ function PaymentSuccessContent() {
   const { toast } = useToast()
   const [isVerifying, setIsVerifying] = useState(true)
   const [invoiceStatus, setInvoiceStatus] = useState<InvoiceStatus | null>(null)
-
-  // Mock data for demonstration (replace with real data if available)
-  const planName = "Wellness Plus Membership"
-  const duration = "1 Year (June 1, 2025 – May 31, 2026)"
-  const benefits = [
-    "Unlimited Spa Bookings",
-    "Exclusive Member Discounts",
-    "Free Wellness Challenges",
-    "Priority Booking"
-  ]
-  const paymentMethod = "UPI – PhonePe"
-  const userName = searchParams.get('firstname') || 'Member'
+  const [paymentDetails, setPaymentDetails] = useState<any>(null)
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -45,7 +34,12 @@ function PaymentSuccessContent() {
           email: searchParams.get('email') || '',
           status: searchParams.get('status') || '',
           hash: searchParams.get('hash') || '',
-          salt: '0Rd0lVQEvO'
+          salt: '0Rd0lVQEvO',
+          payment_method: searchParams.get('payment_method') || 'UPI',
+          mihpayid: searchParams.get('mihpayid') || '',
+          bank_ref_num: searchParams.get('bank_ref_num') || '',
+          bankcode: searchParams.get('bankcode') || '',
+          mode: searchParams.get('mode') || ''
         }
 
 
@@ -61,7 +55,7 @@ function PaymentSuccessContent() {
         //   return
         // }
 
-        // Check if this is a test payment (coming from test-success route)
+        //Check if this is a test payment (coming from test-success route)
         const isTestPayment = responseData.txnid.startsWith('TEST_TXN_')
         
         // Skip verification for test payments
@@ -93,7 +87,7 @@ function PaymentSuccessContent() {
           status: 'success',
           amount: responseData.amount,
           invoiceId: responseData.txnid,
-          paymentId: searchParams.get('mihpayid') || `payu_${Date.now()}`
+          paymentId: responseData.mihpayid || `payu_${Date.now()}`
         })
 
         // Show success message
@@ -101,8 +95,6 @@ function PaymentSuccessContent() {
           title: "Payment Successful",
           description: "Your payment has been processed successfully.",
         });
-
-       
 
       } catch (error) {
         console.error('Error verifying payment:', error)
@@ -119,6 +111,16 @@ function PaymentSuccessContent() {
 
     verifyPayment()
   }, [searchParams, router, toast])
+
+  // Get actual data from payment response
+  const planName = paymentDetails?.productinfo || "Wellness Plus Membership"
+  const duration = "1 Year" // This should come from your backend/API
+  
+  const paymentMethod = paymentDetails?.payment_method || paymentDetails?.mode || "UPI"
+  const userName = paymentDetails?.firstname || 'Member'
+  const email = paymentDetails?.email || ''
+  const bankRefNum = paymentDetails?.bank_ref_num || ''
+  const bankCode = paymentDetails?.bankcode || ''
 
   const handleDashboardClick = () => {
     try {
@@ -198,7 +200,7 @@ function PaymentSuccessContent() {
                 <div className="flex flex-col gap-6">
                   <div className="flex justify-between items-center">
                     <span className=" text-muted-foreground font-['Marcellus']">Amount Paid</span>
-                    <span className="font-semibold text-green-700 text-xl">₹{invoiceStatus?.amount || '—'}</span>
+                    <span className="font-semibold text-green-700 text-xl">₹{paymentDetails?.amount || '—'}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className=" text-muted-foreground font-['Marcellus']">Payment Method</span>
@@ -206,8 +208,20 @@ function PaymentSuccessContent() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className=" text-muted-foreground font-['Marcellus']">Transaction ID</span>
-                    <span className="font-mono text-base">{invoiceStatus?.invoiceId || '—'}</span>
+                    <span className="font-mono text-base">{paymentDetails?.txnid || '—'}</span>
                   </div>
+                  {bankRefNum && (
+                    <div className="flex justify-between items-center">
+                      <span className=" text-muted-foreground font-['Marcellus']">Bank Reference</span>
+                      <span className="font-mono text-base">{bankRefNum}</span>
+                    </div>
+                  )}
+                  {email && (
+                    <div className="flex justify-between items-center">
+                      <span className=" text-muted-foreground font-['Marcellus']">Email</span>
+                      <span className="text-base">{email}</span>
+                    </div>
+                  )}
                 </div>
               </div>
               

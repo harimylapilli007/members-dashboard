@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { updateMembershipStatus } from '@/actions/payment-actions'
 import { verifyPayUResponse } from '@/lib/payment-utils'
 
 interface PayUResponse {
@@ -115,6 +114,8 @@ export async function POST(request: Request) {
       hash: responseData.hash,
       salt: '0Rd0lVQEvO'
     })
+
+    console.log('isValid', isValid)
 
     // if (!isValid) {
     //   console.log('Payment verification failed - invalid hash');

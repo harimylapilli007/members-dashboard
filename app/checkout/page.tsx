@@ -9,7 +9,7 @@ import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { format } from "date-fns"
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
+import { useToast } from "@/hooks/use-toast"
 import { fetchWithRetry, generateCacheKey } from '@/app/utils/api'
 
 interface ServiceData {
@@ -35,7 +35,7 @@ export default function CheckoutPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData') || '{}') : {}
-
+  const { toast } = useToast()
 
   useEffect(() => {
     // Get service data from URL params
@@ -200,14 +200,22 @@ export default function CheckoutPage() {
       // Step 9: Handle Successful Booking
       // Update state and show success message
       setIsBookingConfirmed(true);
-      toast.success("Booking Successful! Your appointment has been confirmed. You can view your booking details in your account.")
+      toast({
+        title: "Booking Successful!",
+        description: "Your appointment has been confirmed. You can view your booking details in your account.",
+        variant: "default",
+      })
       // Redirect to bookings page
       router.push('/view-bookings');
     } catch (error) {
       // Step 10: Error Handling
       // Log error and show error message to user
       console.error('Booking confirmation error:', error);
-      toast.error("Failed to confirm booking. Please try again.")
+      toast({
+        title: "Failed to confirm booking.",
+        description: "Please try again.",
+        variant: "destructive",
+      })
     } finally {
       // Step 11: Cleanup
       // Reset confirming state regardless of success/failure
