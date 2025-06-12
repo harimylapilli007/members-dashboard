@@ -5,9 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { XCircle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { updateMembershipStatus } from "@/actions/payment-actions"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
 import { initiatePayment } from "@/lib/payment-utils"
 import {
   Dialog,

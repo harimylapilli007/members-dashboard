@@ -14,7 +14,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from "@/components/ui/progress"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { MembershipModal } from "@/components/membership-modal"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import Header from "@/app/components/Header"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"

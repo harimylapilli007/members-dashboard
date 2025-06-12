@@ -383,7 +383,8 @@ export default function Home() {
         date: format(selectedDate, 'yyyy-MM-dd'),
         time: selectedSlot,
         serviceId: serviceId,
-        outletId: selectedLocation?.outlet.id || ''
+        outletId: selectedLocation?.outlet.id || '',
+        city: selectedLocation?.city || ''
       });
       
       router.push(`/checkout?${params.toString()}`);
@@ -774,7 +775,8 @@ export default function Home() {
                                   date: format(selectedDate, 'yyyy-MM-dd'),
                                   time: time,
                                   serviceId: serviceId,
-                                  outletId: selectedLocation?.outlet.id || ''
+                                  outletId: selectedLocation?.outlet.id || '',
+                                  city: selectedLocation?.city || ''
                                 });
                                 router.push(`/checkout?${params.toString()}`);
                               }}

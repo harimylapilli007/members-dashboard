@@ -8,7 +8,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
-import { useToast } from '@/components/ui/use-toast'
+import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { useState, useEffect } from "react"
 
@@ -41,6 +41,7 @@ export default function Header() {
       await logout()
       
       toast({
+        variant: "default",
         title: "Success",
         description: "Successfully logged out",
       })

@@ -2,6 +2,7 @@ import type React from "react"
 import "@/styles/globals.css"
 import type { Metadata, Viewport } from "next"
 import { AuthProvider } from "@/lib/auth-context"
+import { Toaster } from "@/components/ui/toaster"
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -42,6 +43,7 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           {children}
+          <Toaster />
         </AuthProvider>
       </body>
     </html>

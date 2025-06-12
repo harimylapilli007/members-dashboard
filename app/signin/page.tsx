@@ -8,12 +8,13 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/components/ui/use-toast';
 import { AccountSelector } from '@/components/account-selector';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast"
+
+
 
 interface Guest {
   id: string;
@@ -39,7 +40,7 @@ export default function SignIn() {
   const [showAccountSelector, setShowAccountSelector] = useState(false);
   const recaptchaContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { toast } = useToast();
+  const { toast } = useToast()
 
   const setupRecaptcha = () => {
     try {
@@ -62,6 +63,7 @@ export default function SignIn() {
           callback: () => {
             setRecaptchaReady(true);
             toast({
+              variant: "default",
               title: "Success",
               description: "reCAPTCHA verified",
             });
@@ -113,8 +115,8 @@ export default function SignIn() {
     // Remove all non-digit characters
     const cleaned = phone.replace(/\D/g, '');
     
-    // If the number starts with 9 and is 10 digits, assume it's an Indian number
-    if (cleaned.length === 10 && cleaned.startsWith('9')) {
+    // If the number is 10 digits
+    if (cleaned.length === 10) {
       return `+91${cleaned}`;
     }
     
@@ -143,17 +145,48 @@ export default function SignIn() {
     setLoading(true);
     
     try {
+      // Validate phone number is not empty
+      if (!phoneNumber.trim()) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Please enter your phone number to continue.",
+        });
+        setLoading(false);
+        return;
+      }
+
       if (!recaptchaReady) {
-        throw new Error('Please complete the reCAPTCHA verification');
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Please complete the reCAPTCHA verification.",
+        });
+        setLoading(false);
+        return;
       }
 
       const formattedPhone = formatPhoneNumber(phoneNumber);
       console.log('Original phone:', phoneNumber);
       console.log('Formatted phone:', formattedPhone);
       
-      // Validate phone number
+      // Validate phone number format
       if (!validatePhoneNumber(formattedPhone)) {
-        throw new Error('Please enter a valid phone number with country code (e.g., +91 9876543210)');
+        if (formattedPhone.length < 10) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Phone number is too short. Please enter a complete phone number with country code.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Please enter a valid 10-digit phone number (e.g., 9963576946).",
+          });
+        }
+        setLoading(false);
+        return;
       }
 
       // Check if user exists in Zenoti
@@ -177,7 +210,7 @@ export default function SignIn() {
         
         toast({
           variant: "destructive",
-          title: "User Not Found",
+          title: "Account Not Found",
           description: "Please sign up first to continue.",
         });
         router.push('/register');
@@ -214,7 +247,8 @@ export default function SignIn() {
       window.confirmationResult = confirmationResult;
       setVerificationId(confirmationResult.verificationId);
       setShowOtpInput(true);
-      toast({
+        toast({
+        variant: "default",
         title: "Success",
         description: "OTP sent successfully!",
       });
@@ -228,11 +262,19 @@ export default function SignIn() {
           description: "Phone authentication is not enabled. Please contact support.",
         });
       } else if (error.code === 'auth/invalid-phone-number') {
-        toast({
-          variant: "destructive",
-          title: "Invalid Phone Number",
-          description: "Please enter a valid phone number with country code (e.g., +1234567890)",
-        });
+        if (error.message.includes('TOO_SHORT')) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Phone number is too short. Please enter a complete phone number with country code.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Please enter a valid phone number with country code (e.g., +1234567890)",
+          });
+        }
       } else {
         toast({
           variant: "destructive",
@@ -285,13 +327,36 @@ export default function SignIn() {
     setLoading(true);
     
     try {
+      // Validate OTP is not empty
+      if (otp.some(digit => !digit)) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Please enter all 6 digits of the OTP.",
+        });
+        setLoading(false);
+        return;
+      }
+
       if (!window.confirmationResult) {
-        throw new Error('No verification in progress. Please request a new OTP.');
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "No verification in progress. Please request a new OTP.",
+        });
+        setLoading(false);
+        return;
       }
 
       const otpString = otp.join('');
       if (otpString.length !== 6) {
-        throw new Error('Please enter a complete 6-digit OTP code.');
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Please enter a complete 6-digit OTP code.",
+        });
+        setLoading(false);
+        return;
       }
 
       const credential = await window.confirmationResult.confirm(otpString);
@@ -313,7 +378,8 @@ export default function SignIn() {
         }
         localStorage.setItem('userData', JSON.stringify(userData));
         
-        toast({
+          toast({
+          variant: "default",
           title: "Success",
           description: "Successfully verified!",
         });
@@ -334,7 +400,7 @@ export default function SignIn() {
       if (error.code === 'auth/invalid-verification-code') {
         toast({
           variant: "destructive",
-          title: "Invalid OTP",
+          title: "Error",
           description: "The OTP code is invalid or has expired. Please request a new OTP.",
         });
         // Reset OTP input
@@ -438,14 +504,14 @@ export default function SignIn() {
                 >
                   <div className="space-y-4">
                     <h1 className="text-[#454545] text-center font-inter text-lg sm:text-[22px] font-bold mb-4">Welcome Back...!</h1>
-                    <Label htmlFor="phone" className="text-gray-700 text-sm text-base sm:text-[18px] font-400 flex items-center gap-2 mb-4">
+                    <Label htmlFor="phone" className="text-gray-700 text-base sm:text-[18px] font-400 flex items-center gap-2 mb-4">
                       <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
                       <span className="font-['Marcellus'] text-base sm:text-[18px] font-400"> Please enter your phone number</span>
                     </Label>
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="+91 9876543210"
+                      placeholder="9876543210"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       required

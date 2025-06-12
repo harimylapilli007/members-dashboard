@@ -9,7 +9,7 @@ import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { format } from "date-fns"
 import { useRouter } from "next/navigation"
-import { toast } from "@/components/ui/use-toast"
+import { toast } from "sonner"
 import { fetchWithRetry, generateCacheKey } from '@/app/utils/api'
 
 interface ServiceData {
@@ -17,6 +17,7 @@ interface ServiceData {
   duration: number
   price: number
   location: string
+  city: string
 }
 
 interface SlotData {
@@ -44,13 +45,16 @@ export default function CheckoutPage() {
     const location = searchParams.get('location')
     const date = searchParams.get('date')
     const time = searchParams.get('time')
+    const city = searchParams.get('city')
+
 
     if (serviceName && duration && price && location && date && time) {
       setServiceData({
         name: serviceName,
         duration: parseInt(duration),
         price: parseInt(price),
-        location: location
+        location: location,
+        city: city || '',
       })
 
       // Format the date
@@ -196,21 +200,14 @@ export default function CheckoutPage() {
       // Step 9: Handle Successful Booking
       // Update state and show success message
       setIsBookingConfirmed(true);
-      toast({
-        title: "Booking Successful!",
-        description: "Your appointment has been confirmed. You can view your booking details in your account.",
-      })
+      toast.success("Booking Successful! Your appointment has been confirmed. You can view your booking details in your account.")
       // Redirect to bookings page
       router.push('/view-bookings');
     } catch (error) {
       // Step 10: Error Handling
       // Log error and show error message to user
       console.error('Booking confirmation error:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to confirm booking. Please try again.",
-      })
+      toast.error("Failed to confirm booking. Please try again.")
     } finally {
       // Step 11: Cleanup
       // Reset confirming state regardless of success/failure
@@ -258,7 +255,7 @@ export default function CheckoutPage() {
 
                 <div className="flex">
                   <div className="w-36 text-[#6b7280] font-medium">Location:</div>
-                  <div className="flex-1 text-[#1f2937]">{serviceData.location}</div>
+                  <div className="flex-1 text-[#1f2937]">{serviceData.city} - {serviceData.location}</div>
                 </div>
 
                 <div className="flex">
