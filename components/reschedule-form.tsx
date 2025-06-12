@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { useToast } from "@/hooks/use-toast"
+import { useToast, toast } from "@/hooks/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AvailabilityCalendar } from "@/components/availability-calendar"
 import { TimeSlotSelector } from "@/components/time-slot-selector"
@@ -46,6 +46,7 @@ export function RescheduleForm({
   onCancel,
 }: RescheduleFormProps) {
   const router = useRouter()
+  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [dateSelectionTab, setDateSelectionTab] = useState<"calendar" | "next-available">("calendar")
   const [isCheckingNextAvailable, setIsCheckingNextAvailable] = useState(false)
