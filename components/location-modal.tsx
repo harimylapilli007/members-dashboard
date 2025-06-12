@@ -561,7 +561,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                 onClick={handleBack}
                 className="flex items-center text-gray-700 hover:text-[#a07735] transition-colors"
               >
-                <ArrowLeft className="h-4 w-4 " />
+                <ArrowLeft className="h-4 w-4" />
                 <span className="text-[16px]">Back</span>
               </button>
               <div className="flex-1"></div>
@@ -577,7 +577,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                     <button
                       key={index}
                       className={`w-full p-3 rounded-md text-center transition-colors ${
-                          "bg-white/20 font-marcellus backdrop-blur-sm border border-gray-300 text-gray-700 hover:bg-[#a07735] hover:text-white"
+                          "bg-white/20 font-marcellus backdrop-blur-sm border border-gray-300 text-gray-700 hover:bg-[#ae7735] hover:text-white"
                       }`}
                       onClick={() => handleOutletSelect(outlet)}
                     >
