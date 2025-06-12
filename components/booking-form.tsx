@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { toast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AvailabilityCalendar } from "@/components/availability-calendar"
 import { TimeSlotSelector } from "@/components/time-slot-selector"
@@ -43,6 +43,7 @@ interface BookingFormProps {
 
 export function BookingForm({ appointmentType, appointmentTitle, onSuccess, onCancel }: BookingFormProps) {
   const router = useRouter()
+  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [locations, setLocations] = useState<{ id: string; name: string; city: string }[]>([])
   const [treatments, setTreatments] = useState<{ id: string; title: string; description: string }[]>([])
