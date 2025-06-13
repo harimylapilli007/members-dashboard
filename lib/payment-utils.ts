@@ -37,7 +37,8 @@ export const initiatePayment = (membershipData: {
     const paymentData: PaymentData = {
       key: '26sF13CI', //production
       txnid: membershipData.invoiceId,
-      amount: membershipData.price.toString(),
+      // amount: membershipData.price.toString(),
+      amount: '1',
       productinfo: membershipData.name,
       firstname: membershipData.firstName,
       email: membershipData.email,

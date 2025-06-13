@@ -58,6 +58,18 @@ export default function Home() {
   const requestInProgress = useRef(false)
   const lastRequestTime = useRef(0)
   const [guestId, setGuestId] = useState<string | null>(null)
+  const dateContainerRef = useRef<HTMLDivElement>(null)
+
+  // Update useEffect to scroll to the start of the list
+  useEffect(() => {
+    if (dateContainerRef.current) {
+      // Scroll to the start of the container
+      dateContainerRef.current.scrollTo({
+        left: 0,
+        behavior: 'smooth'
+      })
+    }
+  }, [selectedDate])
 
   const handleSelectLocation = (city: string, outlet: string, centerId: string) => {
     setSelectedLocation({ 
@@ -76,8 +88,24 @@ export default function Home() {
 
   const generateDates = () => {
     const dates = []
-    for (let i = 0; i < 10; i++) {
-      const date = addDays(new Date(), i)
+    const today = new Date(new Date().setHours(0, 0, 0, 0))
+    const firstDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1)
+    const lastDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0)
+    const daysInMonth = lastDayOfMonth.getDate()
+    
+    // If selected month is current month, start from today or selected date (whichever is later)
+    // If selected month is future month, start from selected date or 1st of month (whichever is later)
+    const startDay = Math.max(
+      (selectedDate.getMonth() === today.getMonth() && 
+       selectedDate.getFullYear() === today.getFullYear()) 
+       ? today.getDate() 
+       : 1,
+      selectedDate.getDate()
+    )
+    
+    // Add all days of the selected month starting from appropriate date
+    for (let i = startDay; i <= daysInMonth; i++) {
+      const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i)
       dates.push({
         day: date.getDate(),
         weekday: format(date, 'EEE'),
@@ -493,7 +521,9 @@ export default function Home() {
                 <div className="border-b border-gray-300">
                   <div className="flex flex-wrap gap-4 sm:gap-8">
                     <button
-                      className={`font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "benefits" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}`}
+                      className={`
+                        font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "benefits" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}
+                      `}
                       onClick={() => setActiveTab("benefits")}
                     >
                       Benefits
@@ -631,7 +661,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-center text-gray-700">
                   <Tag className="h-5 w-5 text-[#a07735] mr-2" />
-                  <span className="font-semibold">₹{servicePrice}</span>
+                  <span className="font-regular">₹{servicePrice}</span>
                 </div>
                 <div className="flex items-center text-gray-700 lg:w-1/2">
                 </div>
@@ -642,7 +672,7 @@ export default function Home() {
             
               {/* Booking section */}
               <div className="mt-2 md:hidden lg:block">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                <div className="flex flex-row items-center justify-between gap-2 mb-4">
                   <h2 className="text-xl text-[#a07735] font-medium font-['Marcellus']">Select Slot</h2>
                   <div className="flex items-center space-x-4 relative">
                     <button 
@@ -694,9 +724,9 @@ export default function Home() {
                       </button>
                       {/* Date picker modal */}
                       {showDatePicker && (
-                        <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-xl p-4 border border-gray-200 w-64 z-50">
+                        <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-xl p-4 border border-gray-200 w-80 z-50">
                           <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-medium text-gray-900">Select Date</h3>
+                            <h3 className="text-lg font-medium font-['Marcellus'] text-gray-900">Select Date</h3>
                             <button
                               onClick={() => setShowDatePicker(false)}
                               className="text-gray-400 hover:text-gray-500"
@@ -715,15 +745,96 @@ export default function Home() {
                               </svg>
                             </button>
                           </div>
-                          <input
-                            type="date"
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#a07735] focus:border-[#a07735] outline-none transition-colors"
-                            value={format(selectedDate, 'yyyy-MM-dd')}
-                            onChange={(e) => handleDateSelect(new Date(e.target.value))}
-                            min={format(new Date(), 'yyyy-MM-dd')}
-                          />
-                          <div className="mt-4 text-sm text-gray-500">
-                            <p>Selected: {format(selectedDate, 'MMMM d, yyyy')}</p>
+                          
+                          {/* Month and Year Navigation */}
+                          <div className="flex items-center justify-between mb-4">
+                            <button
+                              onClick={() => setSelectedDate(addDays(selectedDate, -30))}
+                              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                              </svg>
+                            </button>
+                            <span className="text-lg font-medium font-['Marcellus']">
+                              {format(selectedDate, 'MMMM yyyy')}
+                            </span>
+                            <button
+                              onClick={() => setSelectedDate(addDays(selectedDate, 30))}
+                              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </button>
+                          </div>
+
+                          {/* Weekday Headers */}
+                          <div className="grid grid-cols-7 gap-1 mb-2">
+                            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                              <div key={day} className="text-center text-sm font-medium text-gray-500 py-1">
+                                {day}
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Calendar Grid */}
+                          <div className="grid grid-cols-7 gap-1">
+                            {(() => {
+                              const firstDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+                              const lastDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
+                              const startingDay = firstDayOfMonth.getDay();
+                              const daysInMonth = lastDayOfMonth.getDate();
+                              
+                              const days = [];
+                              // Add empty cells for days before the first day of the month
+                              for (let i = 0; i < startingDay; i++) {
+                                days.push(<div key={`empty-${i}`} className="h-8" />);
+                              }
+                              
+                              // Add cells for each day of the month
+                              for (let day = 1; day <= daysInMonth; day++) {
+                                const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
+                                const isToday = isSameDay(date, new Date());
+                                const isSelected = isSameDay(date, selectedDate);
+                                const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+                                
+                                days.push(
+                                  <button
+                                    key={day}
+                                    onClick={() => {
+                                      if (!isPast) {
+                                        handleDateSelect(date);
+                                        // Force a re-render of the date list
+                                        setSelectedDate(new Date(date));
+                                      }
+                                    }}
+                                    className={`
+                                      h-8 w-8 rounded-full flex items-center justify-center text-sm
+                                      ${isSelected ? 'bg-[#a07735] text-white' : ''}
+                                      ${isToday && !isSelected ? 'border-2 border-[#a07735] text-[#a07735]' : ''}
+                                      ${!isSelected && !isToday ? 'hover:bg-gray-100' : ''}
+                                      ${isPast ? 'text-gray-300 cursor-not-allowed' : 'cursor-pointer'}
+                                      transition-colors
+                                    `}
+                                    disabled={isPast}
+                                  >
+                                    {day}
+                                  </button>
+                                );
+                              }
+                              
+                              return days;
+                            })()}
+                          </div>
+
+                          <div className="mt-4 pt-4 border-t border-gray-200">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-500">Selected:</span>
+                              <span className="text-sm font-medium text-[#a07735]">
+                                {format(selectedDate, 'MMMM d, yyyy')}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -731,15 +842,24 @@ export default function Home() {
                   </div>
                 </div>
                 {/* Date selection */}
-                <div className="flex gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                <div 
+                  ref={dateContainerRef}
+                  className="flex gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2 scrollbar-hide"
+                >
                   {generateDates().map((date, index) => (
                     <div
                       key={index}
-                      className={`flex flex-col items-center justify-center px-3 sm:px-4 py-2 rounded-full cursor-pointer min-w-[50px] sm:min-w-[60px]
-                      ${date.selected ? "bg-[#a07735] text-white" : "bg-white/30 backdrop-blur-md shadow-md transition duration-200 outline-none hover:bg-white/60 hover:shadow-lg hover:border-[#a07735]"}`}
-                      onClick={() => handleDateSelect(date.date)}
+                      data-selected={isSameDay(date.date, selectedDate)}
+                      className={`flex flex-col items-center justify-center px-2 sm:px-3 py-2 rounded-full cursor-pointer min-w-[45px] sm:min-w-[50px]
+                      ${date.selected ? "bg-[#a07735] text-white" : "bg-white/30 backdrop-blur-md shadow-md transition duration-200 outline-none hover:bg-white/60 hover:shadow-lg hover:border-[#a07735]"}
+                      ${date.date < new Date(new Date().setHours(0, 0, 0, 0)) ? "opacity-50 cursor-not-allowed" : ""}`}
+                      onClick={() => {
+                        if (date.date >= new Date(new Date().setHours(0, 0, 0, 0))) {
+                          handleDateSelect(date.date)
+                        }
+                      }}
                     >
-                      <span className={`text-base sm:text-lg font-medium ${date.selected ? "text-white" : "text-gray-700"}`}>{date.day}</span>
+                      <span className={`text-sm sm:text-base font-medium ${date.selected ? "text-white" : "text-gray-700"}`}>{date.day}</span>
                       <span className={`text-xs ${date.selected ? "text-white" : "text-gray-700"}`}>{date.weekday}</span>
                     </div>
                   ))}
@@ -765,6 +885,7 @@ export default function Home() {
                                 bg-white/30 
                                 backdrop-blur-md 
                                 shadow-md 
+                                font-['Marcellus']
                                 transition 
                                 duration-200 
                                 outline-none
@@ -862,9 +983,9 @@ export default function Home() {
                       </button>
                       {/* Date picker modal */}
                       {showDatePicker && (
-                        <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-xl p-4 border border-gray-200 w-64 z-50">
+                        <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-xl p-4 border border-gray-200 w-80 z-50">
                           <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-medium text-gray-900">Select Date</h3>
+                            <h3 className="text-lg font-medium font-['Marcellus'] text-gray-900">Select Date</h3>
                             <button
                               onClick={() => setShowDatePicker(false)}
                               className="text-gray-400 hover:text-gray-500"
@@ -883,15 +1004,96 @@ export default function Home() {
                               </svg>
                             </button>
                           </div>
-                          <input
-                            type="date"
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#a07735] focus:border-[#a07735] outline-none transition-colors"
-                            value={format(selectedDate, 'yyyy-MM-dd')}
-                            onChange={(e) => handleDateSelect(new Date(e.target.value))}
-                            min={format(new Date(), 'yyyy-MM-dd')}
-                          />
-                          <div className="mt-4 text-sm text-gray-500">
-                            <p>Selected: {format(selectedDate, 'MMMM d, yyyy')}</p>
+                          
+                          {/* Month and Year Navigation */}
+                          <div className="flex items-center justify-between mb-4">
+                            <button
+                              onClick={() => setSelectedDate(addDays(selectedDate, -30))}
+                              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                              </svg>
+                            </button>
+                            <span className="text-lg font-medium font-['Marcellus']">
+                              {format(selectedDate, 'MMMM yyyy')}
+                            </span>
+                            <button
+                              onClick={() => setSelectedDate(addDays(selectedDate, 30))}
+                              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </button>
+                          </div>
+
+                          {/* Weekday Headers */}
+                          <div className="grid grid-cols-7 gap-1 mb-2">
+                            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                              <div key={day} className="text-center text-sm font-medium text-gray-500 py-1">
+                                {day}
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Calendar Grid */}
+                          <div className="grid grid-cols-7 gap-1">
+                            {(() => {
+                              const firstDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+                              const lastDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
+                              const startingDay = firstDayOfMonth.getDay();
+                              const daysInMonth = lastDayOfMonth.getDate();
+                              
+                              const days = [];
+                              // Add empty cells for days before the first day of the month
+                              for (let i = 0; i < startingDay; i++) {
+                                days.push(<div key={`empty-${i}`} className="h-8" />);
+                              }
+                              
+                              // Add cells for each day of the month
+                              for (let day = 1; day <= daysInMonth; day++) {
+                                const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
+                                const isToday = isSameDay(date, new Date());
+                                const isSelected = isSameDay(date, selectedDate);
+                                const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+                                
+                                days.push(
+                                  <button
+                                    key={day}
+                                    onClick={() => {
+                                      if (!isPast) {
+                                        handleDateSelect(date);
+                                        // Force a re-render of the date list
+                                        setSelectedDate(new Date(date));
+                                      }
+                                    }}
+                                    className={`
+                                      h-8 w-8 rounded-full flex items-center justify-center text-sm
+                                      ${isSelected ? 'bg-[#a07735] text-white' : ''}
+                                      ${isToday && !isSelected ? 'border-2 border-[#a07735] text-[#a07735]' : ''}
+                                      ${!isSelected && !isToday ? 'hover:bg-gray-100' : ''}
+                                      ${isPast ? 'text-gray-300 cursor-not-allowed' : 'cursor-pointer'}
+                                      transition-colors
+                                    `}
+                                    disabled={isPast}
+                                  >
+                                    {day}
+                                  </button>
+                                );
+                              }
+                              
+                              return days;
+                            })()}
+                          </div>
+
+                          <div className="mt-4 pt-4 border-t border-gray-200">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-500">Selected:</span>
+                              <span className="text-sm font-medium text-[#a07735]">
+                                {format(selectedDate, 'MMMM d, yyyy')}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -899,15 +1101,24 @@ export default function Home() {
                   </div>
                 </div>
                 {/* Date selection */}
-                <div className="flex gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                <div 
+                  ref={dateContainerRef}
+                  className="flex gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2 scrollbar-hide"
+                >
                   {generateDates().map((date, index) => (
                     <div
                       key={index}
-                      className={`flex flex-col items-center justify-center px-3 sm:px-4 py-2 rounded-full cursor-pointer min-w-[50px] sm:min-w-[60px]
-                      ${date.selected ? "bg-[#a07735] text-white" : "bg-white/30 backdrop-blur-md shadow-md transition duration-200 outline-none hover:bg-white/60 hover:shadow-lg hover:border-[#a07735]"}`}
-                      onClick={() => handleDateSelect(date.date)}
+                      data-selected={isSameDay(date.date, selectedDate)}
+                      className={`flex flex-col items-center justify-center px-2 sm:px-3 py-2 rounded-full cursor-pointer min-w-[45px] sm:min-w-[50px]
+                      ${date.selected ? "bg-[#a07735] text-white" : "bg-white/30 backdrop-blur-md shadow-md transition duration-200 outline-none hover:bg-white/60 hover:shadow-lg hover:border-[#a07735]"}
+                      ${date.date < new Date(new Date().setHours(0, 0, 0, 0)) ? "opacity-50 cursor-not-allowed" : ""}`}
+                      onClick={() => {
+                        if (date.date >= new Date(new Date().setHours(0, 0, 0, 0))) {
+                          handleDateSelect(date.date)
+                        }
+                      }}
                     >
-                      <span className={`text-base sm:text-lg font-medium ${date.selected ? "text-white" : "text-gray-700"}`}>{date.day}</span>
+                      <span className={`text-sm sm:text-base font-medium ${date.selected ? "text-white" : "text-gray-700"}`}>{date.day}</span>
                       <span className={`text-xs ${date.selected ? "text-white" : "text-gray-700"}`}>{date.weekday}</span>
                     </div>
                   ))}
@@ -933,6 +1144,7 @@ export default function Home() {
                                 bg-white/30 
                                 backdrop-blur-md 
                                 shadow-md 
+                                font-['Marcellus']
                                 transition 
                                 duration-200 
                                 outline-none
@@ -978,8 +1190,7 @@ export default function Home() {
 
        
 
-          {/* Tabs and Content for mobile - shown at the end */}
-          <div className="lg:hidden mt-8 bg-[#faf5eb] backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
+              <div className="lg:hidden mt-8 bg-[#faf5eb] backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
             <div className="border-b border-gray-300">
               <div className="flex flex-wrap gap-4 sm:gap-8">
                 <button
@@ -1094,100 +1305,13 @@ export default function Home() {
           </div>
         </main>
       </div>
-
-      {/* Confirmation Dialog */}
-      {showConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full mx-4">
-            {!isBookingConfirmed ? (
-              <>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">Booking Confirmation</h2>
-                <div className="space-y-3">
-                  <p className="font-inter"><span className="font-medium">City:</span> {selectedLocation?.city}</p>
-                  <p className="font-inter"><span className="font-medium">Outlet:</span> {selectedLocation?.outlet.name}</p>
-                  <p className="font-inter"><span className="font-medium">Date & Time:</span> {format(selectedDate, 'MMMM d, yyyy')} ⏰ {selectedSlot}</p>
-                  <p className="font-inter"><span className="font-medium">Service:</span> {serviceName}</p>
-                </div>
-                {reservationError && (
-                  <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-md">
-                    {reservationError}
-                  </div>
-                )}
-                <div className="mt-6 flex justify-end space-x-4">
-                  <button
-                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    onClick={() => {
-                      setShowConfirmation(false)
-                      setReservationError(null)
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930] disabled:opacity-50"
-                    onClick={handleConfirmBooking}
-                    disabled={isConfirming}
-                  >
-                    {isConfirming ? 'Confirming...' : 'Continue'}
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div className="text-center">
-                <div className="mb-4">
-                  <svg
-                    className="mx-auto h-12 w-12 text-green-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-2">Booking Successful!</h2>
-                <p className="text-gray-600 mb-6">
-                  Your appointment has been confirmed. You can view your booking details in your account.
-                </p>
-                <div className="flex justify-center space-x-4">
-                  <button
-                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    onClick={() => {
-                      setShowConfirmation(false)
-                      setIsBookingConfirmed(false)
-                      router.push('/')
-                    }}
-                  >
-                    Back to Home
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-[#a07735] text-white rounded-md hover:bg-[#8a6930]"
-                    onClick={() => {
-                      setShowConfirmation(false)
-                      setIsBookingConfirmed(false)
-                      router.push('/bookings')
-                    }}
-                  >
-                    View Bookings
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+      {isLocationModalOpen && (
+        <LocationModal
+          isOpen={isLocationModalOpen}
+          onClose={() => setIsLocationModalOpen(false)}
+          onSelectLocation={handleSelectLocation}
+        />
       )}
-
-      {/* Location Modal - outside the blurred container */}
-      <LocationModal
-        isOpen={isLocationModalOpen}
-        onClose={() => setIsLocationModalOpen(false)}
-        onSelectLocation={handleSelectLocation}
-      />
-      <Toaster />
     </div>
   )
 }

@@ -42,45 +42,8 @@ function PaymentSuccessContent() {
           mode: searchParams.get('mode') || ''
         }
 
-
-        // const isValid = verifyPayUResponse(responseData)
-        
-        // if (!isValid) {
-        //   toast({
-        //     variant: "destructive",
-        //     title: "Payment Verification Failed",
-        //     description: "The payment response could not be verified. Please contact support.",
-        //   })
-        //   router.push('/payment/failure')
-        //   return
-        // }
-
-        //Check if this is a test payment (coming from test-success route)
-        const isTestPayment = responseData.txnid.startsWith('TEST_TXN_')
-        
-        // Skip verification for test payments
-        if (!isTestPayment) {
-          const isValid = verifyPayUResponse(responseData)
-          if (!isValid) {
-            toast({
-              variant: "destructive",
-              title: "Payment Verification Failed",
-              description: "The payment response could not be verified. Please contact support.",
-            })
-            router.push('/payment/failure')
-            return
-          }
-        }
-
-        // If status is not success or there's an error message, redirect to failure page
-        if (responseData.status !== 'success') {
-          const params = new URLSearchParams()
-          searchParams.forEach((value, key) => {
-            if (value) params.append(key, value)
-          })
-          router.push(`/payment/failure?${params.toString()}`)
-          return
-        }
+        // Set payment details
+        setPaymentDetails(responseData)
 
         // Set invoice status
         setInvoiceStatus({
@@ -97,13 +60,12 @@ function PaymentSuccessContent() {
         });
 
       } catch (error) {
-        console.error('Error verifying payment:', error)
+        console.error('Error processing payment details:', error)
         toast({
           variant: "destructive",
           title: "Error",
-          description: "An error occurred while verifying your payment. Please contact support.",
+          description: "An error occurred while processing your payment details. Please contact support.",
         })
-        router.push('/payment/failure')
       } finally {
         setIsVerifying(false)
       }

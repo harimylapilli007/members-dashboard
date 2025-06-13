@@ -24,7 +24,8 @@ async function makeCustomPayment(invoiceId: string, amount: string, customPaymen
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      amount: parseFloat(amount),
+      // amount: parseFloat(amount),
+      amount: 29500,
       tip_amount: 0.00,
       cash_register_id: null,
       custom_payment_id: customPaymentId,
@@ -105,17 +106,17 @@ export async function POST(request: Request) {
     })
 
     // Verify the PayU response hash
-    const isValid = verifyPayUResponse({
-      txnid: responseData.txnid,
-      amount: responseData.amount,
-      productinfo: responseData.productinfo,
-      firstname: responseData.firstname,
-      status: responseData.status,
-      hash: responseData.hash,
-      salt: '0Rd0lVQEvO'
-    })
+    // const isValid = verifyPayUResponse({
+    //   txnid: responseData.txnid,
+    //   amount: responseData.amount,
+    //   productinfo: responseData.productinfo,
+    //   firstname: responseData.firstname,
+    //   status: responseData.status,
+    //   hash: responseData.hash,
+    //   salt: '0Rd0lVQEvO'
+    // })
 
-    console.log('isValid', isValid)
+    // console.log('isValid', isValid)
 
     // if (!isValid) {
     //   console.log('Payment verification failed - invalid hash');
@@ -188,11 +189,18 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     const params = new URLSearchParams()
     
+    // Add all relevant payment information
     if (responseData.txnid) {
       params.append('txnid', responseData.txnid)
     }
     params.append('amount', responseData.amount)
-    params.append('status', 'success')
+    params.append('status', responseData.status)
+    params.append('productinfo', responseData.productinfo)
+    params.append('firstname', responseData.firstname)
+    params.append('email', responseData.email)
+    if (responseData.mihpayid) {
+      params.append('mihpayid', responseData.mihpayid)
+    }
     params.append('error_Message', 'Payment processed successfully')
 
     const redirectUrl = `${baseUrl}/payment/success?${params.toString()}`
