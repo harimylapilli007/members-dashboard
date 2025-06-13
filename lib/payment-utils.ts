@@ -35,15 +35,14 @@ export const initiatePayment = (membershipData: {
 }): Promise<void> => {
   return new Promise((resolve) => {
     const paymentData: PaymentData = {
-      key: '26sF13CI',
+      key: '26sF13CI', //production
       txnid: membershipData.invoiceId,
-     // amount: membershipData.price.toString(),
-      amount: '1',
+      amount: membershipData.price.toString(),
       productinfo: membershipData.name,
       firstname: membershipData.firstName,
       email: membershipData.email,
       phone: membershipData.phone,
-      salt: '0Rd0lVQEvO',
+      salt: '0Rd0lVQEvO', //production
       surl: `${window.location.protocol}//${window.location.host}/api/payment/success`,
       furl: `${window.location.protocol}//${window.location.host}/api/payment/failure`,
     }

@@ -190,7 +190,7 @@ const ServiceCard = memo(({
       </div>
     </div>
     <div className="p-3 md:p-4">
-      <div className="relative">
+      <div className="relative h-16">
         <p className="text-gray-600 text-xs md:text-sm mb-3 md:mb-4 line-clamp-2">
           {service.description || 'Experience our premium service designed to enhance your well-being and relaxation.'}
         </p>
@@ -563,189 +563,204 @@ export default function ServiceBookingPage() {
         }}
       />
       {/* Subtle blurred circles */}
-      <div className="absolute top-20 -left-60 w-96 h-96 bg-[#e2c799] opacity-40 rounded-full -z-30" />
+      <div className="absolute top-20 -left-60 w-96 h-96 bg-[#e2c799] opacity-40 rounded-full blur-sm -z-30" />
       <div className="absolute bottom-20 right-0 w-[500px] h-[400px] bg-[#b2d5e4] opacity-30 rounded-full blur-xl -z-30" />
-      <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 rounded-full -z-30" />
+      <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 rounded-full blur-3xl -z-30" />
 
-      <div className={`min-h-screen relative overflow-hidden ${isLocationModalOpen || selectedService ? "blur-sm" : ""}`}>
-        <div className="relative z-10">
-          <div className="top-0 left-0 right-0 z-50">
-            <Header />
-          </div>
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : error ? (
+        <ErrorMessage message={error} onRetry={() => {
+          setError(null);
+          if (area) {
+            setIsLoading(true);
+            fetchAndCategorizeServices(area)
+              .then(setServices)
+              .catch(setError)
+              .finally(() => setIsLoading(false));
+          }
+        }} />
+      ) : (
+        <div className={`min-h-screen relative overflow-hidden ${isLocationModalOpen || selectedService ? "blur-sm" : ""}`}>
+          <div className="relative z-10">
+            <div className="top-0 left-0 right-0 z-50">
+              <Header />
+            </div>
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-            <div className="flex flex-col md:flex-row  h-fit">
-            
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+              <div className="flex flex-col md:flex-row  h-fit">
+              
 
-              {/* Desktop Categories Sidebar */}
-              <aside className="hidden lg:block w-72 flex-shrink-0 shadow-lg bg-white/50 rounded-xl p-4 mt-2 mb-2 h-fit mr-8">
-                <div className="sticky top-24">
-                  <h1 className="text-lg font-semibold text-gray-800 mb-4">Categories</h1>
-                  <div className="space-y-3">
-                    {categories.map((category, index) => {
-                      const categoryInfo = categoryImages.find(img => img.name === category);
-                      return (
-                        <CategoryButton
-                          key={category}
-                          category={category}
-                          isSelected={selectedCategory === category}
-                          onClick={() => handleCategoryClick(category)}
-                          image={categoryInfo?.image || '/categories/default.jpg'}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-              </aside>
-
-              {/* Main Content: Services */}
-              <main className="flex-1 bg-transparent rounded-xl p-2 sm:p-4 md:p-6 lg:p-8 shadow-sm relative">
-                {/* Divider for desktop */}
-               
-                <div className="flex md:hidden flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-x-6 mt-4 mb-4">
-                  <h1 className="text-xl sm:text-2xl font-bold m-0">Discover Our Services</h1>
-                  <div className="w-full sm:w-auto flex-shrink-0">
-                    <LocationSelector 
-                      selectedLocation={selectedLocation} 
-                      onOpen={handleLocationOpen} 
-                    />
-                  </div>
-                </div>
-
-                {/* Mobile Header Section */}
-                <div className="md:hidden flex flex-col gap-4 mb-6">
-                 
-                 
-                  <MobileCategoriesDropdown
-                    categories={categories}
-                    selectedCategory={selectedCategory}
-                    onSelectCategory={handleCategoryClick}
-                    categoryImages={categoryImages}
-                  />
-                   <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#a07735]/20 to-[#b2d5e4]/20 rounded-lg blur transition-all duration-300 group-hover:blur-md group-focus-within:blur-md"></div>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder="Search services..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-lg border-2 bg-white/40 backdrop-blur-sm border-gray-200/50 focus:outline-none focus:border-[#a07735] focus:ring-2 focus:ring-[#a07735]/20 transition-all duration-300 placeholder:text-gray-500 text-gray-700"
-                      />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                        {search && (
-                          <button
-                            onClick={() => setSearch('')}
-                            className="p-1 rounded-full hover:bg-gray-100/50 transition-colors"
-                          >
-                            <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                          </button>
-                        )}
-                        <svg
-                          className="h-5 w-5 text-[#a07735] transition-transform duration-300 group-hover:scale-110"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                      </div>
+                {/* Desktop Categories Sidebar */}
+                <aside className="hidden lg:block w-72 flex-shrink-0 shadow-lg bg-white/50 rounded-xl p-4 mt-2 mb-2 h-fit mr-8">
+                  <div className="sticky top-24">
+                    <h1 className="text-lg font-semibold text-gray-800 mb-4">Categories</h1>
+                    <div className="space-y-3">
+                      {categories.map((category, index) => {
+                        const categoryInfo = categoryImages.find(img => img.name === category);
+                        return (
+                          <CategoryButton
+                            key={category}
+                            category={category}
+                            isSelected={selectedCategory === category}
+                            onClick={() => handleCategoryClick(category)}
+                            image={categoryInfo?.image || '/categories/default.jpg'}
+                          />
+                        );
+                      })}
                     </div>
-                    {search && (
-                      <div className="absolute left-0 right-0 top-full mt-2 bg-white/90 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 p-2 text-sm text-gray-500">
-                        Showing results for "{search}"
-                      </div>
-                    )}
                   </div>
-                </div>
+                </aside>
 
-               
-
-                {/* Tablet and Desktop Search Section */}
-                <div className="hidden md:block mb-8 sticky top-0.5 z-10 bg-gradient-to-b from-white/90 to-white/60 backdrop-blur-md rounded-xl shadow-sm p-4">
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-center justify-between gap-4">
-                      <h1 className="text-xl lg:text-2xl font-bold">Discover Our Services</h1>
+                {/* Main Content: Services */}
+                <main className="flex-1 bg-transparent rounded-xl p-2 sm:p-4 md:p-6 lg:p-8 shadow-sm relative">
+                  {/* Divider for desktop */}
+                 
+                  <div className="flex md:hidden flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-x-6 mt-4 mb-4">
+                    <h1 className="text-xl sm:text-2xl font-bold m-0">Discover Our Services</h1>
+                    <div className="w-full sm:w-auto flex-shrink-0">
                       <LocationSelector 
                         selectedLocation={selectedLocation} 
                         onOpen={handleLocationOpen} 
                       />
                     </div>
-                    <div className="flex-1">
-                      <div className="relative group">
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#a07735]/20 to-[#b2d5e4]/20 rounded-lg blur transition-all duration-300 group-hover:blur-md group-focus-within:blur-md"></div>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            placeholder="Search services..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="w-full px-4 py-3 lg:py-3.5 rounded-lg border-2 bg-white/40 backdrop-blur-sm border-gray-200/50 focus:outline-none focus:border-[#a07735] focus:ring-2 focus:ring-[#a07735]/20 transition-all duration-300 placeholder:text-gray-500 text-gray-700"
-                          />
-                          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                            {search && (
-                              <button
-                                onClick={() => setSearch('')}
-                                className="p-1 rounded-full hover:bg-gray-100/50 transition-colors"
-                              >
-                                <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                              </button>
-                            )}
-                            <svg
-                              className="h-5 w-5 text-[#a07735] transition-transform duration-300 group-hover:scale-110"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
+                  </div>
+
+                  {/* Mobile Header Section */}
+                  <div className="md:hidden flex flex-col gap-4 mb-6">
+                   
+                   
+                    <MobileCategoriesDropdown
+                      categories={categories}
+                      selectedCategory={selectedCategory}
+                      onSelectCategory={handleCategoryClick}
+                      categoryImages={categoryImages}
+                    />
+                     <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#a07735]/20 to-[#b2d5e4]/20 rounded-lg blur transition-all duration-300 group-hover:blur-md group-focus-within:blur-md"></div>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          placeholder="Search services..."
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                          className="w-full px-4 py-2.5 rounded-lg border-2 bg-white/40 backdrop-blur-sm border-gray-200/50 focus:outline-none focus:border-[#a07735] focus:ring-2 focus:ring-[#a07735]/20 transition-all duration-300 placeholder:text-gray-500 text-gray-700"
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                          {search && (
+                            <button
+                              onClick={() => setSearch('')}
+                              className="p-1 rounded-full hover:bg-gray-100/50 transition-colors"
                             >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                          </div>
+                              <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          )}
+                          <svg
+                            className="h-5 w-5 text-[#a07735] transition-transform duration-300 group-hover:scale-110"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          </svg>
                         </div>
-                       
+                      </div>
+                      {search && (
+                        <div className="absolute left-0 right-0 top-full mt-2 bg-white/90 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 p-2 text-sm text-gray-500">
+                          Showing results for "{search}"
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                 
+
+                  {/* Tablet and Desktop Search Section */}
+                  <div className="hidden md:block mb-8 sticky top-0.5 z-10 bg-gradient-to-b from-white/90 to-white/60 backdrop-blur-md rounded-xl shadow-sm p-4">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-center justify-between gap-4">
+                        <h1 className="text-xl lg:text-2xl font-bold">Discover Our Services</h1>
+                        <LocationSelector 
+                          selectedLocation={selectedLocation} 
+                          onOpen={handleLocationOpen} 
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <div className="relative group">
+                          <div className="absolute inset-0 bg-gradient-to-r from-[#a07735]/20 to-[#b2d5e4]/20 rounded-lg blur transition-all duration-300 group-hover:blur-md group-focus-within:blur-md"></div>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              placeholder="Search services..."
+                              value={search}
+                              onChange={(e) => setSearch(e.target.value)}
+                              className="w-full px-4 py-3 lg:py-3.5 rounded-lg border-2 bg-white/40 backdrop-blur-sm border-gray-200/50 focus:outline-none focus:border-[#a07735] focus:ring-2 focus:ring-[#a07735]/20 transition-all duration-300 placeholder:text-gray-500 text-gray-700"
+                            />
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                              {search && (
+                                <button
+                                  onClick={() => setSearch('')}
+                                  className="p-1 rounded-full hover:bg-gray-100/50 transition-colors"
+                                >
+                                  <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                  </svg>
+                                </button>
+                              )}
+                              <svg
+                                className="h-5 w-5 text-[#a07735] transition-transform duration-300 group-hover:scale-110"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                              </svg>
+                            </div>
+                          </div>
+                         
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                 {/* Tablet Categories Dropdown */}
-                 <TabletCategoriesDropdown
-                  categories={categories}
-                  selectedCategory={selectedCategory}
-                  onSelectCategory={handleCategoryClick}
-                  categoryImages={categoryImages}
-                />
+                   {/* Tablet Categories Dropdown */}
+                   <TabletCategoriesDropdown
+                    categories={categories}
+                    selectedCategory={selectedCategory}
+                    onSelectCategory={handleCategoryClick}
+                    categoryImages={categoryImages}
+                  />
 
-                {/* Services List */}
-                {selectedCategory && services[selectedCategory] && (
-                  <div className="space-y-6">
-                    <h1 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-6">{selectedCategory}</h1>
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-                      {services[selectedCategory]
-                        .filter(service => 
-                          service.name.toLowerCase().includes(search.toLowerCase()) ||
-                          service.description?.toLowerCase().includes(search.toLowerCase())
-                        )
-                        .map((service) => (
-                          <ServiceCard
-                            key={service.id}
-                            service={service}
-                            categoryImage={categoryImages.find(img => img.name === selectedCategory)?.image || '/categories/default.jpg'}
-                            onBookNow={handleBookNow}
-                            onReadMore={handleReadMore}
-                          />
-                        ))}
+                  {/* Services List */}
+                  {selectedCategory && services[selectedCategory] && (
+                    <div className="space-y-6">
+                      <h1 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-6">{selectedCategory}</h1>
+                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+                        {services[selectedCategory]
+                          .filter(service => 
+                            service.name.toLowerCase().includes(search.toLowerCase()) ||
+                            service.description?.toLowerCase().includes(search.toLowerCase())
+                          )
+                          .map((service) => (
+                            <ServiceCard
+                              key={service.id}
+                              service={service}
+                              categoryImage={categoryImages.find(img => img.name === selectedCategory)?.image || '/categories/default.jpg'}
+                              onBookNow={handleBookNow}
+                              onReadMore={handleReadMore}
+                            />
+                          ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </main>
+                  )}
+                </main>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Location Modal */}
       <LocationModal

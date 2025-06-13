@@ -85,8 +85,31 @@ export async function makeCustomPayment(invoiceId: string, amount: string, custo
     }),
   };
 
-  const response = await fetch(`https://api.zenoti.com/v1/invoices/${invoiceId}/payment/custom`, options);
-  return response.json();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+  try {
+    const response = await fetch(`https://api.zenoti.com/v1/invoices/${invoiceId}/payment/custom`, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return response.json();
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        throw new Error('Request timed out');
+      }
+      throw error;
+    }
+    throw new Error('An unknown error occurred');
+  }
 }
 
 /**
@@ -109,6 +132,29 @@ export async function closeInvoice(invoiceId: string, closedById: string) {
     })
   };
 
-  const response = await fetch(`https://api.zenoti.com/v1/invoices/${invoiceId}/close`, options);
-  return response.json();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+  try {
+    const response = await fetch(`https://api.zenoti.com/v1/invoices/${invoiceId}/close`, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return response.json();
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        throw new Error('Request timed out');
+      }
+      throw error;
+    }
+    throw new Error('An unknown error occurred');
+  }
 } 

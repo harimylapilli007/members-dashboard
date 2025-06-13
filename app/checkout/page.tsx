@@ -36,6 +36,10 @@ export default function CheckoutPage() {
   const router = useRouter()
   const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData') || '{}') : {}
   const { toast } = useToast()
+  const [couponCode, setCouponCode] = useState('')
+  const [couponStatus, setCouponStatus] = useState('')
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false)
+  const [discountAmount, setDiscountAmount] = useState(0)
 
   useEffect(() => {
     // Get service data from URL params
@@ -91,7 +95,7 @@ export default function CheckoutPage() {
 
   // Calculate convenience fee and GST
   const gstAmount = Math.round(serviceData.price * 0.18)
-  const totalAmount = serviceData.price + gstAmount
+  const totalAmount = serviceData.price + gstAmount - discountAmount
 
   // Add handleConfirmBooking function
   const handleConfirmBooking = async () => {
@@ -223,6 +227,28 @@ export default function CheckoutPage() {
     }
   };
 
+  const handleApplyCoupon = async () => {
+    setIsApplyingCoupon(true);
+    try {
+      // Implement coupon validation logic here
+      // For now, we'll assume the coupon is valid
+      // setCouponStatus('valid');
+      // setDiscountAmount(Math.round(serviceData.price * 0.05));
+      // In a real application, you'd call an API to validate the coupon
+    } catch (error) {
+      console.error('Coupon application error:', error);
+      setCouponStatus('invalid');
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setCouponCode('');
+    setCouponStatus('');
+    setDiscountAmount(0);
+  };
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Background gradient */}
@@ -242,10 +268,10 @@ export default function CheckoutPage() {
         <Header />
 
         {/* Main Content */}
-        <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-7xl mx-auto">
             {/* Booking Details */}
-            <div className="bg-white/50 backdrop-blur-sm rounded-xl shadow-sm p-8">
+            <div className="bg-[#faf5eb] backdrop-blur-sm rounded-xl shadow-sm p-8">
               <div className="flex items-center mb-8">
                 <div className="w-12 h-12 flex items-center justify-center mr-4">
                   <svg width="40" height="36" viewBox="0 0 40 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -322,24 +348,99 @@ export default function CheckoutPage() {
               </div> */}
 
               {/* Apply Coupon */}
-              <div className="mt-12 bg-[#faf5eb] rounded-xl p-8">
+              <div className="mt-12 bg-white bg-opacity-50 backdrop-blur-sm rounded-xl p-8">
                 <div className="flex items-center mb-4">
                   <svg width="35" height="25" viewBox="0 0 35 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3.88889 0C1.74392 0 0 1.86849 0 4.16667V8.33333C0 8.90625 0.449653 9.35547 0.953993 9.54427C2.09635 9.96745 2.91667 11.1328 2.91667 12.5C2.91667 13.8672 2.09635 15.0326 0.953993 15.4557C0.449653 15.6445 0 16.0938 0 16.6667V20.8333C0 23.1315 1.74392 25 3.88889 25H31.1111C33.2561 25 35 23.1315 35 20.8333V16.6667C35 16.0938 34.5503 15.6445 34.046 15.4557C32.9036 15.0326 32.0833 13.8672 32.0833 12.5C32.0833 11.1328 32.9036 9.96745 34.046 9.54427C34.5503 9.35547 35 8.90625 35 8.33333V4.16667C35 1.86849 33.2561 0 31.1111 0H3.88889ZM7.77778 7.29167V17.7083C7.77778 18.2812 8.21528 18.75 8.75 18.75H26.25C26.7847 18.75 27.2222 18.2812 27.2222 17.7083V7.29167C27.2222 6.71875 26.7847 6.25 26.25 6.25H8.75C8.21528 6.25 7.77778 6.71875 7.77778 7.29167ZM5.83333 6.25C5.83333 5.09766 6.70226 4.16667 7.77778 4.16667H27.2222C28.2977 4.16667 29.1667 5.09766 29.1667 6.25V18.75C29.1667 19.9023 28.2977 20.8333 27.2222 20.8333H7.77778C6.70226 20.8333 5.83333 19.9023 5.83333 18.75V6.25Z" fill="#A07735"/>
                   </svg>
-
                   <h3 className="text-xl font-serif text-[#1f2937] ml-4">Apply Coupon</h3>
                 </div>
                 <p className="text-[#6b7280] mb-6">Choose and add an additional discount on your booking.</p>
-                <button className="flex items-center bg-[#a07735] text-white px-8 py-3.5 rounded-lg hover:bg-[#8a6830] transition-colors">
-                  <Tag className="w-5 h-5 mr-2" />
-                  Apply Coupon
-                </button>
+                
+                <div className="flex flex-col space-y-4">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Enter coupon code"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      className={`w-full px-4 py-3 rounded-lg border ${
+                        couponStatus === 'valid' 
+                          ? 'border-green-500 bg-green-50' 
+                          : couponStatus === 'invalid' 
+                          ? 'border-red-500 bg-red-50' 
+                          : 'border-gray-200 bg-white'
+                      } focus:outline-none focus:ring-2 focus:ring-[#a07735] focus:border-transparent transition-all duration-200`}
+                    />
+                    {couponStatus === 'valid' && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
+                    {couponStatus === 'invalid' && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <button
+                      onClick={handleApplyCoupon}
+                      disabled={!couponCode || isApplyingCoupon}
+                      className={`flex-1 flex items-center justify-center bg-[#a07735] text-white px-6 py-3 rounded-lg hover:bg-[#8a6830] transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                      {isApplyingCoupon ? (
+                        <>
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Applying...
+                        </>
+                      ) : (
+                        <>
+                          <Tag className="w-5 h-5 mr-2" />
+                          Apply Coupon
+                        </>
+                      )}
+                    </button>
+                    {couponStatus === 'valid' && (
+                      <button
+                        onClick={handleRemoveCoupon}
+                        className="text-[#a07735] hover:text-[#8a6830] transition-colors"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  
+                  {couponStatus === 'valid' && (
+                    <div className="text-green-600 text-sm flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Coupon applied successfully! You've saved ₹{discountAmount.toLocaleString()}
+                    </div>
+                  )}
+                  {couponStatus === 'invalid' && (
+                    <div className="text-red-600 text-sm flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Invalid or expired coupon code
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Summary */}
-            <div className="bg-white/50 backdrop-blur-sm rounded-xl shadow-sm p-8">
+            <div className="bg-[#faf5eb] backdrop-blur-sm rounded-xl shadow-sm p-8">
               <div className="flex items-center mb-8">
                 <div className="w-12 h-12 flex items-center justify-center mr-4">
                   <svg width="25" height="30" viewBox="0 0 25 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -369,7 +470,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Promo Box */}
-              <div className="mt-8 bg-[#faf5eb] rounded-xl p-6">
+              <div className="mt-8 bg-white bg-opacity-50 backdrop-blur-sm rounded-xl p-6">
                 <div className="flex items-center">
                   
                 <svg width="25" height="30" viewBox="0 0 25 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -404,7 +505,7 @@ export default function CheckoutPage() {
               </div> */}
 
               {/* Refund Policy */}
-              <div className="mt-8 bg-[#faf5eb] rounded-xl p-6">
+              <div className="mt-8 bg-white bg-opacity-50 backdrop-blur-sm rounded-xl p-6">
                 <div className="flex">
                   <div className="w-7 h-7 rounded-full bg-[#a07735] text-white flex items-center justify-center mr-4 shrink-0 font-medium">
                     i

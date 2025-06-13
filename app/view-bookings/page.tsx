@@ -168,7 +168,6 @@ export default function BookingsPage() {
 
         const service = appointment.appointment_services[0]?.service
         const centerId = appointment.center?.id || appointment.center_id
-        console.log('Appointment center data:', appointment.center)
         const { city, outlet } = getCityAndOutletFromCenterId(centerId)
         
         return {

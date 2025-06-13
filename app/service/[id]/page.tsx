@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Calendar, Clock, MapPin, Phone, Tag } from "lucide-react"
+import { Calendar, Clock, MapPin, Phone, StarIcon, Tag } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import LocationModal from "@/components/location-modal"
 import "@/styles/globals.css"
@@ -273,11 +273,21 @@ export default function Home() {
       if (isMounted.current) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to create booking'
         setError(errorMessage)
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Please refresh the page or select another date to try again.",
-        })
+        
+        // Check if error is related to max tries
+        if (errorMessage.toLowerCase().includes('max tries') || errorMessage.toLowerCase().includes('too many attempts')) {
+          toast({
+            variant: "destructive",
+            title: "Maximum Attempts Reached",
+            description: "Please wait a few minutes before trying again.",
+          })
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Please refresh the page or select another date to try again.",
+          })
+        }
       }
     } finally {
       if (isMounted.current) {
@@ -463,8 +473,8 @@ export default function Home() {
       <div className={`min-h-screen relative overflow-hidden ${isLocationModalOpen ? "blur-sm" : ""}`}>
         <Header />
         
-        <main className="mx-auto px-4 sm:px-6 md:px-10 py-4 sm:py-6 md:py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+        <main className="mx-auto max-w-[1300px] px-4 sm:px-6 md:px-6 py-4 sm:py-6 md:py-8 ">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             {/* Left: Image only on mobile, Image + Tabs on desktop */}
             <div className="flex flex-col order-1 lg:order-1">
               <div className="rounded-lg overflow-hidden mb-4 sm:mb-6 relative">
@@ -476,10 +486,10 @@ export default function Home() {
                   className="object-cover w-full h-[200px] sm:h-[300px] md:h-[350px]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-transparent"></div>
-                <h1 className="absolute bottom-4 left-4 text-xl sm:text-2xl md:text-3xl text-white font-medium">{serviceName}</h1>
+                {/* <h1 className="absolute bottom-4 left-4 text-xl sm:text-2xl md:text-3xl text-white font-medium">{serviceName}</h1> */}
               </div>
               {/* Tabs and Content below image - hidden on mobile */}
-              <div className="hidden lg:block bg-white/50 backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
+              <div className="hidden lg:block bg-[#faf5eb] backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
                 <div className="border-b border-gray-300">
                   <div className="flex flex-wrap gap-4 sm:gap-8">
                     <button
@@ -505,7 +515,7 @@ export default function Home() {
                 {/* Tab Content */}
                 <div className={`py-4 sm:py-8 ${activeTab === "benefits" ? "block" : "hidden"}`}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                    <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                    <div className="bg-white bg-opacity-50 rounded-lg p-6 text-center flex flex-col items-center transition-transform duration-300 hover:scale-105">
                       <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                         {/* Sleep icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
@@ -513,7 +523,7 @@ export default function Home() {
                       <h3 className="text-lg font-medium mb-2">Better Sleep</h3>
                       <p className="text-sm text-gray-700">Promotes quality sleep and helps establish better sleep patterns.</p>
                     </div>
-                    <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                    <div className="bg-white bg-opacity-50 rounded-lg p-6 text-center flex flex-col items-center transition-transform duration-300 hover:scale-105">
                       <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                         {/* Pain relief icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
@@ -521,7 +531,7 @@ export default function Home() {
                       <h3 className="text-lg font-medium mb-2">Relieves Pain</h3>
                       <p className="text-sm text-gray-700">Soothes sore muscles, melts away knots, and eases bodily aches for lasting comfort.</p>
                     </div>
-                    <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                    <div className="bg-white bg-opacity-50 rounded-lg p-6 text-center flex flex-col items-center transition-transform duration-300 hover:scale-105">
                       <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                         {/* Blood circulation icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
@@ -529,7 +539,7 @@ export default function Home() {
                       <h3 className="text-lg font-medium mb-2">Improves Blood Circulation</h3>
                       <p className="text-sm text-gray-700">Enhances oxygen flow and promotes healthier, more energized tissues.</p>
                     </div>
-                    <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                    <div className="bg-white bg-opacity-50 rounded-lg p-6 text-center flex flex-col items-center transition-transform duration-300 hover:scale-105">
                       <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                         {/* Energy flow icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -598,10 +608,23 @@ export default function Home() {
               </div>
             </div>
             {/* Right: Service details, slot selection, add-to-cart */}
-            <div className="flex flex-col justify-start space-y-3 order-2 lg:order-2">
-              <h1 className="text-xl sm:text-2xl md:text-3xl mb-1">{serviceName}</h1>
-             
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+            <div className="flex flex-col justify-start space-y-6 order-2 lg:order-2">
+                {/* Add this after the service details section and before the booking section */}
+
+                <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row sm:justify-between gap-2 mb-2">
+                  <button
+                    onClick={() => setIsLocationModalOpen(true)}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-white/50 backdrop-blur-sm rounded-lg border border-gray-200 hover:bg-white/70 transition-colors w-fit sm:w-fit lg:order-2"
+                  >
+                    <MapPin className="h-4 w-4 text-[#a07735] flex-shrink-0" />
+                    <span className="text-sm text-gray-700 truncate max-w-[200px] sm:max-w-fit">
+                      {selectedLocation ? `${selectedLocation.city} - ${selectedLocation.outlet.name}` : 'Select Location'}
+                    </span>
+                  </button>
+
+                  <h1 className="text-2xl sm:text-2xl md:text-lg lg:text-3xl font-['Marcellus'] md:order-2 lg:order-1">{serviceName}</h1>
+                </div>
+              <div className="flex flex-row items-center justify-between gap-2 mb-4">
                 <div className="flex items-center text-gray-700">
                   <Clock className="h-5 w-5 text-[#a07735] mr-2" />
                   <span>{duration} mins</span>
@@ -610,29 +633,19 @@ export default function Home() {
                   <Tag className="h-5 w-5 text-[#a07735] mr-2" />
                   <span className="font-semibold">₹{servicePrice}</span>
                 </div>
+                <div className="flex items-center text-gray-700 lg:w-1/2">
+                </div>
               </div>
               <p className="text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">
                 {description}
               </p>
-              {/* Add this after the service details section and before the booking section */}
-              <div className="mb-4 flex justify-start md:justify-end">
-                <button
-                  onClick={() => setIsLocationModalOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/50 backdrop-blur-sm rounded-lg border border-gray-200 hover:bg-white/70 transition-colors"
-                >
-                  <MapPin className="h-5 w-5 text-[#a07735]" />
-                  <span className="text-gray-700">
-                    {selectedLocation ? `${selectedLocation.city} - ${selectedLocation.outlet.name}` : 'Select Location'}
-                  </span>
-                </button>
-              </div>
+            
               {/* Booking section */}
-              <div className="mt-2">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                  <h2 className="text-xl text-[#a07735] font-medium">Select Slot</h2>
+              <div className="mt-2 md:hidden lg:block">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                  <h2 className="text-xl text-[#a07735] font-medium font-['Marcellus']">Select Slot</h2>
                   <div className="flex items-center space-x-4 relative">
                     <button 
-                      className="text-gray-400 hover:text-[#a07735] transition-colors p-2 rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30"
                       onClick={() => setSelectedDate(addDays(selectedDate, -1))}
                     >
                       <svg
@@ -645,7 +658,7 @@ export default function Home() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
-                    <h3 className="text-xl font-medium">{format(selectedDate, 'MMMM yyyy')}</h3>
+                    <h3 className="text-xl font-medium font-['Marcellus']">{format(selectedDate, 'MMMM yyyy')}</h3>
                     <button
                       onClick={() => setSelectedDate(addDays(selectedDate, 1))}
                     >
@@ -718,16 +731,16 @@ export default function Home() {
                   </div>
                 </div>
                 {/* Date selection */}
-                <div className="flex gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2">
+                <div className="flex gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2 scrollbar-hide">
                   {generateDates().map((date, index) => (
                     <div
                       key={index}
                       className={`flex flex-col items-center justify-center px-3 sm:px-4 py-2 rounded-full cursor-pointer min-w-[50px] sm:min-w-[60px]
-                      ${date.selected ? "bg-[#a07735] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                      ${date.selected ? "bg-[#a07735] text-white" : "bg-white/30 backdrop-blur-md shadow-md transition duration-200 outline-none hover:bg-white/60 hover:shadow-lg hover:border-[#a07735]"}`}
                       onClick={() => handleDateSelect(date.date)}
                     >
-                      <span className="text-base sm:text-lg font-medium">{date.day}</span>
-                      <span className="text-xs">{date.weekday}</span>
+                      <span className={`text-base sm:text-lg font-medium ${date.selected ? "text-white" : "text-gray-700"}`}>{date.day}</span>
+                      <span className={`text-xs ${date.selected ? "text-white" : "text-gray-700"}`}>{date.weekday}</span>
                     </div>
                   ))}
                 </div>
@@ -795,8 +808,178 @@ export default function Home() {
             </div>
           </div>
 
+
+          <div className="mt-2 hidden md:block lg:hidden">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                  <h2 className="text-xl text-[#a07735] font-medium font-['Marcellus']">Select Slot</h2>
+                  <div className="flex items-center space-x-4 relative">
+                    <button 
+                      onClick={() => setSelectedDate(addDays(selectedDate, -1))}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <h3 className="text-xl font-medium font-['Marcellus']">{format(selectedDate, 'MMMM yyyy')}</h3>
+                    <button
+                      onClick={() => setSelectedDate(addDays(selectedDate, 1))}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                    <div className="relative">
+                      <button 
+                        onClick={() => setShowDatePicker(!showDatePicker)}
+                        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 text-[#a07735]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </button>
+                      {/* Date picker modal */}
+                      {showDatePicker && (
+                        <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-xl p-4 border border-gray-200 w-64 z-50">
+                          <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-medium text-gray-900">Select Date</h3>
+                            <button
+                              onClick={() => setShowDatePicker(false)}
+                              className="text-gray-400 hover:text-gray-500"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                          <input
+                            type="date"
+                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#a07735] focus:border-[#a07735] outline-none transition-colors"
+                            value={format(selectedDate, 'yyyy-MM-dd')}
+                            onChange={(e) => handleDateSelect(new Date(e.target.value))}
+                            min={format(new Date(), 'yyyy-MM-dd')}
+                          />
+                          <div className="mt-4 text-sm text-gray-500">
+                            <p>Selected: {format(selectedDate, 'MMMM d, yyyy')}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {/* Date selection */}
+                <div className="flex gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                  {generateDates().map((date, index) => (
+                    <div
+                      key={index}
+                      className={`flex flex-col items-center justify-center px-3 sm:px-4 py-2 rounded-full cursor-pointer min-w-[50px] sm:min-w-[60px]
+                      ${date.selected ? "bg-[#a07735] text-white" : "bg-white/30 backdrop-blur-md shadow-md transition duration-200 outline-none hover:bg-white/60 hover:shadow-lg hover:border-[#a07735]"}`}
+                      onClick={() => handleDateSelect(date.date)}
+                    >
+                      <span className={`text-base sm:text-lg font-medium ${date.selected ? "text-white" : "text-gray-700"}`}>{date.day}</span>
+                      <span className={`text-xs ${date.selected ? "text-white" : "text-gray-700"}`}>{date.weekday}</span>
+                    </div>
+                  ))}
+                </div>
+                {/* Time selection */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
+                  {isLoading ? (
+                    <div className="col-span-full text-center py-4">Loading available slots...</div>
+                  ) : error ? (
+                    <div className="col-span-full text-center py-4 text-red-500">{error}</div>
+                  ) : availableSlots.length > 0 ? (
+                    availableSlots.map((slotGroup, index) => (
+                      <div key={index} className="col-span-full">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {slotGroup.times.map((time, timeIndex) => (
+                            <button
+                              key={timeIndex}
+                              className={`
+                                border-2 
+                                rounded-lg 
+                                py-2 
+                                text-center 
+                                bg-white/30 
+                                backdrop-blur-md 
+                                shadow-md 
+                                transition 
+                                duration-200 
+                                outline-none
+                                hover:bg-white/60 
+                                hover:shadow-lg
+                                hover:border-[#a07735]
+                               
+                                ${time === selectedSlot
+                                  ? "bg-[#a07735] border-[#a07735] shadow-lg"
+                                  : "text-gray-700"
+                                }
+                              `}
+                              onClick={() => {
+                                setSelectedSlot(time);
+                                // Directly redirect to cart page when slot is selected
+                                const params = new URLSearchParams({
+                                  serviceName: serviceName,
+                                  duration: duration,
+                                  price: servicePrice.toString(),
+                                  location: selectedLocation?.outlet.name || '',
+                                  date: format(selectedDate, 'yyyy-MM-dd'),
+                                  time: time,
+                                  serviceId: serviceId,
+                                  outletId: selectedLocation?.outlet.id || '',
+                                  city: selectedLocation?.city || ''
+                                });
+                                router.push(`/checkout?${params.toString()}`);
+                              }}
+                            >
+                              {time}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-4">No slots available for selected date</div>
+                  )}
+                </div>
+              </div>
+
+          
+
+       
+
           {/* Tabs and Content for mobile - shown at the end */}
-          <div className="lg:hidden mt-8 bg-white/80 backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
+          <div className="lg:hidden mt-8 bg-[#faf5eb] backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
             <div className="border-b border-gray-300">
               <div className="flex flex-wrap gap-4 sm:gap-8">
                 <button
@@ -822,28 +1005,28 @@ export default function Home() {
             {/* Tab Content */}
             <div className={`py-4 sm:py-8 ${activeTab === "benefits" ? "block" : "hidden"}`}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 text-center flex flex-col items-center">
                   <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                   </div>
                   <h3 className="text-lg font-medium mb-2">Better Sleep</h3>
                   <p className="text-sm text-gray-700 font-inter">Promotes quality sleep and helps establish better sleep patterns.</p>
                 </div>
-                <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 text-center flex flex-col items-center">
                   <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                   </div>
                   <h3 className="text-lg font-medium mb-2">Relieves Pain</h3>
                   <p className="text-sm text-gray-700 font-inter">Soothes sore muscles, melts away knots, and eases bodily aches for lasting comfort.</p>
                 </div>
-                <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 text-center flex flex-col items-center">
                   <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                   </div>
                   <h3 className="text-lg font-medium mb-2">Improves Blood Circulation</h3>
                   <p className="text-sm text-gray-700">Enhances oxygen flow and promotes healthier, more energized tissues.</p>
                 </div>
-                <div className="bg-[#ede5db] rounded-lg p-6 text-center flex flex-col items-center">
+                <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 text-center flex flex-col items-center">
                   <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                   </div>

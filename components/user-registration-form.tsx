@@ -218,7 +218,7 @@ export function UserRegistrationForm() {
                       onValueChange={(value) => setFormData(prev => ({ ...prev, gender: value }))}
                     >
                       <SelectTrigger
-                        className="border-gray-300 focus:border-[#b9935a] focus:ring-2 focus:ring-[#b9935a]/20 focus:ring-offset-0 focus:outline-none h-11 rounded-lg bg-white transition-all duration-200 placeholder-[#B3B3B3] font-['Marcellus'] text-sm"
+                        className="border-gray-300 text-sm focus:border-[#b9935a] focus:ring-2 focus:ring-[#b9935a]/20 focus:ring-offset-0 focus:outline-none h-11 rounded-lg bg-white transition-all duration-200 placeholder-[#B3B3B3] font-['Marcellus'] text-[16px]"
                       >
                         <SelectValue
                           placeholder="Select Gender"
