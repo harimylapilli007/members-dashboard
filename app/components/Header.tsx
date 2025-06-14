@@ -111,7 +111,7 @@ export default function Header() {
             <span className="relative z-10 text-[14px] lg:text-[16px]">MEMBERSHIP</span>
           </Link>
           <Link 
-            href={`/ServiceBookingPage?openModal=true&guestId=${userData?.id}`}
+            href={localStorage.getItem('selectedArea') ? `/ServiceBookingPage?guestId=${userData?.id}` : `/ServiceBookingPage?openModal=true&guestId=${userData?.id}`}
             className={cn(
               "relative px-3 lg:px-4 py-2 rounded-lg font-bold font-inter text-sm lg:text-base transition-all duration-300",
               "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
