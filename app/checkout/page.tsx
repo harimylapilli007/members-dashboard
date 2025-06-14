@@ -278,28 +278,28 @@ export default function CheckoutPage() {
                     <path d="M12.7153 16.3828C15.0556 18 17.0833 20.1406 18.6736 22.6719C19.1597 23.4453 19.6042 24.2578 20 25.0938C20.3958 24.25 20.8403 23.4453 21.3264 22.6719C22.9167 20.1406 24.9444 18 27.2847 16.3828C30.3889 14.2344 34.0347 13 37.9167 13H38.6042C39.375 13 40 13.7031 40 14.5703C40 26.1328 31.6736 35.5 21.3958 35.5H20H18.6042C8.32639 35.5 0 26.1328 0 14.5703C0 13.7031 0.625 13 1.39583 13H2.08333C5.96528 13 9.61111 14.2344 12.7153 16.3828ZM20.9375 0.9375C22.0278 2.25781 25.1806 6.54687 26.7986 13.7969C24.1597 15.4844 21.8403 17.7656 20 20.4844C18.1597 17.7656 15.8403 15.4922 13.2014 13.7969C14.8125 6.54687 17.9653 2.25781 19.0625 0.9375C19.3056 0.648437 19.6458 0.5 20 0.5C20.3542 0.5 20.6944 0.648437 20.9375 0.9375Z" fill="#A07735"/>
                   </svg>
                 </div>
-                <h2 className="text-2xl font-serif text-[#1f2937]">Booking Details</h2>
+                <h1 className="text-3xl font-['Marcellus'] text-[#1f2937]">Booking Details</h1>
               </div>
 
               <div className="space-y-8">
                 <div className="flex">
-                  <div className="w-36 text-[#6b7280] font-medium">Service :</div>
-                  <div className="flex-1 text-[#1f2937]">{serviceData.name} for {serviceData.duration} Minutes</div>
+                  <div className="w-36 text-[#6b7280] font-['Marcellus'] text-base">Service :</div>
+                  <div className="flex-1 text-[#1f2937] font-['Marcellus'] text-base">{serviceData.name} for {serviceData.duration} Minutes</div>
                 </div>
 
                 <div className="flex">
-                  <div className="w-36 text-[#6b7280] font-medium">Location:</div>
-                  <div className="flex-1 text-[#1f2937]">{serviceData.city} - {serviceData.location}</div>
+                  <div className="w-36 text-[#6b7280] font-['Marcellus'] text-base">Location:</div>
+                  <div className="flex-1 text-[#1f2937] font-['Marcellus'] text-base">{serviceData.city} - {serviceData.location}</div>
                 </div>
 
                 <div className="flex">
-                  <div className="w-36 text-[#6b7280] font-medium">Date & Time:</div>
-                  <div className="flex-1 text-[#1f2937]">{slotData.time}, {slotData.formattedDate}</div>
+                  <div className="w-36 text-[#6b7280] font-['Marcellus'] text-base">Date & Time:</div>
+                  <div className="flex-1 text-[#1f2937] font-['Marcellus'] text-base">{slotData.time}, {slotData.formattedDate}</div>
                 </div>
 
                 <div className="flex">
-                  <div className="w-36 text-[#6b7280] font-medium">Price:</div>
-                  <div className="flex-1 text-[#a07735] font-semibold">₹ {serviceData.price.toLocaleString()}</div>
+                  <div className="w-36 text-[#6b7280] font-['Marcellus'] text-base">Price:</div>
+                  <div className="flex-1 text-[#a07735] font-['Marcellus'] text-lg font-semibold">₹ {serviceData.price.toLocaleString()}</div>
                 </div>
               </div>
 
@@ -353,9 +353,9 @@ export default function CheckoutPage() {
                   <svg width="35" height="25" viewBox="0 0 35 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3.88889 0C1.74392 0 0 1.86849 0 4.16667V8.33333C0 8.90625 0.449653 9.35547 0.953993 9.54427C2.09635 9.96745 2.91667 11.1328 2.91667 12.5C2.91667 13.8672 2.09635 15.0326 0.953993 15.4557C0.449653 15.6445 0 16.0938 0 16.6667V20.8333C0 23.1315 1.74392 25 3.88889 25H31.1111C33.2561 25 35 23.1315 35 20.8333V16.6667C35 16.0938 34.5503 15.6445 34.046 15.4557C32.9036 15.0326 32.0833 13.8672 32.0833 12.5C32.0833 11.1328 32.9036 9.96745 34.046 9.54427C34.5503 9.35547 35 8.90625 35 8.33333V4.16667C35 1.86849 33.2561 0 31.1111 0H3.88889ZM7.77778 7.29167V17.7083C7.77778 18.2812 8.21528 18.75 8.75 18.75H26.25C26.7847 18.75 27.2222 18.2812 27.2222 17.7083V7.29167C27.2222 6.71875 26.7847 6.25 26.25 6.25H8.75C8.21528 6.25 7.77778 6.71875 7.77778 7.29167ZM5.83333 6.25C5.83333 5.09766 6.70226 4.16667 7.77778 4.16667H27.2222C28.2977 4.16667 29.1667 5.09766 29.1667 6.25V18.75C29.1667 19.9023 28.2977 20.8333 27.2222 20.8333H7.77778C6.70226 20.8333 5.83333 19.9023 5.83333 18.75V6.25Z" fill="#A07735"/>
                   </svg>
-                  <h3 className="text-xl font-serif text-[#1f2937] ml-4">Apply Coupon</h3>
+                  <h1 className="text-2xl font-['Marcellus'] text-[#1f2937] ml-4">Apply Coupon</h1>
                 </div>
-                <p className="text-[#6b7280] mb-6">Choose and add an additional discount on your booking.</p>
+                <p className="text-[#6b7280] mb-6 font-['Marcellus'] text-base">Choose and add an additional discount on your booking.</p>
                 
                 <div className="flex flex-col space-y-4">
                   <div className="relative">
@@ -364,7 +364,7 @@ export default function CheckoutPage() {
                       placeholder="Enter coupon code"
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                      className={`w-full px-4 py-3 rounded-lg border ${
+                      className={`w-full px-4 py-3 rounded-lg border font-['Marcellus'] text-base ${
                         couponStatus === 'valid' 
                           ? 'border-green-500 bg-green-50' 
                           : couponStatus === 'invalid' 
@@ -392,7 +392,7 @@ export default function CheckoutPage() {
                     <button
                       onClick={handleApplyCoupon}
                       disabled={!couponCode || isApplyingCoupon}
-                      className={`flex-1 flex items-center justify-center bg-[#a07735] text-white px-6 py-3 rounded-lg hover:bg-[#8a6830] transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+                      className={`flex-1 flex items-center justify-center bg-[#a07735] text-white px-6 py-3 rounded-lg hover:bg-[#8a6830] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-['Marcellus'] text-base`}
                     >
                       {isApplyingCoupon ? (
                         <>
@@ -412,7 +412,7 @@ export default function CheckoutPage() {
                     {couponStatus === 'valid' && (
                       <button
                         onClick={handleRemoveCoupon}
-                        className="text-[#a07735] hover:text-[#8a6830] transition-colors"
+                        className="text-[#a07735] hover:text-[#8a6830] transition-colors font-['Marcellus'] text-base"
                       >
                         Remove
                       </button>
@@ -420,7 +420,7 @@ export default function CheckoutPage() {
                   </div>
                   
                   {couponStatus === 'valid' && (
-                    <div className="text-green-600 text-sm flex items-center">
+                    <div className="text-green-600 text-base flex items-center font-['Marcellus']">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
@@ -428,7 +428,7 @@ export default function CheckoutPage() {
                     </div>
                   )}
                   {couponStatus === 'invalid' && (
-                    <div className="text-red-600 text-sm flex items-center">
+                    <div className="text-red-600 text-base flex items-center font-['Marcellus']">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
@@ -447,24 +447,24 @@ export default function CheckoutPage() {
                     <path d="M12.5 0C9.77865 0 7.46094 1.56445 6.60807 3.75H4.16667C1.86849 3.75 0 5.43164 0 7.5V26.25C0 28.3184 1.86849 30 4.16667 30H20.8333C23.1315 30 25 28.3184 25 26.25V7.5C25 5.43164 23.1315 3.75 20.8333 3.75H18.3919C17.5391 1.56445 15.2214 0 12.5 0ZM12.5 3.75C13.0525 3.75 13.5824 3.94754 13.9731 4.29917C14.3638 4.65081 14.5833 5.12772 14.5833 5.625C14.5833 6.12228 14.3638 6.59919 13.9731 6.95083C13.5824 7.30246 13.0525 7.5 12.5 7.5C11.9475 7.5 11.4176 7.30246 11.0269 6.95083C10.6362 6.59919 10.4167 6.12228 10.4167 5.625C10.4167 5.12772 10.6362 4.65081 11.0269 4.29917C11.4176 3.94754 11.9475 3.75 12.5 3.75ZM4.6875 15.9375C4.6875 15.5645 4.85212 15.2069 5.14515 14.9431C5.43817 14.6794 5.8356 14.5313 6.25 14.5312C6.6644 14.5313 7.06183 14.6794 7.35485 14.9431C7.64788 15.2069 7.8125 15.5645 7.8125 15.9375C7.8125 16.3105 7.64788 16.6681 7.35485 16.9319C7.06183 17.1956 6.6644 17.3438 6.25 17.3438C5.8356 17.3438 5.43817 17.1956 5.14515 16.9319C4.85212 16.6681 4.6875 16.3105 4.6875 15.9375ZM11.4583 15H19.7917C20.3646 15 20.8333 15.4219 20.8333 15.9375C20.8333 16.4531 20.3646 16.875 19.7917 16.875H11.4583C10.8854 16.875 10.4167 16.4531 10.4167 15.9375C10.4167 15.4219 10.8854 15 11.4583 15ZM4.6875 21.5625C4.6875 21.1895 4.85212 20.8319 5.14515 20.5681C5.43817 20.3044 5.8356 20.1562 6.25 20.1562C6.6644 20.1562 7.06183 20.3044 7.35485 20.5681C7.64788 20.8319 7.8125 21.1895 7.8125 21.5625C7.8125 21.9355 7.64788 22.2931 7.35485 22.5569C7.06183 22.8206 6.6644 22.9688 6.25 22.9688C5.8356 22.9688 5.43817 22.8206 5.14515 22.5569C4.85212 22.2931 4.6875 21.9355 4.6875 21.5625ZM10.4167 21.5625C10.4167 21.0469 10.8854 20.625 11.4583 20.625H19.7917C20.3646 20.625 20.8333 21.0469 20.8333 21.5625C20.8333 22.0781 20.3646 22.5 19.7917 22.5H11.4583C10.8854 22.5 10.4167 22.0781 10.4167 21.5625Z" fill="#A07735"/>
                   </svg>
                 </div>
-                <h2 className="text-2xl font-serif text-[#1f2937]">Summary</h2>
+                <h1 className="text-3xl font-['Marcellus'] text-[#1f2937]">Summary</h1>
               </div>
 
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <div className="text-[#1f2937] font-medium">Service Price:</div>
-                  <div className="text-[#a07735] font-semibold">₹ {serviceData.price.toLocaleString()}</div>
+                  <div className="text-[#1f2937] font-['Marcellus'] text-base">Service Price:</div>
+                  <div className="text-[#a07735] font-['Marcellus'] text-lg font-semibold">₹ {serviceData.price.toLocaleString()}</div>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <div className="text-[#1f2937] font-medium">GST(18%):</div>
-                  <div className="text-[#a07735] font-semibold">₹ {gstAmount.toLocaleString()}</div>
+                  <div className="text-[#1f2937] font-['Marcellus'] text-base">GST(18%):</div>
+                  <div className="text-[#a07735] font-['Marcellus'] text-lg font-semibold">₹ {gstAmount.toLocaleString()}</div>
                 </div>
 
                 <div className="border-t border-gray-200 pt-4 mt-4">
                   <div className="flex justify-between items-center">
-                    <div className="text-[#1f2937] font-semibold">Total Amount:</div>
-                    <div className="text-[#a07735] font-bold text-lg">₹ {totalAmount.toLocaleString()}</div>
+                    <div className="text-[#1f2937] font-['Marcellus'] text-lg font-semibold">Total Amount:</div>
+                    <div className="text-[#a07735] font-['Marcellus'] text-xl font-bold">₹ {totalAmount.toLocaleString()}</div>
                   </div>
                 </div>
               </div>
@@ -472,22 +472,17 @@ export default function CheckoutPage() {
               {/* Promo Box */}
               <div className="mt-8 bg-white bg-opacity-50 backdrop-blur-sm rounded-xl p-6">
                 <div className="flex items-center">
-                  
-                <svg width="25" height="30" viewBox="0 0 25 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <g clipPath="url(#clip0_1_51)">
-                    <path d="M19.4978 2.61311C19.827 1.81038 19.5815 0.872875 18.9062 0.35725C18.231 -0.158375 17.3103 -0.1115 16.6797 0.462719L2.39396 13.5877C1.83592 14.1033 1.63503 14.9295 1.89731 15.6561C2.15958 16.3826 2.82923 16.8748 3.57141 16.8748H9.79351L5.50222 27.3865C5.17298 28.1893 5.41851 29.1268 6.09373 29.6424C6.76896 30.158 7.68972 30.1112 8.3203 29.5369L22.606 16.4119C23.164 15.8963 23.3649 15.0701 23.1027 14.3436C22.8404 13.617 22.1763 13.1307 21.4286 13.1307H15.2065L19.4978 2.61311Z" fill="#A07735"/>
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_1_51">
-                      <path d="M0 0H25V30H0V0Z" fill="white"/>
-                    </clipPath>
-                  </defs>
-                </svg>
-
-
-
-
-                  <p className="text-[#a07735] font-medium ml-2">Instant 5% Off On the Cart by becoming Fest Member.</p>
+                  <svg width="25" height="30" viewBox="0 0 25 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clipPath="url(#clip0_1_51)">
+                      <path d="M19.4978 2.61311C19.827 1.81038 19.5815 0.872875 18.9062 0.35725C18.231 -0.158375 17.3103 -0.1115 16.6797 0.462719L2.39396 13.5877C1.83592 14.1033 1.63503 14.9295 1.89731 15.6561C2.15958 16.3826 2.82923 16.8748 3.57141 16.8748H9.79351L5.50222 27.3865C5.17298 28.1893 5.41851 29.1268 6.09373 29.6424C6.76896 30.158 7.68972 30.1112 8.3203 29.5369L22.606 16.4119C23.164 15.8963 23.3649 15.0701 23.1027 14.3436C22.8404 13.617 22.1763 13.1307 21.4286 13.1307H15.2065L19.4978 2.61311Z" fill="#A07735"/>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_1_51">
+                        <path d="M0 0H25V30H0V0Z" fill="white"/>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                  <p className="text-[#a07735] font-['Marcellus'] text-base font-medium ml-2">Instant 5% Off On the Cart by becoming Fest Member.</p>
                 </div>
               </div>
 
@@ -507,15 +502,15 @@ export default function CheckoutPage() {
               {/* Refund Policy */}
               <div className="mt-8 bg-white bg-opacity-50 backdrop-blur-sm rounded-xl p-6">
                 <div className="flex">
-                  <div className="w-7 h-7 rounded-full bg-[#a07735] text-white flex items-center justify-center mr-4 shrink-0 font-medium">
+                  <div className="w-7 h-7 rounded-full bg-[#a07735] text-white flex items-center justify-center mr-4 shrink-0 font-['Marcellus'] font-medium">
                     i
                   </div>
                   <div>
-                    <p className="text-sm text-[#374151] leading-relaxed">
+                    <p className="text-base text-[#374151] leading-relaxed font-['Marcellus']">
                       Full refund of the booking amount on cancellation up to 2 hours of appointment time.
                     </p>
                     <div className="text-right mt-2">
-                      <span className="text-xs text-[#a07735] font-medium">T&C Apply</span>
+                      <span className="text-sm text-[#a07735] font-['Marcellus'] font-medium">T&C Apply</span>
                     </div>
                   </div>
                 </div>
@@ -535,7 +530,7 @@ export default function CheckoutPage() {
                     }
                     handleConfirmBooking();
                   }}
-                  className="w-full bg-[#a07735] text-white py-4 rounded-lg font-medium hover:bg-[#8a6830] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-[#a07735] text-white py-4 rounded-lg font-['Marcellus'] text-lg font-medium hover:bg-[#8a6830] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isConfirming ? 'Confirming...' : 'Confirm Booking'}
                 </button>
