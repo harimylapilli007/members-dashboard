@@ -13,6 +13,7 @@ import { AccountSelector } from '@/components/account-selector';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast"
+import { cn } from "@/lib/utils"
 
 
 
@@ -31,7 +32,10 @@ interface Guest {
 
 export default function SignIn() {
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
+  const [otpError, setOtpError] = useState(false);
+  const [otpExpiryTime, setOtpExpiryTime] = useState<number | null>(null);
+  const [showRetry, setShowRetry] = useState(false);
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [verificationId, setVerificationId] = useState('');
   const [loading, setLoading] = useState(false);
@@ -116,9 +120,9 @@ export default function SignIn() {
     const cleaned = phone.replace(/\D/g, '');
     
     // If the number is 10 digits
-    if (cleaned.length === 10) {
-      return `+91${cleaned}`;
-    }
+    // if (cleaned.length === 10) {
+    //   return `+91${cleaned}`;
+    // }
     
     // If the number doesn't start with a country code, assume it's a US number
     if (!phone.startsWith('+')) {
@@ -325,6 +329,8 @@ export default function SignIn() {
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setOtpError(false);
+    setShowRetry(false);
     
     try {
       // Validate OTP is not empty
@@ -334,6 +340,7 @@ export default function SignIn() {
           title: "Error",
           description: "Please enter all 6 digits of the OTP.",
         });
+        setOtpError(true);
         setLoading(false);
         return;
       }
@@ -344,6 +351,8 @@ export default function SignIn() {
           title: "Error",
           description: "No verification in progress. Please request a new OTP.",
         });
+        setOtpError(true);
+        setShowRetry(true);
         setLoading(false);
         return;
       }
@@ -355,6 +364,7 @@ export default function SignIn() {
           title: "Error",
           description: "Please enter a complete 6-digit OTP code.",
         });
+        setOtpError(true);
         setLoading(false);
         return;
       }
@@ -378,7 +388,7 @@ export default function SignIn() {
         }
         localStorage.setItem('userData', JSON.stringify(userData));
         
-          toast({
+        toast({
           variant: "default",
           title: "Success",
           description: "Successfully verified!",
@@ -403,6 +413,8 @@ export default function SignIn() {
           title: "Error",
           description: "The OTP code is invalid or has expired. Please request a new OTP.",
         });
+        setOtpError(true);
+        setShowRetry(true);
         // Reset OTP input
         setOtp(['', '', '', '', '', '']);
         // Reset reCAPTCHA
@@ -418,6 +430,8 @@ export default function SignIn() {
           title: "Error",
           description: error instanceof Error ? error.message : 'Failed to verify OTP. Please try again.',
         });
+        setOtpError(true);
+        setShowRetry(true);
       }
     } finally {
       setLoading(false);
@@ -438,6 +452,45 @@ export default function SignIn() {
 
     router.push('/dashboard/memberships');
   };
+
+  const handleRetry = () => {
+    setOtpError(false);
+    setShowRetry(false);
+    setOtp(['', '', '', '', '', '']);
+    setShowOtpInput(false);
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.clear();
+      window.recaptchaVerifier = null;
+    }
+    setRecaptchaReady(false);
+    setupRecaptcha();
+  };
+
+  // Add useEffect for OTP expiry timer
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (showOtpInput && !otpExpiryTime) {
+      // Set expiry time to 2 minutes from now
+      setOtpExpiryTime(Date.now() + 2 * 60 * 1000);
+    }
+    if (otpExpiryTime) {
+      timer = setInterval(() => {
+        const now = Date.now();
+        if (now >= otpExpiryTime) {
+          setOtpExpiryTime(null);
+          setShowRetry(true);
+          toast({
+            variant: "destructive",
+            title: "OTP Expired",
+            description: "Your OTP has expired. Please request a new one.",
+          });
+        }
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [showOtpInput, otpExpiryTime]);
 
   if (showAccountSelector) {
     return (
@@ -572,50 +625,42 @@ export default function SignIn() {
                             value={digit}
                             onChange={(e) => handleOtpChange(index, e.target.value)}
                             onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                            className="w-10 h-10 sm:w-12 sm:h-12 text-center text-base sm:text-lg border border-gray-300 focus:border-[#b9935a] focus:ring-2 focus:ring-[#b9935a]/20 focus:ring-offset-0 focus:outline-none rounded-lg bg-white transition-all duration-200"
+                            className={cn(
+                              "w-10 h-10 sm:w-12 sm:h-12 text-center text-base sm:text-lg border focus:ring-2 focus:ring-offset-0 focus:outline-none rounded-lg bg-white transition-all duration-200",
+                              otpError
+                                ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                                : "border-gray-300 focus:border-[#b9935a] focus:ring-[#b9935a]/20"
+                            )}
                             disabled={loading}
                           />
                         </motion.div>
                       ))}
                     </div>
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full h-10 sm:h-11 rounded-lg bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] font-['Marcellus'] text-[#98564D] font-bold text-base sm:text-[20px] leading-[17px] text-center disabled:bg-[#d6c3a3] disabled:text-white hover:!bg-[#b9935a] transition-all duration-200 group"
-                    disabled={loading}
-                    style={{ boxShadow: 'none' }}
-                  >
-                    {loading ? (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
-                      />
-                    ) : (
-                      <>
-                        Verify OTP
-                        <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </>
+                    {otpExpiryTime && (
+                      <div className="text-center text-sm text-gray-500">
+                        OTP expires in {Math.max(0, Math.floor((otpExpiryTime - Date.now()) / 1000))} seconds
+                      </div>
                     )}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full h-10 sm:h-11 rounded-lg font-['Marcellus'] text-base sm:text-[18px] font-400 border-[#a07735] hover:bg-gray-50 text-[#a07735] transition-all duration-200"
-                    onClick={() => {
-                      setShowOtpInput(false);
-                      setOtp(['', '', '', '', '', '']);
-                      if (window.recaptchaVerifier) {
-                        window.recaptchaVerifier.clear();
-                        window.recaptchaVerifier = null;
-                      }
-                      setRecaptchaReady(false);
-                      setupRecaptcha();
-                    }}
-                    disabled={loading}
-                  >
-                    Back to Phone Number
-                  </Button>
+                    {showRetry && (
+                      <div className="text-center">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handleRetry}
+                          className="mt-2"
+                        >
+                          Request New OTP
+                        </Button>
+                      </div>
+                    )}
+                    <Button
+                      type="submit"
+                      className="w-full bg-[#b9935a] hover:bg-[#a87b3c] text-white"
+                      disabled={loading}
+                    >
+                      {loading ? "Verifying..." : "Verify OTP"}
+                    </Button>
+                  </div>
                 </motion.form>
               )}
             </AnimatePresence>

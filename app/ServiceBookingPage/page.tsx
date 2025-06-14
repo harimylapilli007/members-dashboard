@@ -616,7 +616,7 @@ export default function ServiceBookingPage() {
                 <main className="flex-1 bg-transparent rounded-xl p-2 sm:p-4 md:p-6 lg:p-8 shadow-sm relative">
                   {/* Divider for desktop */}
                  
-                  <div className="flex md:hidden flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-x-6 mt-4 mb-4">
+                  <div className="flex bg-white/50 backdrop-blur-sm rounded-lg shadow p-3 sm:p-4 md:hidden flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-x-6 mt-4 mb-4">
                     <h1 className="text-xl sm:text-2xl font-bold m-0">Discover Our Services</h1>
                     <div className="w-full sm:w-auto flex-shrink-0">
                       <LocationSelector 
@@ -678,7 +678,7 @@ export default function ServiceBookingPage() {
                  
 
                   {/* Tablet and Desktop Search Section */}
-                  <div className="hidden md:block mb-8 sticky top-0.5 z-10 bg-gradient-to-b from-white/90 to-white/60 backdrop-blur-md rounded-xl shadow-sm p-4">
+                  <div className="hidden md:block mb-8 sticky top-0.5 z-10 bg-white/20 backdrop-blur-md rounded-xl shadow-sm p-4">
                     <div className="flex flex-col gap-4">
                       <div className="flex items-center justify-between gap-4">
                         <h1 className="text-xl lg:text-2xl font-bold">Discover Our Services</h1>

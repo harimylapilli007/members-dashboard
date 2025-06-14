@@ -498,7 +498,7 @@ function MembershipDashboardContent() {
                 <div className="flex flex-col">
                   <div className="font-semibold font-marcellus text-lg text-[#232323]">Membership Status</div>
                   <div className="flex mt-2">
-                    <span className={`px-4 py-1 rounded-full text-sm font-medium ${membershipData?.status === 1 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>{getStatusText(membershipData?.status || 2)}</span>
+                    <span className={`px-4 py-1 rounded-full text-sm font-medium ${membershipData?.status === 1 ? 'bg-[#afebb1] text-[#214d23]' : 'bg-red-100 text-red-700'}`}>{getStatusText(membershipData?.status || 2)}</span>
                   </div>
                   {membershipData?.status === 1 && (
                     <>
