@@ -13,6 +13,7 @@ interface InvoiceStatus {
   amount: string;
   invoiceId: string;
   paymentId: string;
+  invoiceNumber?: string;
 }
 
 function PaymentSuccessContent() {
@@ -23,6 +24,7 @@ function PaymentSuccessContent() {
   const [invoiceStatus, setInvoiceStatus] = useState<InvoiceStatus | null>(null)
   const [paymentDetails, setPaymentDetails] = useState<any>(null)
 
+  console.log('Invoice Status:', invoiceStatus)
   useEffect(() => {
     const verifyPayment = async () => {
       try {
@@ -45,12 +47,24 @@ function PaymentSuccessContent() {
         // Set payment details
         setPaymentDetails(responseData)
 
-        // Set invoice status
+        // Fetch invoice details from Zenoti
+        const zenotiResponse = await fetch(`https://api.zenoti.com/v1/invoices/${responseData.txnid}?expand=InvoiceItems&expand=Transactions`, {
+          headers: {
+            'Authorization': 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283',
+            'accept': 'application/json'
+          }
+        });
+
+        const zenotiData = await zenotiResponse.json();
+        // Set invoice status with Zenoti invoice number
         setInvoiceStatus({
           status: 'success',
           amount: responseData.amount,
           invoiceId: responseData.txnid,
-          paymentId: responseData.mihpayid || `payu_${Date.now()}`
+          paymentId: responseData.mihpayid || `payu_${Date.now()}`,
+          invoiceNumber: zenotiData.invoice
+            ? `${zenotiData.invoice.invoice_number_prefix || ''}${zenotiData.invoice.invoice_number || ''}`
+            : undefined
         })
 
         // Show success message
@@ -168,10 +182,16 @@ function PaymentSuccessContent() {
                     <span className=" text-muted-foreground font-['Marcellus']">Payment Method</span>
                     <span className="text-base font-['Marcellus']">{paymentMethod}</span>
                   </div>
-                  {/* <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center">
                     <span className=" text-muted-foreground font-['Marcellus']">Transaction ID</span>
-                    <span className="font-mono text-base">{paymentDetails?.txnid || '—'}</span>
-                  </div> */}
+                    <span className="font-mono text-sm">{paymentDetails?.txnid || '—'}</span>
+                  </div>
+                  {invoiceStatus?.invoiceNumber && (
+                    <div className="flex justify-between items-center">
+                      <span className=" text-muted-foreground font-['Marcellus']">Invoice Number</span>
+                      <span className="font-mono text-base">{invoiceStatus.invoiceNumber}</span>
+                    </div>
+                  )}
                   {bankRefNum && (
                     <div className="flex justify-between items-center">
                       <span className=" text-muted-foreground font-['Marcellus']">Bank Reference</span>
