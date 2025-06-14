@@ -191,7 +191,7 @@ const ServiceCard = memo(({
     </div>
     <div className="p-3 md:p-4">
       <div className="relative h-16">
-        <p className="text-gray-600 text-xs md:text-sm mb-3 md:mb-4 line-clamp-2">
+        <p className="text-gray-600 text-md font-marcellus md:text-sm mb-3 md:mb-4 line-clamp-2">
           {service.description || 'Experience our premium service designed to enhance your well-being and relaxation.'}
         </p>
         {service.description && service.description.length > 100 && (

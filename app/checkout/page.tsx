@@ -470,7 +470,8 @@ export default function CheckoutPage() {
               </div>
 
               {/* Promo Box */}
-              <div className="mt-8 bg-white bg-opacity-50 backdrop-blur-sm rounded-xl p-6">
+              <div className="mt-8 bg-opacity-50 backdrop-blur-sm rounded-xl p-6"></div>
+              {/* <div className="mt-8 bg-white bg-opacity-50 backdrop-blur-sm rounded-xl p-6">
                 <div className="flex items-center">
                   <svg width="25" height="30" viewBox="0 0 25 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clipPath="url(#clip0_1_51)">
@@ -484,7 +485,7 @@ export default function CheckoutPage() {
                   </svg>
                   <p className="text-[#a07735] font-['Marcellus'] text-base font-medium ml-2">Instant 5% Off On the Cart by becoming Fest Member.</p>
                 </div>
-              </div>
+              </div> */}
 
               {/* Terms & Conditions */}
               {/* <div className="mt-10 flex items-start space-x-3">

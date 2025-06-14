@@ -91,7 +91,7 @@ const cityOutlets: Record<string, Array<{ name: string, id: string }>> = {
     { name: "Lemon Tree Premier", id: "e31deb8a-3d80-4e45-867a-87422f8c691a" }
   ],
   "Kodaikanal": [
-    { name: "KODAIKANAL CARLTON HOTEL", id: "kodaikanal-carlton" }
+    { name: "KODAIKANAL CARLTON HOTEL", id: "b44ece7f-ee8f-493a-a705-7c8edb50751d" }
   ]
 }
 

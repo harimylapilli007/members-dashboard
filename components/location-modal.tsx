@@ -188,7 +188,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
       { name: "Lemon Tree Premier", id: "e31deb8a-3d80-4e45-867a-87422f8c691a" }
     ],
     "Kodaikanal": [
-      { name: "KODAIKANAL CARLTON HOTEL", id: "kodaikanal-carlton" }
+      { name: "KODAIKANAL CARLTON HOTEL", id: "b44ece7f-ee8f-493a-a705-7c8edb50751d" }
     ]
   }
 
@@ -230,7 +230,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
           </div>
           <div className="p-4 sm:p-8 overflow-y-auto scrollbar-hide">
             <h3 className="text-base sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-800">Popular Cities</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
               {/* Popular Cities Section */}
               <div
                 className="flex items-center p-4 bg-gradient-to-r bg-[#ae7735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
@@ -245,7 +245,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                     className="object-contain"
                   />
                 </div>
-                <span className="text-white font-medium relative z-10">Mumbai</span>
+                <span className="text-white font-medium relative z-10 text-[16px] md:text-lg">Mumbai</span>
                 <div className="sparkle-1"></div>
                 <div className="sparkle-2"></div>
                 <div className="sparkle-3"></div>
@@ -264,7 +264,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                     className="object-contain"
                   />
                 </div>
-                <span className="text-white font-medium relative z-10">Hyderabad</span>
+                <span className="text-white font-medium relative z-10 text-[16px] md:text-lg">Hyderabad</span>
                 <div className="sparkle-1"></div>
                 <div className="sparkle-2"></div>
                 <div className="sparkle-3"></div>
@@ -283,7 +283,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                     className="object-contain"
                   />
                 </div>
-                <span className="text-white font-medium relative z-10">Chennai</span>
+                <span className="text-white font-medium relative z-10 text-[16px] md:text-lg">Chennai</span>
                 <div className="sparkle-1"></div>
                 <div className="sparkle-2"></div>
                 <div className="sparkle-3"></div>
@@ -302,7 +302,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                     className="object-contain"
                   />
                 </div>
-                <span className="text-white font-medium relative z-10">New Delhi</span>
+                <span className="text-white font-medium relative z-10 text-[16px] md:text-lg">New Delhi</span>
                 <div className="sparkle-1"></div>
                 <div className="sparkle-2"></div>
                 <div className="sparkle-3"></div>
@@ -321,7 +321,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                     className="object-contain"
                   />
                 </div>
-                <span className="text-white font-medium relative z-10">Bangalore</span>
+                <span className="text-white font-medium relative z-10 text-[16px] md:text-lg">Bangalore</span>
                 <div className="sparkle-1"></div>
                 <div className="sparkle-2"></div>
                 <div className="sparkle-3"></div>
@@ -329,7 +329,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
             </div>
 
             <h3 className="text-base sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-800">All Cities</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
+            <div className="grid grid-cols-3 gap-4 sm:gap-8">
               {/* Row 1 */}
               <div
                 className="flex flex-col items-center cursor-pointer hover:opacity-80"

@@ -519,7 +519,7 @@ export default function Home() {
               {/* Tabs and Content below image - hidden on mobile */}
               <div className="hidden lg:block bg-[#faf5eb] backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
                 <div className="border-b border-gray-300">
-                  <div className="flex flex-wrap gap-4 sm:gap-8">
+                  <div className="flex flex-wrap justify-around ">
                     <button
                       className={`
                         font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "benefits" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}
@@ -550,7 +550,7 @@ export default function Home() {
                         {/* Sleep icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                       </div>
-                      <h3 className="text-lg font-medium mb-2">Better Sleep</h3>
+                      <h3 className="text-lg font-medium mb-2 font-marcellus">Better Sleep</h3>
                       <p className="text-sm text-gray-700">Promotes quality sleep and helps establish better sleep patterns.</p>
                     </div>
                     <div className="bg-white bg-opacity-50 rounded-lg p-6 text-center flex flex-col items-center transition-transform duration-300 hover:scale-105">
@@ -558,7 +558,7 @@ export default function Home() {
                         {/* Pain relief icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                       </div>
-                      <h3 className="text-lg font-medium mb-2">Relieves Pain</h3>
+                      <h3 className="text-lg font-medium mb-2 font-marcellus">Relieves Pain</h3>
                       <p className="text-sm text-gray-700">Soothes sore muscles, melts away knots, and eases bodily aches for lasting comfort.</p>
                     </div>
                     <div className="bg-white bg-opacity-50 rounded-lg p-6 text-center flex flex-col items-center transition-transform duration-300 hover:scale-105">
@@ -566,7 +566,7 @@ export default function Home() {
                         {/* Blood circulation icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                       </div>
-                      <h3 className="text-lg font-medium mb-2">Improves Blood Circulation</h3>
+                      <h3 className="text-lg font-medium mb-2 font-marcellus">Improves Blood Circulation</h3>
                       <p className="text-sm text-gray-700">Enhances oxygen flow and promotes healthier, more energized tissues.</p>
                     </div>
                     <div className="bg-white bg-opacity-50 rounded-lg p-6 text-center flex flex-col items-center transition-transform duration-300 hover:scale-105">
@@ -574,7 +574,7 @@ export default function Home() {
                         {/* Energy flow icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                       </div>
-                      <h3 className="text-lg font-medium mb-2">Balances Energy Flow</h3>
+                      <h3 className="text-lg font-medium mb-2 font-marcellus">Balances Energy Flow</h3>
                       <p className="text-sm text-gray-700">Restores harmony to your body's energy pathways.</p>
                     </div>
                   </div>
@@ -582,14 +582,14 @@ export default function Home() {
                 {/* What to Expect content */}
                 <div className={`py-4 sm:py-8 ${activeTab === "expect" ? "block" : "hidden"}`}>
                   <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 font-inter">
-                    <h3 className="text-xl font-medium mb-4">Before Your Massage</h3>
+                    <h3 className="text-xl font-medium mb-4 font-marcellus">Before Your Massage</h3>
                     <ul className="list-disc pl-5 mb-6 space-y-2">
                       <li className="text-sm text-gray-700 font-inter">Arrive 15 minutes before your appointment to complete paperwork</li>
                       <li className="text-sm text-gray-700 font-inter">Wear comfortable clothing that's easy to remove</li>
                       <li className="text-sm text-gray-700 font-inter">Avoid heavy meals or alcohol before your session</li>
                       <li className="text-sm text-gray-700 font-inter">Let your therapist know about any health concerns or preferences</li>
                     </ul>
-                    <h3 className="text-xl font-medium mb-4">During Your Massage</h3>
+                    <h3 className="text-xl font-medium mb-4 font-marcellus">During Your Massage</h3>
                     <ul className="list-disc pl-5 mb-6 space-y-2">
                       <li className="text-sm text-gray-700 font-inter">Your therapist will leave the room while you undress to your comfort level</li>
                       <li className="text-sm text-gray-700 font-inter">You'll lie on a padded massage table under a sheet</li>
@@ -597,7 +597,7 @@ export default function Home() {
                       <li className="text-sm text-gray-700 font-inter">Your therapist will use a combination of kneading, long strokes, and circular movements</li>
                       <li className="text-sm text-gray-700 font-inter">Communication is encouraged - let your therapist know if pressure is too light or too firm</li>
                     </ul>
-                    <h3 className="text-xl font-medium mb-4">After Your Massage</h3>
+                    <h3 className="text-xl font-medium mb-4 font-marcellus">After Your Massage</h3>
                     <ul className="list-disc pl-5 space-y-2">
                       <li className="text-sm text-gray-700 font-inter">Take your time getting up from the table</li>
                       <li className="text-sm text-gray-700 font-inter">Drink plenty of water to help flush metabolic waste from tissues</li>
@@ -612,10 +612,10 @@ export default function Home() {
                     <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 border border-gray-200">
                       <div className="flex items-center mb-4">
                         <div className="bg-[#a07735] text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
-                          <span className="font-medium">RP</span>
+                          <span className="font-medium font-marcellus">RP</span>
                         </div>
                         <div>
-                          <h4 className="font-medium">Rahul P.</h4>
+                          <h4 className="font-medium font-marcellus">Rahul P.</h4>
                           <div className="flex text-yellow-400">
                             {[...Array(5)].map((_, i) => (
                               <svg
@@ -666,7 +666,7 @@ export default function Home() {
                 <div className="flex items-center text-gray-700 lg:w-1/2">
                 </div>
               </div>
-              <p className="text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">
+              <p className="text-gray-700 mb-2 sm:mb-3 text-base font-inter">
                 {description}
               </p>
             
@@ -1192,7 +1192,7 @@ export default function Home() {
 
               <div className="lg:hidden mt-8 bg-[#faf5eb] backdrop-blur-sm rounded-lg shadow p-3 sm:p-4">
             <div className="border-b border-gray-300">
-              <div className="flex flex-wrap gap-4 sm:gap-8">
+              <div className="flex flex-wrap  justify-between gap-4 sm:gap-8">
                 <button
                   className={`font-['Marcellus'] text-lg sm:text-[24px] leading-[32px] sm:leading-[48px] ${activeTab === "benefits" ? "text-[#a07735] border-b-2 border-[#a07735]" : "text-gray-700"}`}
                   onClick={() => setActiveTab("benefits")}
@@ -1220,56 +1220,56 @@ export default function Home() {
                   <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                   </div>
-                  <h3 className="text-lg font-medium mb-2">Better Sleep</h3>
-                  <p className="text-sm text-gray-700 font-inter">Promotes quality sleep and helps establish better sleep patterns.</p>
+                  <h3 className="text-lg font-medium mb-2 font-marcellus">Better Sleep</h3>
+                  <p className="text-base text-gray-700 font-inter">Promotes quality sleep and helps establish better sleep patterns.</p>
                 </div>
                 <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 text-center flex flex-col items-center">
                   <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                   </div>
-                  <h3 className="text-lg font-medium mb-2">Relieves Pain</h3>
-                  <p className="text-sm text-gray-700 font-inter">Soothes sore muscles, melts away knots, and eases bodily aches for lasting comfort.</p>
+                  <h3 className="text-lg font-medium mb-2 font-marcellus">Relieves Pain</h3>
+                  <p className="text-base text-gray-700 font-inter">Soothes sore muscles, melts away knots, and eases bodily aches for lasting comfort.</p>
                 </div>
                 <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 text-center flex flex-col items-center">
                   <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                   </div>
-                  <h3 className="text-lg font-medium mb-2">Improves Blood Circulation</h3>
-                  <p className="text-sm text-gray-700">Enhances oxygen flow and promotes healthier, more energized tissues.</p>
+                  <h3 className="text-lg font-medium mb-2 font-marcellus">Improves Blood Circulation</h3>
+                  <p className="text-base text-gray-700">Enhances oxygen flow and promotes healthier, more energized tissues.</p>
                 </div>
                 <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 text-center flex flex-col items-center">
                   <div className="bg-[#d6c7b2] rounded-full w-12 h-12 flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#a07735]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                   </div>
-                  <h3 className="text-lg font-medium mb-2">Balances Energy Flow</h3>
-                  <p className="text-sm text-gray-700">Restores harmony to your body's energy pathways.</p>
+                  <h3 className="text-lg font-medium mb-2 font-marcellus">Balances Energy Flow</h3>
+                  <p className="text-base text-gray-700">Restores harmony to your body's energy pathways.</p>
                 </div>
               </div>
             </div>
             {/* What to Expect content */}
             <div className={`py-4 sm:py-8 ${activeTab === "expect" ? "block" : "hidden"}`}>
               <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6">
-                <h3 className="text-xl font-medium mb-4">Before Your Massage</h3>
+                <h3 className="text-xl font-medium mb-4 font-marcellus">Before Your Massage</h3>
                 <ul className="list-disc pl-5 mb-6 space-y-2">
-                  <li className="text-sm text-gray-700 font-inter">Arrive 15 minutes before your appointment to complete paperwork</li>
-                  <li className="text-sm text-gray-700 font-inter">Wear comfortable clothing that's easy to remove</li>
-                  <li className="text-sm text-gray-700 font-inter">Avoid heavy meals or alcohol before your session</li>
-                  <li className="text-sm text-gray-700 font-inter">Let your therapist know about any health concerns or preferences</li>
+                  <li className="text-base text-gray-700 font-inter">Arrive 15 minutes before your appointment to complete paperwork</li>
+                  <li className="text-base text-gray-700 font-inter">Wear comfortable clothing that's easy to remove</li>
+                  <li className="text-base text-gray-700 font-inter">Avoid heavy meals or alcohol before your session</li>
+                  <li className="text-base text-gray-700 font-inter">Let your therapist know about any health concerns or preferences</li>
                 </ul>
-                <h3 className="text-xl font-medium mb-4">During Your Massage</h3>
+                <h3 className="text-xl font-medium mb-4 font-marcellus">During Your Massage</h3>
                 <ul className="list-disc pl-5 mb-6 space-y-2">
-                  <li className="text-sm text-gray-700 font-inter">Your therapist will leave the room while you undress to your comfort level</li>
-                  <li className="text-sm text-gray-700 font-inter">You'll lie on a padded massage table under a sheet</li>
-                  <li className="text-sm text-gray-700 font-inter">Only the area being worked on will be exposed</li>
-                  <li className="text-sm text-gray-700 font-inter">Your therapist will use a combination of kneading, long strokes, and circular movements</li>
-                  <li className="text-sm text-gray-700 font-inter">Communication is encouraged - let your therapist know if pressure is too light or too firm</li>
+                  <li className="text-base text-gray-700 font-inter">Your therapist will leave the room while you undress to your comfort level</li>
+                  <li className="text-base text-gray-700 font-inter">You'll lie on a padded massage table under a sheet</li>
+                  <li className="text-base text-gray-700 font-inter">Only the area being worked on will be exposed</li>
+                  <li className="text-base text-gray-700 font-inter">Your therapist will use a combination of kneading, long strokes, and circular movements</li>
+                  <li className="text-base text-gray-700 font-inter">Communication is encouraged - let your therapist know if pressure is too light or too firm</li>
                 </ul>
-                <h3 className="text-xl font-medium mb-4">After Your Massage</h3>
+                <h3 className="text-xl font-medium mb-4 font-marcellus">After Your Massage</h3>
                 <ul className="list-disc pl-5 space-y-2">
-                  <li className="text-sm text-gray-700 font-inter">Take your time getting up from the table</li>
-                  <li className="text-sm text-gray-700 font-inter">Drink plenty of water to help flush metabolic waste from tissues</li>
-                  <li className="text-sm text-gray-700 font-inter">Avoid strenuous activity for the rest of the day if possible</li>
-                  <li className="text-sm text-gray-700 font-inter">Notice how your body feels in the hours and days following your massage</li>
+                  <li className="text-base text-gray-700 font-inter">Take your time getting up from the table</li>
+                  <li className="text-base text-gray-700 font-inter">Drink plenty of water to help flush metabolic waste from tissues</li>
+                  <li className="text-base text-gray-700 font-inter">Avoid strenuous activity for the rest of the day if possible</li>
+                  <li className="text-base text-gray-700 font-inter">Notice how your body feels in the hours and days following your massage</li>
                 </ul>
               </div>
             </div>
@@ -1279,10 +1279,10 @@ export default function Home() {
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
                   <div className="flex items-center mb-4">
                     <div className="bg-[#a07735] text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
-                      <span className="font-medium">RP</span>
+                      <span className="font-medium font-marcellus">RP</span>
                     </div>
                     <div>
-                      <h4 className="font-medium">Rahul P.</h4>
+                      <h4 className="font-medium font-marcellus">Rahul P.</h4>
                       <div className="flex text-yellow-400">
                         {[...Array(5)].map((_, i) => (
                           <svg
@@ -1298,7 +1298,7 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-700 font-inter">Great experience! The massage was very relaxing and the therapist was professional.</p>
+                  <p className="text-base text-gray-700 font-inter">Great experience! The massage was very relaxing and the therapist was professional.</p>
                 </div>
               </div>
             </div>

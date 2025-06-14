@@ -184,7 +184,7 @@ export default function Header() {
               <Link 
                 href="/dashboard/memberships" 
                 className={cn(
-                  "relative px-4 py-3 rounded-lg font-bold font-inter text-base transition-all duration-300 bg-white/50",
+                  "relative px-4 py-3 rounded-lg font-bold font-inter text-sm transition-all duration-300 bg-white/50",
                   "hover:bg-[#a07735]/20 hover:text-[#a07735] hover:scale-[1.02] active:scale-[0.98]",
                   "transform hover:translate-x-1",
                   pathname?.includes('/dashboard/memberships') ? "text-[#a07735] bg-[#a07735]/20" : "text-[#454545]",
@@ -192,7 +192,7 @@ export default function Header() {
                 )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <span className="flex items-center">
+                <span className="flex items-center text-md">
                   <ShoppingBag className="w-5 h-5 mr-2" />
                   MEMBERSHIP
                 </span>
@@ -200,7 +200,7 @@ export default function Header() {
               <Link 
                 href={`/ServiceBookingPage?openModal=true&guestId=${userData?.id}`}
                 className={cn(
-                  "relative px-4 py-3 rounded-lg font-bold font-inter text-base transition-all duration-300 bg-white/50",
+                  "relative px-4 py-3 rounded-lg font-bold font-inter text-sm transition-all duration-300 bg-white/50",
                   "hover:bg-[#a07735]/20 hover:text-[#a07735] hover:scale-[1.02] active:scale-[0.98]",
                   "transform hover:translate-x-1",
                   (pathname?.includes('/ServiceBookingPage') || pathname?.includes('/checkout') || pathname?.includes('/service')) 
@@ -210,7 +210,7 @@ export default function Header() {
                 )}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <span className="flex items-center">
+                <span className="flex items-center text-md">
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   BOOKING
                 </span>
@@ -219,7 +219,7 @@ export default function Header() {
                 <Link 
                   href="/view-bookings" 
                   className={cn(
-                    "relative px-4 py-3 rounded-lg font-bold font-inter text-base transition-all duration-300 bg-white/50",
+                    "relative px-4 py-3 rounded-lg font-bold font-inter text-sm transition-all duration-300 bg-white/50",
                     "hover:bg-[#a07735]/20 hover:text-[#a07735] hover:scale-[1.02] active:scale-[0.98]",
                     "transform hover:translate-x-1",
                     pathname?.includes('/view-bookings') ? "text-[#a07735] bg-[#a07735]/20" : "text-[#454545]",
@@ -227,7 +227,7 @@ export default function Header() {
                   )}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <span className="flex items-center">
+                  <span className="flex items-center text-md">
                     <Bell className="w-5 h-5 mr-2" />
                     VIEW BOOKINGS
                   </span>
