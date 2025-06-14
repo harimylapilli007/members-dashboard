@@ -878,7 +878,6 @@ export default function Home() {
                             <button
                               key={timeIndex}
                               className={`
-                                border-2 
                                 rounded-lg 
                                 py-2 
                                 text-center 

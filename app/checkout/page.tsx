@@ -297,10 +297,10 @@ export default function CheckoutPage() {
                   <div className="flex-1 text-[#1f2937] font-['Marcellus'] text-base">{slotData.time}, {slotData.formattedDate}</div>
                 </div>
 
-                <div className="flex">
+                {/* <div className="flex">
                   <div className="w-36 text-[#6b7280] font-['Marcellus'] text-base">Price:</div>
                   <div className="flex-1 text-[#a07735] font-['Marcellus'] text-lg font-semibold">₹ {serviceData.price.toLocaleString()}</div>
-                </div>
+                </div> */}
               </div>
 
               {/* <div className="mt-10 flex space-x-10">
@@ -470,7 +470,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Promo Box */}
-              <div className="mt-8 bg-opacity-50 backdrop-blur-sm rounded-xl p-6"></div>
+              <div className="mt-810 bg-opacity-50 backdrop-blur-sm rounded-xl p-6"></div>
               {/* <div className="mt-8 bg-white bg-opacity-50 backdrop-blur-sm rounded-xl p-6">
                 <div className="flex items-center">
                   <svg width="25" height="30" viewBox="0 0 25 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -501,7 +501,7 @@ export default function CheckoutPage() {
               </div> */}
 
               {/* Refund Policy */}
-              <div className="mt-8 bg-white bg-opacity-50 backdrop-blur-sm rounded-xl p-6">
+              {/* <div className="mt-8 bg-white bg-opacity-50 backdrop-blur-sm rounded-xl p-6">
                 <div className="flex">
                   <div className="w-7 h-7 rounded-full bg-[#a07735] text-white flex items-center justify-center mr-4 shrink-0 font-['Marcellus'] font-medium">
                     i
@@ -515,7 +515,7 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Confirm Button */}
               <div className="mt-10">

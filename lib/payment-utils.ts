@@ -35,15 +35,14 @@ export const initiatePayment = (membershipData: {
 }): Promise<void> => {
   return new Promise((resolve) => {
     const paymentData: PaymentData = {
-      key: '26sF13CI', //production
+      key: process.env.NEXT_PUBLIC_PAYU_KEY || '',
       txnid: membershipData.invoiceId,
-      // amount: membershipData.price.toString(),
-      amount: '1',
+      amount: membershipData.price.toString(),
       productinfo: membershipData.name,
       firstname: membershipData.firstName,
       email: membershipData.email,
       phone: membershipData.phone,
-      salt: '0Rd0lVQEvO', //production
+      salt: process.env.NEXT_PUBLIC_PAYU_SALT || '', 
       surl: `${window.location.protocol}//${window.location.host}/api/payment/success`,
       furl: `${window.location.protocol}//${window.location.host}/api/payment/failure`,
     }

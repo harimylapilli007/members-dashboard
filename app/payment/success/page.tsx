@@ -78,7 +78,7 @@ function PaymentSuccessContent() {
   const planName = paymentDetails?.productinfo || "Wellness Plus Membership"
   const duration = "1 Year" // This should come from your backend/API
   
-  const paymentMethod = paymentDetails?.payment_method || paymentDetails?.mode || "UPI"
+  const paymentMethod = paymentDetails?.payment_method || paymentDetails?.bankcode || "UPI"
   const userName = paymentDetails?.firstname || 'Member'
   const email = paymentDetails?.email || ''
   const bankRefNum = paymentDetails?.bank_ref_num || ''
@@ -143,7 +143,7 @@ function PaymentSuccessContent() {
               </div>
               
               <h1 className="text-xl sm:text-2xl font-bold mb-1 font-['Marcellus']"> <span className="text-5xl"> 🎉</span>Congratulations, {userName.toLowerCase()}!</h1>
-              <p className=" text-opacity-90 font-['Marcellus'] text-sm sm:text-base">Your Wellness Plus Membership is now active.</p>
+              <p className=" text-opacity-90 font-['Marcellus'] text-sm sm:text-base">Your {planName} is now active.</p>
             </div>
           </div>
           <div className="px-4 sm:px-8 pb-6 sm:pb-8 pt-4 sm:pt-6">
@@ -168,10 +168,10 @@ function PaymentSuccessContent() {
                     <span className=" text-muted-foreground font-['Marcellus']">Payment Method</span>
                     <span className="text-base font-['Marcellus']">{paymentMethod}</span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  {/* <div className="flex justify-between items-center">
                     <span className=" text-muted-foreground font-['Marcellus']">Transaction ID</span>
                     <span className="font-mono text-base">{paymentDetails?.txnid || '—'}</span>
-                  </div>
+                  </div> */}
                   {bankRefNum && (
                     <div className="flex justify-between items-center">
                       <span className=" text-muted-foreground font-['Marcellus']">Bank Reference</span>

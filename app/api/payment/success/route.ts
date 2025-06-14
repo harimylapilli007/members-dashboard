@@ -12,6 +12,8 @@ interface PayUResponse {
   mihpayid?: string
   error_Message?: string
   error_code?: string
+  payment_method?: string
+  bankcode?: string
 }
 
 // Function to create custom payment
@@ -24,8 +26,7 @@ async function makeCustomPayment(invoiceId: string, amount: string, customPaymen
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      // amount: parseFloat(amount),
-      amount: 29500,
+      amount: parseFloat(amount),
       tip_amount: 0.00,
       cash_register_id: null,
       custom_payment_id: customPaymentId,
@@ -198,6 +199,7 @@ export async function POST(request: Request) {
     params.append('productinfo', responseData.productinfo)
     params.append('firstname', responseData.firstname)
     params.append('email', responseData.email)
+    params.append('payment_method', responseData.payment_method || responseData.bankcode || 'UPI')
     if (responseData.mihpayid) {
       params.append('mihpayid', responseData.mihpayid)
     }
