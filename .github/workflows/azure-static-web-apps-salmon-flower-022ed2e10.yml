@@ -32,6 +32,11 @@ jobs:
           NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
           NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
+
+          NEXT_PUBLIC_PAYU_KEY: ${{ secrets.NEXT_PUBLIC_PAYU_KEY }}
+          NEXT_PUBLIC_PAYU_SALT: ${{ secrets.NEXT_PUBLIC_PAYU_SALT }}
+          NEXT_PUBLIC_ZENOTI_API_KEY: ${{ secrets.NEXT_PUBLIC_ZENOTI_API_KEY }}
+
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_SALMON_FLOWER_022ED2E10 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
