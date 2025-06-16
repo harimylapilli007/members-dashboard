@@ -45,13 +45,44 @@ export function UserRegistrationForm() {
     setLoading(true)
 
     try {
-      // Format phone number (remove any spaces or special characters)
+      // Validate required fields
+      if (!formData.first_name.trim() || !formData.last_name.trim() || !formData.phone.trim()) {
+        toast({
+          variant: "destructive",
+          title: "Validation Error",
+          description: "Please fill in all required fields.",
+        })
+        setLoading(false)
+        return
+      }
+
+      // Format and validate phone number
       const cleanPhone = formData.phone.replace(/\D/g, "")
+      if (cleanPhone.length < 10) {
+        toast({
+          variant: "destructive",
+          title: "Invalid Phone Number",
+          description: "Please enter a valid phone number with at least 10 digits.",
+        })
+        setLoading(false)
+        return
+      }
+
+      // Validate email format if provided
+      if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        toast({
+          variant: "destructive",
+          title: "Invalid Email",
+          description: "Please enter a valid email address.",
+        })
+        setLoading(false)
+        return
+      }
 
       const userData = await createZenotiUser({
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        email: formData.email,
+        first_name: formData.first_name.trim(),
+        last_name: formData.last_name.trim(),
+        email: formData.email.trim(),
         mobile_phone: {
           country_code: 95,
           number: cleanPhone
@@ -59,34 +90,27 @@ export function UserRegistrationForm() {
         gender: formData.gender ? parseInt(formData.gender) : undefined
       })
 
-      // Store user data in localStorage
-      const userDataToStore = {
-        id: userData.id,
-        center_id: userData.center_id,
-        first_name: userData.personal_info.first_name,
-        last_name: userData.personal_info.last_name,
-        email: userData.personal_info.email,
-        phone: userData.personal_info.mobile_phone.number
-      }
-      localStorage.setItem('userData', JSON.stringify(userDataToStore))
-      
-      // Clear the registration phone from localStorage
+      // Clear stored phone number from localStorage
       localStorage.removeItem('registrationPhone')
 
       toast({
         variant: "default", 
         title: "Success",
-        description: "User created successfully!",
+        description: "Account created successfully! Redirecting to dashboard...",
       })
 
-      // Redirect to dashboard
-      router.push('/dashboard/memberships')
+      // Add a small delay before redirect for better UX
+      setTimeout(() => {
+        router.push('/dashboard/memberships')
+      }, 1500)
     } catch (error) {
       console.error('Error creating user:', error)
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create user. Please try again.",
+        description: error instanceof Error 
+          ? `Failed to create account: ${error.message}`
+          : "An unexpected error occurred. Please try again.",
       })
     } finally {
       setLoading(false)
@@ -275,15 +299,7 @@ export function UserRegistrationForm() {
                   )}
                 </Button>
 
-                {/* <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full h-11 rounded-lg font-['Marcellus'] text-[18px] font-400 border-[#a07735] hover:bg-gray-50 text-[#a07735] transition-all duration-200"
-                  onClick={handleBackToSignIn}
-                  disabled={loading}
-                >
-                  Back to Sign In
-                </Button> */}
+              
               </div>
             </motion.form>
           </div>

@@ -131,7 +131,6 @@ export default function BookingsPage() {
       }
 
       const apiKey = process.env.NEXT_PUBLIC_ZENOTI_API_KEY
-      console.log('API Key exists:', !!apiKey) // Debug log (don't log the actual key)
 
       const data = await fetchWithRetry(
         `https://api.zenoti.com/v1/guests/${guestId}/appointments`,

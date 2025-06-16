@@ -286,7 +286,7 @@ function MembershipDashboardContent() {
           `https://api.zenoti.com/v1/guests/${userData.id}/memberships?center_id=${userData.center_id}`,
           {
             headers: {
-              'Authorization': 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283',
+              'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
               'accept': 'application/json',
               'content-type': 'application/json'
             }
@@ -309,7 +309,7 @@ function MembershipDashboardContent() {
           `https://api.zenoti.com/v1/centers/${admincenterId}/memberships?show_in_catalog=true`,
           {
             headers: {
-              'Authorization': 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283',
+              'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
               'accept': 'application/json',
               'content-type': 'application/json'
             }

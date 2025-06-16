@@ -197,7 +197,7 @@ export default function SignIn() {
       // Check if user exists in Zenoti
       const response = await fetch(`https://api.zenoti.com/v1/guests/search?phone=${phoneNumber}`, {
         headers: {
-          'Authorization': 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283',
+          'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
           'accept': 'application/json'
         }
       });

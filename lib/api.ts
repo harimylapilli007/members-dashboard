@@ -15,7 +15,7 @@ export async function createZenotiUser(userData: CreateUserData) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283'
+        'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`
       },
       body: JSON.stringify({
         center_id: "92d41019-c790-4668-9158-a693e531c1a4", // Using the admin center ID from the codebase

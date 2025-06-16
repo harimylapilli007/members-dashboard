@@ -81,7 +81,7 @@ async function fetchAndCategorizeServices(area: string): Promise<CategorizedServ
   let allData: Service[] = [];
   let currentPage = 1;
   const pageSize = 100;
-  const apiKey = "apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283";
+  const apiKey = `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`
   const headers = {
     Authorization: apiKey,
     accept: "application/json",

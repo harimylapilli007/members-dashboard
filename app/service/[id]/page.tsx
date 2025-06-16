@@ -199,7 +199,7 @@ export default function Home() {
             `https://api.zenoti.com/v1/centers/${selectedLocation.outlet.id}/services/${serviceId}`,
             {
               headers: {
-                'Authorization': process.env.NEXT_PUBLIC_ZENOTI_API_KEY ?? '',
+                'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
                 'accept': 'application/json'
               }
             },
@@ -281,7 +281,7 @@ export default function Home() {
         {
           method: 'POST',
           headers: {
-            'Authorization': process.env.NEXT_PUBLIC_ZENOTI_API_KEY ?? '',
+            'Authorization':`${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
             'accept': 'application/json',
             'content-type': 'application/json'
           },
@@ -332,7 +332,7 @@ export default function Home() {
         `https://api.zenoti.com/v1/bookings/${bookingId}/slots?check_future_day_availability=false`,
         {
           headers: {
-            'Authorization': process.env.NEXT_PUBLIC_ZENOTI_API_KEY ?? '',
+            'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
             'accept': 'application/json'
           }
         },
@@ -400,7 +400,7 @@ export default function Home() {
         {
           method: 'POST',
           headers: {
-            'Authorization': process.env.NEXT_PUBLIC_ZENOTI_API_KEY ?? '',
+            'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
             'accept': 'application/json',
             'content-type': 'application/json'
           },
@@ -458,7 +458,7 @@ export default function Home() {
         {
           method: 'POST',
           headers: {
-            'Authorization': process.env.NEXT_PUBLIC_ZENOTI_API_KEY ?? '',
+            'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
             'accept': 'application/json',
             'content-type': 'application/json'
           }
