@@ -35,6 +35,7 @@ export default function SignIn() {
   const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
   const [otpError, setOtpError] = useState(false);
   const [otpExpiryTime, setOtpExpiryTime] = useState<number | null>(null);
+  const [remainingTime, setRemainingTime] = useState<number>(0);
   const [showRetry, setShowRetry] = useState(false);
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [verificationId, setVerificationId] = useState('');
@@ -251,7 +252,12 @@ export default function SignIn() {
       window.confirmationResult = confirmationResult;
       setVerificationId(confirmationResult.verificationId);
       setShowOtpInput(true);
-        toast({
+      // Reset OTP expiry timer when sending new OTP
+      setOtpExpiryTime(Date.now() + 2 * 60 * 1000);
+      setRemainingTime(120); // 2 minutes in seconds
+      setOtpError(false);
+      setShowRetry(false);
+      toast({
         variant: "default",
         title: "Success",
         description: "OTP sent successfully!",
@@ -458,6 +464,8 @@ export default function SignIn() {
     setShowRetry(false);
     setOtp(['', '', '', '', '', '']);
     setShowOtpInput(false);
+    setOtpExpiryTime(null);
+    setRemainingTime(0);
     if (window.recaptchaVerifier) {
       window.recaptchaVerifier.clear();
       window.recaptchaVerifier = null;
@@ -466,17 +474,17 @@ export default function SignIn() {
     setupRecaptcha();
   };
 
-  // Add useEffect for OTP expiry timer
+  // Updated useEffect for OTP expiry timer
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (showOtpInput && !otpExpiryTime) {
-      // Set expiry time to 2 minutes from now
-      setOtpExpiryTime(Date.now() + 2 * 60 * 1000);
-    }
-    if (otpExpiryTime) {
+    
+    if (showOtpInput && otpExpiryTime) {
       timer = setInterval(() => {
         const now = Date.now();
-        if (now >= otpExpiryTime) {
+        const remaining = Math.max(0, Math.floor((otpExpiryTime - now) / 1000));
+        setRemainingTime(remaining);
+        
+        if (remaining <= 0) {
           setOtpExpiryTime(null);
           setShowRetry(true);
           toast({
@@ -487,6 +495,7 @@ export default function SignIn() {
         }
       }, 1000);
     }
+
     return () => {
       if (timer) clearInterval(timer);
     };
@@ -638,7 +647,7 @@ export default function SignIn() {
                     </div>
                     {otpExpiryTime && (
                       <div className="text-center text-sm text-gray-500">
-                        OTP expires in {Math.max(0, Math.floor((otpExpiryTime - Date.now()) / 1000))} seconds
+                        OTP expires in {remainingTime} seconds
                       </div>
                     )}
                     {showRetry && (

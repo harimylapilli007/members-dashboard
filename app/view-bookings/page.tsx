@@ -113,15 +113,17 @@ export default function BookingsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [cancellingBookingId, setCancellingBookingId] = useState<string | null>(null)
-  const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData') || '{}') : {}
-
 
   const fetchBookings = async () => {
     try {
+      // Get userData from localStorage each time we fetch
+      const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData') || '{}') : {}
+      
       // Get guest ID from localStorage
       const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
       const guestId = dashboardParams.get('id') || localStorage.getItem('guestId') || userData?.id
 
+      console.log('UserData:', userData) // Debug log
       console.log('Guest ID:', guestId) // Debug log
 
       if (!guestId) {
