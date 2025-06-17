@@ -187,7 +187,7 @@ export async function POST(request: Request) {
     }
 
     // Construct the redirect URL with success parameters
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    // const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     const params = new URLSearchParams()
     
     // Add all relevant payment information
@@ -205,7 +205,7 @@ export async function POST(request: Request) {
     }
     params.append('error_Message', 'Payment processed successfully')
 
-    const redirectUrl = `${baseUrl}/payment/success?${params.toString()}`
+    const redirectUrl = `/payment/success?${params.toString()}`
 
     // Return a redirect response with proper headers
     return new Response(null, {
@@ -219,7 +219,7 @@ export async function POST(request: Request) {
 
   } catch (error) {
     console.error('Error processing payment success:', error)
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    // const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     const params = new URLSearchParams()
     
     try {
@@ -234,7 +234,7 @@ export async function POST(request: Request) {
     
     params.append('error_Message', error instanceof Error ? error.message : 'An error occurred while processing payment')
     
-    const redirectUrl = `${baseUrl}/payment/failure?${params.toString()}`
+    const redirectUrl = `/payment/failure?${params.toString()}`
 
     return new Response(null, {
       status: 302,
