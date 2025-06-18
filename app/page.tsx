@@ -10,6 +10,34 @@ import { usePathname, useRouter } from "next/navigation"
 import Header from "./components/Header"
 import { useState, useEffect } from "react"
 import { formatPrice } from "./utils/formatPrice"
+import { Skeleton } from "@/components/ui/skeleton"
+
+// Add this new component for skeleton loading
+const MembershipCardSkeleton = () => {
+  return (
+    <Card className="group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white/50 rounded-lg">
+      <CardContent className="p-0">
+        <div className="relative aspect-[16/9] w-full min-w-0 min-h-0 overflow-hidden">
+          <Skeleton className="absolute inset-0 w-full h-full" />
+        </div>
+        <div className="p-4">
+          <Skeleton className="h-6 w-3/4 mb-2" />
+          <div className="flex items-center justify-between mb-2">
+            <Skeleton className="h-5 w-1/3" />
+            <Skeleton className="h-5 w-1/4" />
+          </div>
+          <Skeleton className="h-5 w-2/3 mt-4" />
+          <div className="flex items-center justify-center text-center mx-auto mt-4">
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <div className="flex justify-center mt-4">
+            <Skeleton className="h-10 w-full" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
 
 export default function Component() {
   const pathname = usePathname()
@@ -18,6 +46,8 @@ export default function Component() {
   const [isLoading, setIsLoading] = useState(true)
   const [selectedMembership, setSelectedMembership] = useState<any>(null)
   const [showFirstOffer, setShowFirstOffer] = useState(true)
+  const [imageLoadingStates, setImageLoadingStates] = useState<{ [key: number]: boolean }>({})
+  const [imageErrorStates, setImageErrorStates] = useState<{ [key: number]: boolean }>({})
 
   useEffect(() => {
     try {
@@ -105,6 +135,20 @@ export default function Component() {
       offer: "50% off on all services"
     },
   ]
+
+  const handleImageLoad = (id: number) => {
+    setImageLoadingStates(prev => ({
+      ...prev,
+      [id]: true
+    }))
+  }
+
+  const handleImageError = (id: number) => {
+    setImageErrorStates(prev => ({
+      ...prev,
+      [id]: true
+    }))
+  }
 
   // Modal component for membership details
   const MembershipModal = ({ membership, onClose }: { membership: any, onClose: () => void }) => {
@@ -247,6 +291,8 @@ export default function Component() {
     )
   }
 
+  const fallbackImage = "/placeholder.svg"
+
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Modal for membership details */}
@@ -360,12 +406,21 @@ export default function Component() {
                   >
                     <CardContent className="p-0">
                       <div className="relative aspect-[16/9] w-full min-w-0 min-h-0 overflow-hidden">
-                        <div className="absolute inset-0 transition-transform duration-300 group-hover:scale-110">
+                        {!imageLoadingStates[membership.id] && (
+                          <Skeleton className="absolute inset-0 w-full h-full" />
+                        )}
+                        <div className={`absolute inset-0 transition-transform duration-300 group-hover:scale-110 ${!imageLoadingStates[membership.id] ? 'opacity-0' : 'opacity-100'}`}>
                           <Image
-                            src={membership.image || "/placeholder.svg"}
-                            alt="Spa interior"
+                            src={imageErrorStates[membership.id] ? fallbackImage : (membership.image || fallbackImage)}
+                            alt={membership.name}
                             fill
                             className="object-cover"
+                            onLoad={() => handleImageLoad(membership.id)}
+                            onError={() => handleImageError(membership.id)}
+                            loading="lazy"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            placeholder="blur"
+                            blurDataURL="/placeholder.svg"
                           />
                         </div>
                       </div>
@@ -373,8 +428,7 @@ export default function Component() {
                         <h1 className="font-semibold text-[22px] text-[#232323] mb-2">{membership.name}</h1>
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-lg font-bold text-[#98564D]">{membership.price}</span>
-                          <span className="text-[18px] font-inter ">Validity: 12 months</span>
-                          
+                          <span className="text-[18px] font-inter">Validity: 12 months</span>
                         </div>
                         <div className="flex items-center mt-4 relative h-[24px]">
                           <span className="text-[#232323] text-[18px] font-regular font-inter transition-opacity duration-1000">
@@ -395,7 +449,7 @@ export default function Component() {
                         <div className="flex items-center justify-center text-center mx-auto mt-4">
                           <Button
                             variant="outline"
-                            className="text-[#a07735] border-[#a07735] font-marcellus hover:text-[#a07735] flex bg-white/20 items-center text-[18px] w-full "
+                            className="text-[#a07735] border-[#a07735] font-marcellus hover:text-[#a07735] flex bg-white/20 items-center text-[18px] w-full"
                             onClick={() => setSelectedMembership(membership)}
                           >
                             View Details
