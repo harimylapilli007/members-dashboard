@@ -39,6 +39,41 @@ const MembershipCardSkeleton = () => {
   )
 }
 
+// Add this new component for image skeleton
+const ImageSkeleton = () => {
+  return (
+    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%]">
+      <div className="absolute inset-0 bg-white/50" />
+    </div>
+  )
+}
+
+const CardSkeleton = () => {
+  return (
+    <Card className="group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white/50 rounded-lg">
+      <CardContent className="p-0">
+        <div className="relative aspect-[16/9] w-full min-w-0 min-h-0 overflow-hidden">
+          <ImageSkeleton />
+        </div>
+        <div className="p-4">
+          <div className="h-6 w-3/4 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] mb-2 rounded" />
+          <div className="flex items-center justify-between mb-2">
+            <div className="h-5 w-1/3 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] rounded" />
+            <div className="h-5 w-1/4 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] rounded" />
+          </div>
+          <div className="h-5 w-2/3 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] mt-4 rounded" />
+          <div className="flex items-center justify-center text-center mx-auto mt-4">
+            <div className="h-10 w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] rounded" />
+          </div>
+          <div className="flex justify-center mt-4">
+            <div className="h-10 w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] rounded" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 export default function Component() {
   const pathname = usePathname()
   const router = useRouter()
@@ -48,6 +83,7 @@ export default function Component() {
   const [showFirstOffer, setShowFirstOffer] = useState(true)
   const [imageLoadingStates, setImageLoadingStates] = useState<{ [key: number]: boolean }>({})
   const [imageErrorStates, setImageErrorStates] = useState<{ [key: number]: boolean }>({})
+  const [isImagesLoading, setIsImagesLoading] = useState(true)
 
   useEffect(() => {
     try {
@@ -303,8 +339,10 @@ export default function Component() {
         />
       )}
       {isLoading ? (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#a07735]"></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 min-w-0 items-stretch max-w-[1100px] mx-auto p-4 md:p-8">
+          {[...Array(6)].map((_, index) => (
+            <CardSkeleton key={index} />
+          ))}
         </div>
       ) : (
         <>
@@ -406,9 +444,7 @@ export default function Component() {
                   >
                     <CardContent className="p-0">
                       <div className="relative aspect-[16/9] w-full min-w-0 min-h-0 overflow-hidden">
-                        {!imageLoadingStates[membership.id] && (
-                          <Skeleton className="absolute inset-0 w-full h-full" />
-                        )}
+                        {!imageLoadingStates[membership.id] && <ImageSkeleton />}
                         <div className={`absolute inset-0 transition-transform duration-300 group-hover:scale-110 ${!imageLoadingStates[membership.id] ? 'opacity-0' : 'opacity-100'}`}>
                           <Image
                             src={imageErrorStates[membership.id] ? fallbackImage : (membership.image || fallbackImage)}
@@ -419,8 +455,6 @@ export default function Component() {
                             onError={() => handleImageError(membership.id)}
                             loading="lazy"
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            placeholder="blur"
-                            blurDataURL="/placeholder.svg"
                           />
                         </div>
                       </div>

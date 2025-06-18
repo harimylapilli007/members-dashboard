@@ -122,6 +122,14 @@ const config: Config = {
             opacity: '0',
             transform: 'translateY(-10px)'
           }
+        },
+        'shimmer': {
+          '0%': { 
+            backgroundPosition: '-200% 0' 
+          },
+          '100%': { 
+            backgroundPosition: '200% 0' 
+          }
         }
   		},
   		animation: {
@@ -129,7 +137,8 @@ const config: Config = {
   			'accordion-up': 'accordion-up 0.2s ease-out',
         'slideDown': 'slideDown 0.3s ease-out',
         'fadeIn': 'fadeIn 0.3s ease-out',
-        'fade-in-out': 'fade-in-out 3s ease-in-out'
+        'fade-in-out': 'fade-in-out 3s ease-in-out',
+        'shimmer': 'shimmer 2s linear infinite'
   		}
   	}
   },
