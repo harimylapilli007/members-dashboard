@@ -1,4 +1,11 @@
 import { UserRegistrationForm } from "@/components/user-registration-form"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Register | Membership Dashboard",
+  description: "Create your account to access the membership dashboard and manage your bookings.",
+  keywords: ["register", "sign up", "membership", "dashboard", "account creation"],
+}
 
 export default function RegisterPage() {
   return (

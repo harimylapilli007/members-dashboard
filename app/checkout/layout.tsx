@@ -1,8 +1,8 @@
 import { Metadata, Viewport } from 'next'
 
 export const metadata: Metadata = {
-  title: "Memberships | Luxury Spa & Wellness",
-  description: "View and manage your spa memberships. Access exclusive benefits and track your membership status.",
+  title: "Checkout | Luxury Spa & Wellness",
+  description: "Checkout for your spa services. Access exclusive benefits and track your membership status.",
 }
 
 export const viewport: Viewport = {
@@ -12,7 +12,7 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
-export default function MembershipsLayout({
+export default function CheckoutLayout({
   children,
 }: {
   children: React.ReactNode

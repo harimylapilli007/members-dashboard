@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
   // Define public paths that don't require authentication
-  const isPublicPath = path === '/signin' || path === '/spa-signin'
+  const isPublicPath = path === '/signin'
 
   // Get the token from the cookies
   const token = request.cookies.get('auth-token')?.value
@@ -30,6 +30,5 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/signin',
-    '/spa-signin'
   ]
 } 

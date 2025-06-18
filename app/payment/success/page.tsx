@@ -2,10 +2,8 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { CheckCircle, Trophy } from "lucide-react"
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from "@/components/ui/card"
-import { verifyPayUResponse } from "@/lib/payment-utils"
 import { useToast } from "@/hooks/use-toast"
 
 interface InvoiceStatus {
@@ -24,7 +22,6 @@ function PaymentSuccessContent() {
   const [invoiceStatus, setInvoiceStatus] = useState<InvoiceStatus | null>(null)
   const [paymentDetails, setPaymentDetails] = useState<any>(null)
 
-  console.log('Invoice Status:', invoiceStatus)
   useEffect(() => {
     const verifyPayment = async () => {
       try {

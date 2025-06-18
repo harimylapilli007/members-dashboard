@@ -28,6 +28,10 @@ export default function Home() {
   const description = searchParams.get('description') || ''
   const serviceId = searchParams.get('id') || ''
   
+  useEffect(() => {
+    document.title = serviceName
+  }, [serviceName])
+
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("benefits")
   const [selectedLocation, setSelectedLocation] = useState<{ city: string; outlet: { name: string, id: string } } | null>(
@@ -585,7 +589,7 @@ export default function Home() {
                     <h3 className="text-xl font-medium mb-4 font-marcellus">Before Your Massage</h3>
                     <ul className="list-disc pl-5 mb-6 space-y-2">
                       <li className="text-sm text-gray-700 font-inter">Arrive 15 minutes before your appointment to complete paperwork</li>
-                      <li className="text-sm text-gray-700 font-inter">Wear comfortable clothing that's easy to remove</li>
+                      <li className="text-sm text-gray-700 font-inter">Wear comfortable clothing that's easy to change</li>
                       <li className="text-sm text-gray-700 font-inter">Avoid heavy meals or alcohol before your session</li>
                       <li className="text-sm text-gray-700 font-inter">Let your therapist know about any health concerns or preferences</li>
                     </ul>
@@ -1251,7 +1255,7 @@ export default function Home() {
                 <h3 className="text-xl font-medium mb-4 font-marcellus">Before Your Massage</h3>
                 <ul className="list-disc pl-5 mb-6 space-y-2">
                   <li className="text-base text-gray-700 font-inter">Arrive 15 minutes before your appointment to complete paperwork</li>
-                  <li className="text-base text-gray-700 font-inter">Wear comfortable clothing that's easy to remove</li>
+                  <li className="text-base text-gray-700 font-inter">Wear comfortable clothing that's easy to change</li>
                   <li className="text-base text-gray-700 font-inter">Avoid heavy meals or alcohol before your session</li>
                   <li className="text-base text-gray-700 font-inter">Let your therapist know about any health concerns or preferences</li>
                 </ul>
@@ -1312,5 +1316,6 @@ export default function Home() {
         />
       )}
     </div>
+    
   )
 }

@@ -14,7 +14,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "ODE SPA",
+  title: "Home | ODE SPA",
   description: "Luxury spa treatments and wellness services",
   generator: 'v0.dev',
   icons: {
