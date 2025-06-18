@@ -502,6 +502,15 @@ export default function ServiceBookingPage() {
     }
   }, [selectedLocation]);
 
+  // Add useEffect for title management
+  useEffect(() => {
+    if (selectedLocation) {
+      document.title = `${selectedLocation.outlet.name} - ${selectedLocation.city} | Spa Services`;
+    } else {
+      document.title = 'Spa Services';
+    }
+  }, [selectedLocation]);
+
   const handleSelectLocation = (city: string, outlet: string, centerId: string) => {
     setSelectedLocation({ city, outlet: { name: outlet, id: centerId } });
     setArea(centerId);

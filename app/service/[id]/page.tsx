@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 
 
-export default function Home() {
+export default function ServiceDetails() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { logout, user } = useAuth()
