@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const body: PaymentInitiateRequest = await request.json()
     
     // Validate required fields
-    if (!body.invoice_id || !body.amount || !body.customer_name || !body.customer_email || !body.customer_phone) {
+    if (!body.invoice_id || !body.amount || !body.customer_name || !body.customer_phone) {
       return NextResponse.json(
         { success: false, error: { message: 'Missing required fields' } },
         { status: 400 }

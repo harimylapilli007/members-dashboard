@@ -96,10 +96,84 @@ aside {
   }
 }
 
+@keyframes shimmer-wave {
+  0% {
+    background-position: -200% 0;
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    background-position: 200% 0;
+    opacity: 0.8;
+  }
+}
+
 .animate-shimmer {
   animation: shimmer 2s infinite;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
+}
+
+/* Modern shimmer effect with wave-like animation */
+.shimmer-effect {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 20%,
+    #f8f8f8 40%,
+    #e8e8e8 60%,
+    #f0f0f0 80%,
+    #e0e0e0 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-wave 1.8s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    transparent 100%
+  );
+  animation: shimmer-wave 2.2s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+/* Enhanced shimmer for different elements */
+.shimmer-effect.enhanced {
+  background: linear-gradient(
+    90deg,
+    #e5e5e5 0%,
+    #d5d5d5 20%,
+    #f0f0f0 40%,
+    #e8e8e8 60%,
+    #d8d8d8 80%,
+    #e5e5e5 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-wave 2s ease-in-out infinite;
+}
+
+.shimmer-effect.enhanced::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.9) 50%,
+    transparent 100%
+  );
+  animation: shimmer-wave 2.5s ease-in-out infinite;
+  animation-delay: 0.5s;
 }
 
 /* Optimized image loading */

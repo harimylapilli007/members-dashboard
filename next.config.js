@@ -5,6 +5,11 @@ const nextConfig = {
     unoptimized: true,
   },
   reactStrictMode: true,
+  output: 'standalone',
+  serverExternalPackages: ['@prisma/client'],
+  env: {
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
+  },
 }
 
 module.exports = nextConfig 

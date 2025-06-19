@@ -18,17 +18,17 @@ const MembershipCardSkeleton = () => {
     <Card className="group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white/50 rounded-lg skeleton-container">
       <CardContent className="p-0">
         <div className="relative aspect-[16/9] w-full overflow-hidden">
-          <div className="absolute inset-0 w-full h-full skeleton-optimized" />
+          <div className="absolute inset-0 w-full h-full shimmer-effect enhanced" />
         </div>
         <div className="p-4 space-y-3">
-          <div className="h-6 w-3/4 skeleton-optimized rounded" />
+          <div className="h-6 w-3/4 shimmer-effect rounded" />
           <div className="flex items-center justify-between">
-            <div className="h-5 w-1/3 skeleton-optimized rounded" />
-            <div className="h-5 w-1/4 skeleton-optimized rounded" />
+            <div className="h-5 w-1/3 shimmer-effect rounded" />
+            <div className="h-5 w-1/4 shimmer-effect rounded" />
           </div>
-          <div className="h-5 w-2/3 skeleton-optimized rounded" />
-          <div className="h-10 w-full skeleton-optimized rounded" />
-          <div className="h-10 w-full skeleton-optimized rounded" />
+          <div className="h-5 w-2/3 shimmer-effect rounded" />
+          <div className="h-10 w-full shimmer-effect enhanced rounded" />
+          <div className="h-10 w-full shimmer-effect enhanced rounded" />
         </div>
       </CardContent>
     </Card>
@@ -38,8 +38,8 @@ const MembershipCardSkeleton = () => {
 // Add this new component for image skeleton
 const ImageSkeleton = () => {
   return (
-    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%]">
-      <div className="absolute inset-0 bg-white/50" />
+    <div className="absolute inset-0 shimmer-effect enhanced">
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 opacity-50" />
     </div>
   )
 }
@@ -52,17 +52,17 @@ const CardSkeleton = () => {
           <ImageSkeleton />
         </div>
         <div className="p-4">
-          <div className="h-6 w-3/4 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] mb-2 rounded" />
+          <div className="h-6 w-3/4 shimmer-effect mb-2 rounded" />
           <div className="flex items-center justify-between mb-2">
-            <div className="h-5 w-1/3 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] rounded" />
-            <div className="h-5 w-1/4 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] rounded" />
+            <div className="h-5 w-1/3 shimmer-effect rounded" />
+            <div className="h-5 w-1/4 shimmer-effect rounded" />
           </div>
-          <div className="h-5 w-2/3 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] mt-4 rounded" />
+          <div className="h-5 w-2/3 shimmer-effect mt-4 rounded" />
           <div className="flex items-center justify-center text-center mx-auto mt-4">
-            <div className="h-10 w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] rounded" />
+            <div className="h-10 w-full shimmer-effect enhanced rounded" />
           </div>
           <div className="flex justify-center mt-4">
-            <div className="h-10 w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%] rounded" />
+            <div className="h-10 w-full shimmer-effect enhanced rounded" />
           </div>
         </div>
       </CardContent>
@@ -406,7 +406,9 @@ export default function Component() {
                       <div className="relative aspect-[16/9] w-full overflow-hidden">
                         {/* Show skeleton only if image hasn't loaded yet */}
                         {!loadedImages.has(membership.id) && (
-                          <div className="absolute inset-0 w-full h-full skeleton-optimized" />
+                          <div className="absolute inset-0 w-full h-full shimmer-effect enhanced">
+                            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 opacity-40" />
+                          </div>
                         )}
                         <div className={`absolute inset-0 image-container transition-opacity duration-300 ${loadedImages.has(membership.id) ? 'opacity-100' : 'opacity-0'}`}>
                           <Image

@@ -100,10 +100,20 @@ export async function GET(request: Request) {
     }
 
     const apiKey = process.env.ZENOTI_API_KEY
+    console.log('Environment check:', {
+      ZENOTI_API_KEY: apiKey ? 'Present' : 'Missing',
+      NODE_ENV: process.env.NODE_ENV,
+      timestamp: new Date().toISOString()
+    })
+    
     if (!apiKey) {
       console.error('ZENOTI_API_KEY is not set in environment variables')
       return NextResponse.json(
-        { error: 'API configuration error' },
+        { 
+          error: 'API configuration error',
+          details: 'ZENOTI_API_KEY environment variable is not configured',
+          timestamp: new Date().toISOString()
+        },
         { status: 500 }
       )
     }

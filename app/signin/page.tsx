@@ -119,9 +119,9 @@ export default function SignIn() {
     const cleaned = phone.replace(/\D/g, '');
     
     // If the number is 10 digits
-    if (cleaned.length === 10) {
-      return `+91${cleaned}`;
-    }
+    // if (cleaned.length === 10) {
+    //   return `+91${cleaned}`;
+    // }
     
     // If the number doesn't start with a country code, assume it's a US number
     if (!phone.startsWith('+')) {
