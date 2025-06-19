@@ -10,7 +10,7 @@ export async function GET(request: Request) {
 
   try {
     console.log('Making request to Zenoti API with phone:', phone);
-    console.log('Using API key:', process.env.ZENOTI_KEY ? 'API key exists' : 'API key is missing');
+    console.log('Using API key:', process.env.ZENOTI_API_KEY ? 'API key exists' : 'API key is missing');
 
     const response = await fetch(`https://api.zenoti.com/v1/guests/search?phone=${phone}`, {
       headers: {
