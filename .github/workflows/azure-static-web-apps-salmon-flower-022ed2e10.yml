@@ -48,7 +48,6 @@ jobs:
           app_location: "/" # App source code path
           api_location: "app/api" # Api source code path - updated to include API routes
           output_location: ".next" # Built app content directory - optional
-          skip_app_build: true # Skip build since we already built it
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
