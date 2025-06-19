@@ -11,31 +11,21 @@ interface CreateUserData {
 
 export async function createZenotiUser(userData: CreateUserData) {
   try {
-    const response = await fetch('https://api.zenoti.com/v1/guests', {
+    const response = await fetch('/api/users/create', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        center_id: "92d41019-c790-4668-9158-a693e531c1a4", // Using the admin center ID from the codebase
-        personal_info: {
-          first_name: userData.first_name,
-          last_name: userData.last_name,
-          mobile_phone: userData.mobile_phone,
-          email: userData.email,
-          gender: userData.gender
-        }
-      })
+      body: JSON.stringify(userData)
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to create user');
+      throw new Error(error.error?.message || 'Failed to create user');
     }
 
     const data = await response.json();
-    return data;
+    return data.data;
   } catch (error) {
     console.error('Error creating user:', error);
     throw error;

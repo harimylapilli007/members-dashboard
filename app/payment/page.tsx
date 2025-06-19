@@ -56,6 +56,8 @@ export default function PaymentPage() {
   const [invoice, setInvoice] = useState<InvoiceData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [lastPaymentAttempt, setLastPaymentAttempt] = useState<number>(0)
+  const [countdown, setCountdown] = useState<number>(0)
   const [userInfo, setUserInfo] = useState({
     firstName: '',
     email: '',
@@ -63,6 +65,42 @@ export default function PaymentPage() {
   })
   const membershipName = searchParams.get('membership_name')
   const membershipPrice = searchParams.get('price')
+
+  // Rate limiting: minimum 60 seconds between payment attempts
+  const RATE_LIMIT_DELAY = 60000 // 60 seconds in milliseconds
+
+  // Countdown timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+    
+    if (countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
+  }, [countdown])
+
+  // Check rate limiting on component mount and update countdown
+  useEffect(() => {
+    const now = Date.now()
+    const timeSinceLastAttempt = now - lastPaymentAttempt
+    
+    if (timeSinceLastAttempt < RATE_LIMIT_DELAY) {
+      const remainingTime = Math.ceil((RATE_LIMIT_DELAY - timeSinceLastAttempt) / 1000)
+      setCountdown(remainingTime)
+    }
+  }, [lastPaymentAttempt])
 
   useEffect(() => {
     // Load user info from localStorage when component mounts
@@ -148,23 +186,19 @@ export default function PaymentPage() {
   const createMembershipInvoice = async (membershipId: string) => {
     try {
       const userData = JSON.parse(localStorage.getItem('userData') || '{}')
-      const admincenterId = '92d41019-c790-4668-9158-a693e531c1a4'
 
-      if (!userData?.id || !admincenterId) {
-        throw new Error('Guest ID and Center ID are required')
+      if (!userData?.id) {
+        throw new Error('User ID is required')
       }
 
-      const response = await fetch('https://api.zenoti.com/v1/invoices/memberships', {
+      const response = await fetch('/api/memberships/create-invoice', {
         method: 'POST',
         headers: {
-          'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
-          'accept': 'application/json',
-          'content-type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          center_id: admincenterId,
-          user_id: userData.id,
-          membership_ids: membershipId
+          membershipId: membershipId,
+          userId: userData.id
         })
       })
 
@@ -185,10 +219,34 @@ export default function PaymentPage() {
     }
   }
 
-
   const handlePayment = async () => {
     try {
+      // Check rate limiting
+      const now = Date.now()
+      const timeSinceLastAttempt = now - lastPaymentAttempt
+      
+      if (timeSinceLastAttempt < RATE_LIMIT_DELAY) {
+        const remainingTime = Math.ceil((RATE_LIMIT_DELAY - timeSinceLastAttempt) / 1000)
+        toast({
+          variant: "destructive",
+          title: "Rate Limited",
+          description: `Please wait ${remainingTime} seconds before trying again to avoid payment gateway issues.`,
+        })
+        return
+      }
+
+      // Check if there's already a payment in progress
+      if (isProcessing) {
+        toast({
+          variant: "destructive",
+          title: "Payment in Progress",
+          description: "A payment is already being processed. Please wait.",
+        })
+        return
+      }
+
       setIsProcessing(true)
+      setLastPaymentAttempt(now)
       
       // Get membership_id from URL params
       const params = new URLSearchParams(window.location.search)
@@ -210,17 +268,73 @@ export default function PaymentPage() {
       // Create membership invoice
       const invoiceData = await createMembershipInvoice(membershipId)
 
-    
-      
-      // Continue with payment flow using the created invoice
-      await initiatePayment({
-        name: membershipName || "Ode Spa Membership",
-        price: Number(invoice?.total_amount) || 0,
-        firstName: userInfo.firstName,
-        email: userInfo.email,
-        phone: userInfo.phone,
-        invoiceId: invoiceData.invoice_id
+      // Store payment attempt timestamp in localStorage for persistence
+      localStorage.setItem('lastPaymentAttempt', now.toString())
+
+      // Use the new server-side API endpoint
+      const response = await fetch('/api/payment/initiate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          invoice_id: invoiceData.invoice_id,
+          amount: Number(invoice?.total_amount) || 0,
+          product_info: membershipName || "Ode Spa Membership",
+          customer_name: userInfo.firstName,
+          customer_email: userInfo.email,
+          customer_phone: userInfo.phone,
+        })
       })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          // Rate limited by server
+          const remainingTime = Math.ceil((RATE_LIMIT_DELAY - timeSinceLastAttempt) / 1000)
+          setCountdown(remainingTime)
+          toast({
+            variant: "destructive",
+            title: "Rate Limited",
+            description: data.error?.message || `Please wait ${remainingTime} seconds before trying again.`,
+          })
+          return
+        }
+        throw new Error(data.error?.message || 'Failed to initiate payment')
+      }
+
+      if (!data.success) {
+        throw new Error(data.error?.message || 'Payment initiation failed')
+      }
+
+      // Create and submit the payment form
+      const form = document.createElement('form')
+      form.id = 'payu-payment-form'
+      form.action = data.payment_url
+      form.method = 'POST'
+      form.style.display = 'none'
+
+      // Add payment data to form
+      Object.entries(data.payment_data).forEach(([key, value]) => {
+        const input = document.createElement('input')
+        input.type = 'hidden'
+        input.name = key
+        input.value = value as string
+        form.appendChild(input)
+      })
+
+      // Submit the form
+      document.body.appendChild(form)
+      form.submit()
+
+      // Clean up the form after submission
+      setTimeout(() => {
+        if (form.parentNode) {
+          form.parentNode.removeChild(form)
+        }
+      }, 1000)
+
     } catch (error) {
       toast({
         variant: "destructive",
@@ -231,6 +345,24 @@ export default function PaymentPage() {
       setIsProcessing(false)
     }
   }
+
+  // Check for existing payment attempts on component mount
+  useEffect(() => {
+    const storedLastAttempt = localStorage.getItem('lastPaymentAttempt')
+    if (storedLastAttempt) {
+      setLastPaymentAttempt(parseInt(storedLastAttempt))
+    }
+  }, [])
+
+  // Cleanup payment forms on component unmount
+  useEffect(() => {
+    return () => {
+      const existingForm = document.getElementById('payu-payment-form')
+      if (existingForm && existingForm.parentNode) {
+        existingForm.parentNode.removeChild(existingForm)
+      }
+    }
+  }, [])
 
   if (loading) {
     return (
@@ -476,20 +608,40 @@ export default function PaymentPage() {
               </div>
 
               <div className="mt-6">
-                <Button
-                  className="w-full h-11 sm:h-12 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] text-[#98564D] font-bold rounded-xl text-base sm:text-lg mb-3 shadow-md"
-                  onClick={handlePayment}
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? (
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#98564D]"></div>
-                      <span>Processing...</span>
-                    </div>
-                  ) : (
-                    'Complete Purchase'
-                  )}
-                </Button>
+                {(() => {
+                  const buttonClass = countdown > 0 
+                    ? 'w-full h-11 sm:h-12 font-bold rounded-xl text-base sm:text-lg mb-3 shadow-md bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'w-full h-11 sm:h-12 font-bold rounded-xl text-base sm:text-lg mb-3 shadow-md bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] text-[#98564D] hover:from-[#D4A870] hover:to-[#E6D190]'
+                  
+                  return (
+                    <Button
+                      className={buttonClass}
+                      onClick={handlePayment}
+                      disabled={isProcessing || countdown > 0}
+                    >
+                      {isProcessing ? (
+                        <div className="flex items-center gap-2">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#98564D]"></div>
+                          <span>Processing...</span>
+                        </div>
+                      ) : countdown > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <div className="animate-pulse">⏱️</div>
+                          <span>Wait {countdown}s to retry</span>
+                        </div>
+                      ) : (
+                        'Complete Purchase'
+                      )}
+                    </Button>
+                  )
+                })()}
+                
+                {countdown > 0 && (
+                  <div className="w-full text-center text-sm text-red-600 mb-3">
+                    Rate limited by payment gateway. Please wait before trying again.
+                  </div>
+                )}
+                
                 <div className="w-full text-center text-sm text-[#a07735] mt-6 mb-3">Secure Payment Gateway</div>
 
                 {/* Secure Payment Note */}

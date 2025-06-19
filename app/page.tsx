@@ -12,27 +12,23 @@ import { useState, useEffect } from "react"
 import { formatPrice } from "./utils/formatPrice"
 import { Skeleton } from "@/components/ui/skeleton"
 
-// Add this new component for skeleton loading
+// Optimized skeleton component - simplified and faster
 const MembershipCardSkeleton = () => {
   return (
-    <Card className="group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white/50 rounded-lg">
+    <Card className="group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white/50 rounded-lg skeleton-container">
       <CardContent className="p-0">
-        <div className="relative aspect-[16/9] w-full min-w-0 min-h-0 overflow-hidden">
-          <Skeleton className="absolute inset-0 w-full h-full" />
+        <div className="relative aspect-[16/9] w-full overflow-hidden">
+          <div className="absolute inset-0 w-full h-full skeleton-optimized" />
         </div>
-        <div className="p-4">
-          <Skeleton className="h-6 w-3/4 mb-2" />
-          <div className="flex items-center justify-between mb-2">
-            <Skeleton className="h-5 w-1/3" />
-            <Skeleton className="h-5 w-1/4" />
+        <div className="p-4 space-y-3">
+          <div className="h-6 w-3/4 skeleton-optimized rounded" />
+          <div className="flex items-center justify-between">
+            <div className="h-5 w-1/3 skeleton-optimized rounded" />
+            <div className="h-5 w-1/4 skeleton-optimized rounded" />
           </div>
-          <Skeleton className="h-5 w-2/3 mt-4" />
-          <div className="flex items-center justify-center text-center mx-auto mt-4">
-            <Skeleton className="h-10 w-full" />
-          </div>
-          <div className="flex justify-center mt-4">
-            <Skeleton className="h-10 w-full" />
-          </div>
+          <div className="h-5 w-2/3 skeleton-optimized rounded" />
+          <div className="h-10 w-full skeleton-optimized rounded" />
+          <div className="h-10 w-full skeleton-optimized rounded" />
         </div>
       </CardContent>
     </Card>
@@ -83,7 +79,7 @@ export default function Component() {
   const [showFirstOffer, setShowFirstOffer] = useState(true)
   const [imageLoadingStates, setImageLoadingStates] = useState<{ [key: number]: boolean }>({})
   const [imageErrorStates, setImageErrorStates] = useState<{ [key: number]: boolean }>({})
-  const [isImagesLoading, setIsImagesLoading] = useState(true)
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     try {
@@ -177,6 +173,7 @@ export default function Component() {
       ...prev,
       [id]: true
     }))
+    setLoadedImages(prev => new Set(prev).add(id))
   }
 
   const handleImageError = (id: number) => {
@@ -184,7 +181,24 @@ export default function Component() {
       ...prev,
       [id]: true
     }))
+    setLoadedImages(prev => new Set(prev).add(id))
   }
+
+  // Preload critical images
+  useEffect(() => {
+    const preloadImages = () => {
+      memberships.slice(0, 3).forEach(membership => {
+        const img = new window.Image()
+        img.src = membership.image
+        img.onload = () => handleImageLoad(membership.id)
+        img.onerror = () => handleImageError(membership.id)
+      })
+    }
+    
+    if (!isLoading) {
+      preloadImages()
+    }
+  }, [isLoading])
 
   // Modal component for membership details
   const MembershipModal = ({ membership, onClose }: { membership: any, onClose: () => void }) => {
@@ -341,7 +355,7 @@ export default function Component() {
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 min-w-0 items-stretch max-w-[1100px] mx-auto p-4 md:p-8">
           {[...Array(6)].map((_, index) => (
-            <CardSkeleton key={index} />
+            <MembershipCardSkeleton key={index} />
           ))}
         </div>
       ) : (
@@ -373,60 +387,6 @@ export default function Component() {
           <Header />
 
           <div className="flex flex-col lg:flex-row items-start max-w-[1400px] mx-auto px-4 md:px-6">
-            {/* Sidebar - Exact styling from the design */}
-            {/* <aside
-              className="w-full lg:w-[300px] h-auto lg:h-[520px] mt-6 lg:mt-12 mb-6 lg:mb-12 flex-shrink-0 flex flex-col"
-              style={{ minWidth: 'auto' }}
-            >
-              <div className="bg-[#a07735] opacity-90 rounded-2xl h-full shadow-xl flex flex-col">
-              
-                <div className="p-4 md:p-6 pt-6 md:pt-8 flex flex-col items-center">
-                  <Avatar className="w-16 h-16 mb-6 bg-[#e5e7eb]">
-                    <AvatarFallback className="text-[#454545]">
-                      <User className="w-6 h-6" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <Button
-                    variant="outline"
-                    className="border-white text-white hover:bg-white hover:text-[#a07735] bg-transparent px-6 py-2 w-full"
-                    onClick={() => router.push('/signin')}
-                  >
-                    Login
-                  </Button>
-                </div>
-
-              
-                <div className="px-4 pb-6 mt-4">
-              
-                  <div className="relative mb-3 mx-5 w-full group">
-                    <div className={getCutoutClasses("/")}></div>
-                    <Link href="/" className={getMenuItemClasses("/")}>
-                      <Home className="w-4 h-4" />
-                      <span className="font-medium text-sm">Home</span>
-                    </Link>
-                  </div>
-
-                
-                  <div className="space-y-3">
-                    <div className="relative mb-3 mx-5 w-full group">
-                      <div className={getCutoutClasses("/dashboard/memberships")}></div>
-                      <Link href="/dashboard/memberships" className={getMenuItemClasses("/dashboard/memberships")}>
-                        <CreditCard className="w-4 h-4" />
-                        <span className="font-medium text-sm">Memberships</span>
-                      </Link>
-                    </div>
-                    <div className="relative mb-3 mx-5 w-full group">
-                      <div className={getCutoutClasses("/ServiceBookingPage")}></div>
-                      <Link href={`/ServiceBookingPage?openModal=true&guestId=${userData?.id}`} className={getMenuItemClasses("/ServiceBookingPage")}>
-                        <Calendar className="w-4 h-4" />
-                        <span className="font-medium text-sm">Bookings</span>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </aside> */}
-
             {/* Main Content */}
             <main className="flex-1 p-4 md:p-8 w-full">
               <div className="mb-6 md:mb-8 max-w-[1100px] mx-auto">
@@ -440,21 +400,25 @@ export default function Component() {
                 {memberships.map((membership) => (
                   <Card
                     key={membership.id}
-                    className="group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white/50 rounded-lg transition-all duration-300 hover:shadow-[0_35px_35px_-5px_rgba(0,0,0,0.25),0_15px_15px_-5px_rgba(0,0,0,0.15),0_0_0_1px_rgba(0,0,0,0.1)] hover:scale-[1.02]"
+                    className="group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white/50 rounded-lg card-transition hover:shadow-[0_35px_35px_-5px_rgba(0,0,0,0.25),0_15px_15px_-5px_rgba(0,0,0,0.15),0_0_0_1px_rgba(0,0,0,0.1)] hover:scale-[1.02]"
                   >
                     <CardContent className="p-0">
-                      <div className="relative aspect-[16/9] w-full min-w-0 min-h-0 overflow-hidden">
-                        {!imageLoadingStates[membership.id] && <ImageSkeleton />}
-                        <div className={`absolute inset-0 transition-transform duration-300 group-hover:scale-110 ${!imageLoadingStates[membership.id] ? 'opacity-0' : 'opacity-100'}`}>
+                      <div className="relative aspect-[16/9] w-full overflow-hidden">
+                        {/* Show skeleton only if image hasn't loaded yet */}
+                        {!loadedImages.has(membership.id) && (
+                          <div className="absolute inset-0 w-full h-full skeleton-optimized" />
+                        )}
+                        <div className={`absolute inset-0 image-container transition-opacity duration-300 ${loadedImages.has(membership.id) ? 'opacity-100' : 'opacity-0'}`}>
                           <Image
                             src={imageErrorStates[membership.id] ? fallbackImage : (membership.image || fallbackImage)}
                             alt={membership.name}
                             fill
-                            className="object-cover"
+                            className="object-cover transition-transform duration-300 group-hover:scale-110"
                             onLoad={() => handleImageLoad(membership.id)}
                             onError={() => handleImageError(membership.id)}
-                            loading="lazy"
+                            loading={membership.id <= 3 ? "eager" : "lazy"}
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            priority={membership.id <= 3}
                           />
                         </div>
                       </div>

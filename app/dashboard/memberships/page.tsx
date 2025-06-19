@@ -281,52 +281,24 @@ function MembershipDashboardContent() {
           return
         }
 
-        // Fetch guest memberships
-        const membershipResponse = await fetch(
-          `https://api.zenoti.com/v1/guests/${userData.id}/memberships?center_id=${userData.center_id}`,
-          {
-            headers: {
-              'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
-              'accept': 'application/json',
-              'content-type': 'application/json'
-            }
-          }
+        // Use the new API route instead of calling Zenoti directly
+        const response = await fetch(
+          `/api/memberships?userId=${userData.id}&centerId=${userData.center_id}&adminCenterId=${admincenterId}`
         )
 
-        if (!membershipResponse.ok) {
+        if (!response.ok) {
           throw new Error('Failed to fetch membership data')
         }
 
-        const membershipData: MembershipResponse = await membershipResponse.json()
-        if (membershipData.guest_memberships && membershipData.guest_memberships.length > 0) {
-          setMembershipData(membershipData.guest_memberships[0])
+        const data = await response.json()
+        
+        if (data.guestMemberships && data.guestMemberships.length > 0) {
+          setMembershipData(data.guestMemberships[0])
         } else {
           setError('No membership data found')
         }
 
-        // Fetch all memberships for the center
-        const detailsResponse = await fetch(
-          `https://api.zenoti.com/v1/centers/${admincenterId}/memberships?show_in_catalog=true`,
-          {
-            headers: {
-              'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
-              'accept': 'application/json',
-              'content-type': 'application/json'
-            }
-          }
-        )
-
-        if (!detailsResponse.ok) {
-          throw new Error('Failed to fetch membership details')
-        }
-
-        const detailsData = await detailsResponse.json()
-        const sortedMemberships = (detailsData.memberships || []).sort((a: MembershipDetail, b: MembershipDetail) => {
-          const priceA = a.price?.sales || 0;
-          const priceB = b.price?.sales || 0;
-          return priceA - priceB;
-        });
-        setMembershipDetails(sortedMemberships)
+        setMembershipDetails(data.availableMemberships)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred')
       } finally {

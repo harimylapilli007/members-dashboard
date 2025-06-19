@@ -119,9 +119,9 @@ export default function SignIn() {
     const cleaned = phone.replace(/\D/g, '');
     
     // If the number is 10 digits
-    if (cleaned.length === 10) {
-      return `+91${cleaned}`;
-    }
+    // if (cleaned.length === 10) {
+    //   return `+91${cleaned}`;
+    // }
     
     // If the number doesn't start with a country code, assume it's a US number
     if (!phone.startsWith('+')) {
@@ -193,17 +193,13 @@ export default function SignIn() {
       }
 
       // Check if user exists in Zenoti
-      const response = await fetch(`https://api.zenoti.com/v1/guests/search?phone=${phoneNumber}`, {
-        headers: {
-          'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
-          'accept': 'application/json'
-        }
-      });
+      const response = await fetch(`/api/zenoti?phone=${phoneNumber}`);
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error('Failed to check user existence');
+        console.error('API Error:', data);
+        throw new Error(data.details || data.error || 'Failed to check user existence');
       }
 
       // If no user found, redirect to signup

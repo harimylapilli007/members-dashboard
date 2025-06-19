@@ -85,3 +85,49 @@ body {
 aside {
   background: linear-gradient(180deg, #a07735 0%, #8a6930 100%);
 }
+
+/* Optimized skeleton loading animations */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+}
+
+/* Optimized image loading */
+.image-container {
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+.image-container img {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Reduce layout shift during loading */
+.skeleton-container {
+  contain: layout style paint;
+}
+
+/* Optimize transitions */
+.card-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+}
+
+/* Improve skeleton performance */
+.skeleton-optimized {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  contain: layout style paint;
+}

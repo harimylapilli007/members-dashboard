@@ -7,23 +7,7 @@ import { format } from 'date-fns'
 import { Calendar, Clock, MapPin, Tag } from 'lucide-react'
 import Image from 'next/image'
 import Header from "@/app/components/Header";
-import { fetchWithRetry, generateCacheKey } from '../utils/api';
-
-interface Booking {
-  id: string
-  service_name: string
-  center_name: string
-  city: string
-  outlet: string
-  date: string
-  time: string
-  status: 'confirmed' | 'cancelled' | 'completed'
-  price: number
-  duration: number
-  appointment_id: string
-  invoice_id: string
-  center_id: string
-}
+import { fetchUserBookings, cancelBooking, Booking } from '../utils/bookings-api';
 
 const cityOutlets: Record<string, Array<{ name: string, id: string }>> = {
   "Hyderabad": [
@@ -130,38 +114,18 @@ export default function BookingsPage() {
         throw new Error('Guest ID not found')
       }
 
-      const apiKey = process.env.NEXT_PUBLIC_ZENOTI_API_KEY
-
-      const data = await fetchWithRetry(
-        `https://api.zenoti.com/v1/guests/${guestId}/appointments`,
-        {
-          headers: {
-            'Authorization': apiKey ?? '',
-            'accept': 'application/json'
-          }
-        },
-        generateCacheKey('guest-appointments', { guestId })
-      )
+      // Use the new API utility function
+      const appointments = await fetchUserBookings(guestId)
       
-      console.log('API Response:', data) // Debug log
+      console.log('API Response:', appointments) // Debug log
 
-      if (!data) {
-        console.error('API returned null or undefined')
-        throw new Error('No data received from server')
-      }
-
-      if (!data.appointments) {
-        console.error('Invalid response structure:', data)
-        throw new Error('Appointments data is missing from server response')
-      }
-
-      if (!Array.isArray(data.appointments)) {
-        console.error('Appointments is not an array:', data.appointments)
+      if (!Array.isArray(appointments)) {
+        console.error('Appointments is not an array:', appointments)
         throw new Error('Appointments data is not in the expected format')
       }
 
       // Transform the data into our Booking interface
-      const transformedBookings = data.appointments.map((appointment: any) => {
+      const transformedBookings = appointments.map((appointment: any) => {
         if (!appointment || !appointment.appointment_services || !appointment.appointment_services[0]) {
           console.warn('Invalid appointment data:', appointment)
           return null
@@ -170,6 +134,17 @@ export default function BookingsPage() {
         const service = appointment.appointment_services[0]?.service
         const centerId = appointment.center?.id || appointment.center_id
         const { city, outlet } = getCityAndOutletFromCenterId(centerId)
+        
+        // Map appointment status to our Booking status type
+        const appointmentStatus = appointment.appointment_services[0]?.appointment_status
+        let status: 'confirmed' | 'cancelled' | 'completed'
+        if (appointmentStatus === 0) {
+          status = 'confirmed'
+        } else if (appointmentStatus === 1) {
+          status = 'completed'
+        } else {
+          status = 'cancelled'
+        }
         
         return {
           id: appointment.appointment_group_id,
@@ -181,13 +156,12 @@ export default function BookingsPage() {
           outlet,
           date: format(new Date(appointment.appointment_services[0]?.start_time), 'MMMM d, yyyy'),
           time: format(new Date(appointment.appointment_services[0]?.start_time), 'h:mm a'),
-          status: appointment.appointment_services[0]?.appointment_status === 0 ? 'confirmed' : 
-                 appointment.appointment_services[0]?.appointment_status === 1 ? 'completed' : 'cancelled',
+          status,
           price: appointment.price?.final || 0,
           duration: service?.duration || 0,
           center_id: centerId
         }
-      }).filter((booking: Booking | null): booking is Booking => booking !== null)
+      }).filter((booking): booking is Booking => booking !== null)
 
       if (transformedBookings.length === 0) {
         console.log('No valid bookings found in the response')
@@ -213,21 +187,8 @@ export default function BookingsPage() {
     setCancellingBookingId(bookingId)
 
     try {
-      await fetchWithRetry(
-        `https://api.zenoti.com/v1/appointments/${appointmentId}/cancel`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': process.env.NEXT_PUBLIC_ZENOTI_API_KEY ?? '',
-            'accept': 'application/json',
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            reason: 'Cancelled by customer'
-          })
-        },
-        generateCacheKey('cancel-appointment', { appointmentId })
-      )
+      // Use the new cancel API utility function
+      await cancelBooking(appointmentId, 'Cancelled by customer')
 
       // Refresh the bookings list
       await fetchBookings()
@@ -343,7 +304,7 @@ export default function BookingsPage() {
                           <Tag className="h-4 w-4 sm:h-5 sm:w-5 text-[#a07735] mr-2" />
                           <span className="text-sm sm:text-base font-semibold text-[#a07735]">₹{booking.price}</span>
                         </div>
-                        {booking.status === 'confirmed' && (
+                        {/* {booking.status === 'confirmed' && (
                           <button
                             onClick={() => handleCancelBooking(booking.id, booking.appointment_id)}
                             disabled={cancellingBookingId === booking.id}
@@ -353,7 +314,7 @@ export default function BookingsPage() {
                           >
                             {cancellingBookingId === booking.id ? 'Cancelling...' : 'Cancel'}
                           </button>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </div>

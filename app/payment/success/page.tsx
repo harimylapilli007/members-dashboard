@@ -45,22 +45,26 @@ function PaymentSuccessContent() {
         setPaymentDetails(responseData)
 
         // Fetch invoice details from Zenoti
-        const zenotiResponse = await fetch(`https://api.zenoti.com/v1/invoices/${responseData.txnid}?expand=InvoiceItems&expand=Transactions`, {
+        const zenotiResponse = await fetch(`/api/invoices/${responseData.txnid}`, {
           headers: {
-            'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
-            'accept': 'application/json'
+            'Content-Type': 'application/json'
           }
         });
 
         const zenotiData = await zenotiResponse.json();
+        
+        if (!zenotiData.success) {
+          throw new Error(zenotiData.error?.message || 'Failed to fetch invoice details');
+        }
+        
         // Set invoice status with Zenoti invoice number
         setInvoiceStatus({
           status: 'success',
           amount: responseData.amount,
           invoiceId: responseData.txnid,
           paymentId: responseData.mihpayid || `payu_${Date.now()}`,
-          invoiceNumber: zenotiData.invoice
-            ? `${zenotiData.invoice.invoice_number_prefix || ''}${zenotiData.invoice.invoice_number || ''}`
+          invoiceNumber: zenotiData.data.invoice
+            ? `${zenotiData.data.invoice.invoice_number_prefix || ''}${zenotiData.data.invoice.invoice_number || ''}`
             : undefined
         })
 

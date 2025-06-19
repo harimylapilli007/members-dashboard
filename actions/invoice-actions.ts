@@ -48,7 +48,7 @@ export async function getInvoiceDetails(invoice_id: string): Promise<InvoiceResp
       `https://api.zenoti.com/v1/invoices/${validatedData.invoice_id}?expand=InvoiceItems&expand=Transactions`,
       {
         headers: {
-          'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
+          'Authorization': `${process.env.ZENOTI_API_KEY}`,
           'accept': 'application/json',
           'content-type': 'application/json'
         }

@@ -22,7 +22,7 @@ async function makeCustomPayment(invoiceId: string, amount: string, customPaymen
     method: 'POST',
     headers: {
       accept: 'application/json',
-      Authorization: `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
+      Authorization: `${process.env.ZENOTI_API_KEY}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -58,7 +58,7 @@ async function closeInvoice(invoiceId: string, closedById: string) {
     method: 'POST',
     headers: {
       accept: 'application/json',
-      Authorization: `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
+      Authorization: `${process.env.ZENOTI_API_KEY}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({

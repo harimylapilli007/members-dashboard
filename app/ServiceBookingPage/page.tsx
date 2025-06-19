@@ -10,34 +10,39 @@ import { useAuth } from '@/lib/auth-context';
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import Header from "../components/Header";
-import { fetchWithRetry, generateCacheKey } from '../utils/api';
 import { DashboardLayout } from "@/components/dashboard-layout";
 
 interface Service {
   id: string;
   name: string;
-  description?: string;
-  price?: number;
-  duration?: number;
-  price_info?: {
-    price_without_tax: number;
-  };
+  final_price: number;
+  duration: number;
+  description: string;
 }
 
 interface CategorizedServices {
-  [key: string]: Array<{
-    id: string;
-    name: string;
-    final_price: number;
-    duration?: number;
-    description?: string
-  }>;
+  [key: string]: Service[];
 }
 
 interface CategoryImage {
   name: string;
   image: string;
   description: string;
+}
+
+interface Location {
+  city: string;
+  outlet: {
+    name: string;
+    id: string;
+  };
+  centerId: string;
+}
+
+interface LocationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSelectLocation: (city: string, outlet: string, centerId: string) => void;
 }
 
 const categoryImages: CategoryImage[] = [
@@ -73,84 +78,15 @@ const categoryImages: CategoryImage[] = [
   }
 ];
 
-// Helper function to add delay between API calls
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-// Helper function to fetch and categorize services
-async function fetchAndCategorizeServices(area: string): Promise<CategorizedServices> {
-  let allData: Service[] = [];
-  let currentPage = 1;
-  const pageSize = 100;
-  const apiKey = `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`
-  const headers = {
-    Authorization: apiKey,
-    accept: "application/json",
-  };
-
-  while (true) {
-    try {
-      const url = `https://api.zenoti.com/v1/Centers/${area}/services?page=${currentPage}&size=${pageSize}`;
-      const cacheKey = generateCacheKey(url, { area, page: currentPage });
-      
-      const data = await fetchWithRetry(url, { 
-        method: "GET", 
-        headers 
-      }, cacheKey);
-
-      if (!data.services || data.services.length === 0) break;
-      allData = [...allData, ...data.services];
-      if (data.services.length < pageSize) break;
-      currentPage++;
-    } catch (error) {
-      console.error('Error fetching services:', error);
-      throw error;
-    }
-  }
-
-  // Categorization logic
-  const categories: { [key: string]: string[] } = {
-    "Spa Therapies": ["massage", "reflexology", "champi", "aromatherapy", "balinese", "deep tissue", "swedish", "thai", "head massage", "foot massage", "neck and back", "neck and back massage", "cream massage", "dry massage", "junior massage"],
-    "Spa Facial": ["facial", "mask", "whitening", "detox", "charcoal", "peppermint", "organic", "rejuvenating", "cleansing", "24 carat gold facial", "anti aging facial", "deep cleansing facial", "gentleman's facial", "charcoal facial","bleach", "de-tan"],
-    "Saloon Services": ["hair", "styling", "color", "rebonding", "keratin", "straightening", "blow dry", "root touchup", "scalp treatment", "hair fall", "trimming", "shaving", "haircut","mehndi", "bridal mehndi", "mehndi per hand", "special occasion", "stylists","makeup", "saree drape", "beard styling", "mehendi", "bridal"],
-    "Hand & Feet": ["manicure", "pedicure", "nailcut", "polish", "filing", "spa manicure", "spa pedicure", "french manicure", "french pedicure"],
-    "Scrubs & Wraps": ["whitening wrap", "charcoal scrub", "charcoal wrap", "detox treatment", "scrub","detox", "detox treatment", "body detox","waxing", "threading", "bikini", "underarms", "full body", "arms", "legs"],
-    "Other Services": ["balm", "event", "hot rollers", "ironing", "tonging", "cleanser", "peel off"]
-  };
-  const categorizedServices: CategorizedServices = {};
-  for (const category in categories) categorizedServices[category] = [];
-  allData.forEach(service => {
-    const name = service.name.toLowerCase();
-    const description = service.description ? service.description.toLowerCase() : "";
-    let matchedCategory = "Other Services";
-    for (const category in categories) {
-      if (categories[category].some(keyword => name.includes(keyword) || description.includes(keyword))) {
-        matchedCategory = category;
-        break;
-      }
-    }
-    categorizedServices[matchedCategory].push({
-      id: service.id,
-      name: service.name,
-      final_price: service.price_info?.price_without_tax || service.price || 0,
-      duration: service.duration,
-      description: service.description
-    });
-  });
-  return categorizedServices;
-}
-
 const LoadingSpinner = () => (
-  <DashboardLayout membershipType="loading">
-    <div className="flex items-center justify-center py-12">
-      <Loader2 className="h-8 w-8 text-[#a07735] animate-spin" />
-      <span className="ml-2 text-gray-600">Loading services...</span>
-    </div>
-  </DashboardLayout>
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#a07735]"></div>
+  </div>
 );
 
 const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => void }) => (
-  <div className="text-center py-12">
-    <div className="text-red-500 mb-4">{message}</div>
+  <div className="flex flex-col items-center justify-center min-h-screen p-4">
+    <div className="text-red-600 mb-4">{message}</div>
     <button
       onClick={onRetry}
       className="px-4 py-2 bg-[#a07735] text-white rounded-lg hover:bg-[#8a6930] transition-colors"
@@ -167,10 +103,10 @@ const ServiceCard = memo(({
   onBookNow, 
   onReadMore 
 }: { 
-  service: any; 
+  service: Service; 
   categoryImage: string; 
-  onBookNow: (service: any) => void;
-  onReadMore: (service: any) => void;
+  onBookNow: (service: Service) => void;
+  onReadMore: (service: Service) => void;
 }) => (
   <div onClick={() => onBookNow(service)} className="bg-white/50 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 hover:border-[#a07735]/40 group">
     <div className="relative h-40 md:h-48 w-full">
@@ -260,7 +196,7 @@ const LocationSelector = memo(({
   selectedLocation, 
   onOpen 
 }: { 
-  selectedLocation: { city: string; outlet: { name: string } } | null;
+  selectedLocation: Location | null;
   onOpen: () => void;
 }) => (
   <div 
@@ -446,13 +382,14 @@ export default function ServiceBookingPage() {
   const [area, setArea] = useState("");
   const [bookingFor, setBookingFor] = useState("just me");
   const [services, setServices] = useState<CategorizedServices>({});
-  const [selectedCategory, setSelectedCategory] = useState("Spa Therapies");
+  const [selectedCategory, setSelectedCategory] = useState<string>("Spa Therapies");
   const [search, setSearch] = useState("");
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<{ city: string; outlet: {name: string, id: string} } | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedService, setSelectedService] = useState<{ name: string; description: string } | null>(null);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
 
   // Load saved state after component mounts
   useEffect(() => {
@@ -480,11 +417,8 @@ export default function ServiceBookingPage() {
   useEffect(() => {
     if (area) {
       localStorage.setItem('selectedArea', area);
-      setIsLoading(true);
-      fetchAndCategorizeServices(area)
-        .then(setServices)
-        .catch(setError)
-        .finally(() => setIsLoading(false));
+      setLoading(true);
+      fetchServices();
     }
   }, [area]);
 
@@ -512,10 +446,16 @@ export default function ServiceBookingPage() {
   }, [selectedLocation]);
 
   const handleSelectLocation = (city: string, outlet: string, centerId: string) => {
-    setSelectedLocation({ city, outlet: { name: outlet, id: centerId } });
+    setSelectedLocation({
+      city,
+      outlet: {
+        name: outlet,
+        id: outlet
+      },
+      centerId
+    });
     setArea(centerId);
     setIsLocationModalOpen(false);
-    router.replace('/ServiceBookingPage', { scroll: false });
   };
 
   const handleCloseModal = () => {
@@ -534,12 +474,18 @@ export default function ServiceBookingPage() {
 
   const categories = Object.keys(services).filter(cat => services[cat].length > 0);
 
-  const handleBookNow = useCallback((service: any) => {
-    router.push(`/service/${service.id}?id=${service.id}&name=${encodeURIComponent(service.name)}&price=${service.final_price}&duration=${service.duration}&description=${encodeURIComponent(service.description || '')}&location=${encodeURIComponent(selectedLocation?.outlet.name || '')}&outletId=${selectedLocation?.outlet.id || ''}&city=${encodeURIComponent(selectedLocation?.city || '')}`);
+  const handleBookNow = useCallback((service: Service) => {
+    router.push(`/service/${service.id}?id=${service.id}&name=${encodeURIComponent(service.name)}&price=${service.final_price}&duration=${service.duration}&description=${encodeURIComponent(service.description || '')}&location=${encodeURIComponent(selectedLocation?.outlet.name || '')}&outletId=${selectedLocation?.centerId || ''}&city=${encodeURIComponent(selectedLocation?.city || '')}`);
   }, [router, selectedLocation]);
 
-  const handleReadMore = useCallback((service: any) => {
-    setSelectedService({ name: service.name, description: service.description || '' });
+  const handleReadMore = useCallback((service: Service) => {
+    setSelectedService({
+      id: service.id || '',
+      name: service.name || '',
+      final_price: service.final_price || 0,
+      duration: service.duration || 0,
+      description: service.description || ''
+    });
   }, []);
 
   const handleCategoryClick = useCallback((category: string) => {
@@ -549,6 +495,71 @@ export default function ServiceBookingPage() {
   const handleLocationOpen = useCallback(() => {
     setIsLocationModalOpen(true);
   }, []);
+
+  const fetchServices = async () => {
+    if (!selectedLocation?.centerId) {
+      setError('Please select a location first');
+      setLoading(false);
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+    setServices({}); // Reset services state
+    
+    try {
+      const response = await fetch(`/api/services?centerId=${selectedLocation.centerId}`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch services');
+      }
+      
+      if (!data || !data.services || typeof data.services !== 'object') {
+        throw new Error('Invalid response format');
+      }
+
+      // Validate that we have at least one category with services
+      const hasServices = Object.values(data.services).some(
+        (categoryServices: any) => Array.isArray(categoryServices) && categoryServices.length > 0
+      );
+
+      if (!hasServices) {
+        throw new Error('No services available for this location');
+      }
+
+      setServices(data.services as CategorizedServices);
+      // Set the first category as selected if none is selected
+      if (!selectedCategory && Object.keys(data.services).length > 0) {
+        setSelectedCategory(Object.keys(data.services)[0]);
+      }
+    } catch (err) {
+      console.error('Error fetching services:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch services');
+      setServices({}); // Reset services on error
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedLocation?.centerId) {
+      fetchServices();
+    }
+  }, [selectedLocation?.centerId]);
+
+  const handleServiceClick = (service: Service) => {
+    if (!service || typeof service !== 'object') return;
+    
+    setSelectedService({
+      id: service.id || '',
+      name: service.name || '',
+      final_price: service.final_price || 0,
+      duration: service.duration || 0,
+      description: service.description || ''
+    });
+    setIsServiceModalOpen(true);
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -576,19 +587,19 @@ export default function ServiceBookingPage() {
       <div className="absolute bottom-20 right-0 w-[500px] h-[400px] bg-[#b2d5e4] opacity-30 rounded-full blur-xl -z-30" />
       <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 rounded-full blur-3xl -z-30" />
 
-      {isLoading ? (
+      {loading ? (
         <LoadingSpinner />
       ) : error ? (
-        <ErrorMessage message={error} onRetry={() => {
-          setError(null);
-          if (area) {
-            setIsLoading(true);
-            fetchAndCategorizeServices(area)
-              .then(setServices)
-              .catch(setError)
-              .finally(() => setIsLoading(false));
-          }
-        }} />
+        <ErrorMessage 
+          message={typeof error === 'string' ? error : 'An error occurred while fetching services'} 
+          onRetry={() => {
+            setError(null);
+            if (selectedLocation?.centerId) {
+              setLoading(true);
+              fetchServices();
+            }
+          }}
+        />
       ) : (
         <div className={`min-h-screen relative overflow-hidden ${isLocationModalOpen || selectedService ? "blur-sm" : ""}`}>
           <div className="relative z-10">

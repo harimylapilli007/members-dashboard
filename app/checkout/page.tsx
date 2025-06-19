@@ -100,21 +100,40 @@ export default function CheckoutPage() {
   // Add handleConfirmBooking function
   const handleConfirmBooking = async () => {
     // Step 1: Authentication Check
-    // Check if user is logged in by looking for auth token in cookies
     const authToken = document.cookie.split('; ').find(row => row.startsWith('auth-token='));
     if (!authToken) {
-      // If not logged in, store current URL and redirect to login page
       const currentUrl = window.location.href;
       localStorage.setItem('redirectAfterLogin', currentUrl);
       router.push('/spa-signin');
       return;
     }
 
-    // Step 2: Start Booking Process
+    // Step 2: Validate required data
+    if (!slotData?.date || !slotData?.time) {
+      toast({
+        title: "Missing booking data",
+        description: "Please ensure you have selected a date and time for your booking.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const centerId = searchParams.get('outletId');
+    const serviceId = searchParams.get('serviceId');
+
+    if (!centerId || !serviceId) {
+      toast({
+        title: "Missing service information",
+        description: "Please ensure you have selected a valid service.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Step 3: Start Booking Process
     setIsConfirming(true);
     try {
-      // Step 3: Get Guest Information
-      // Retrieve guest ID from either dashboard params or localStorage
+      // Step 4: Get Guest Information
       const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
       const guestId = dashboardParams.get('id') || localStorage.getItem('guestId') || userData?.id
 
@@ -122,87 +141,37 @@ export default function CheckoutPage() {
         throw new Error('Guest ID is missing')
       }
 
-      // Step 4: Create Initial Booking
-      // Prepare booking payload with service details
-      const payload = {
-        is_only_catalog_employees: true,
-        center_id: searchParams.get('outletId'),
-        date: slotData?.date,
-        guests: [{
-          id: guestId,
-          items: [{
-            item: {
-              id: searchParams.get('serviceId')
-            }
-          }]
-        }]
+      // Debug logging
+      console.log('Sending booking data:', {
+        centerId,
+        serviceId,
+        date: slotData.date,
+        time: slotData.time,
+        guestId
+      });
+
+      // Step 5: Call our API endpoint
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          centerId: centerId,
+          serviceId: serviceId,
+          date: slotData.date,
+          time: slotData.time,
+          guestId: guestId
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create booking');
       }
 
-      // Step 5: Make API Call to Create Booking
-      // Call Zenoti API to create the booking
-      const result = await fetchWithRetry(
-        'https://api.zenoti.com/v1/bookings?is_double_booking_enabled=true',
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': process.env.NEXT_PUBLIC_ZENOTI_API_KEY ?? '',
-            'accept': 'application/json',
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        },
-        generateCacheKey('create-booking', { 
-          serviceId: searchParams.get('serviceId'), 
-          date: slotData?.date, 
-          centerId: searchParams.get('outletId') 
-        })
-      )
-
-      // Step 6: Format Time for Slot Reservation
-      // Convert 12-hour time format to 24-hour format for API
-      const formattedTime = slotData?.time.replace(' AM', '').replace(' PM', '')
-      const [hours, minutes] = formattedTime?.split(':') || []
-      const isPM = slotData?.time.includes('PM')
-      const hour24 = isPM ? (parseInt(hours) === 12 ? 12 : parseInt(hours) + 12) : (parseInt(hours) === 12 ? 0 : parseInt(hours))
-      const time24 = `${hour24.toString().padStart(2, '0')}:${minutes}`
-      const slotTime = `${slotData?.date}T${time24}`
-
-      // Step 7: Reserve the Time Slot
-      // Call API to reserve the specific time slot
-      await fetchWithRetry(
-        `https://api.zenoti.com/v1/bookings/${result.id}/slots/reserve`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': process.env.NEXT_PUBLIC_ZENOTI_API_KEY ?? '',
-            'accept': 'application/json',
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            slot_time: slotTime,
-            create_invoice: false
-          })
-        },
-        generateCacheKey('reserve-slot', { bookingId: result.id, slotTime })
-      )
-
-      // Step 8: Confirm the Booking
-      // Final API call to confirm the booking
-      await fetchWithRetry(
-        `https://api.zenoti.com/v1/bookings/${result.id}/slots/confirm`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': process.env.NEXT_PUBLIC_ZENOTI_API_KEY ?? '',
-            'accept': 'application/json',
-            'content-type': 'application/json'
-          }
-        },
-        generateCacheKey('confirm-booking', { bookingId: result.id })
-      )
-
-      // Step 9: Handle Successful Booking
-      // Update state and show success message
+      // Step 6: Handle Successful Booking
       setIsBookingConfirmed(true);
       toast({
         title: "Booking Successful!",
@@ -212,17 +181,15 @@ export default function CheckoutPage() {
       // Redirect to bookings page
       router.push('/view-bookings');
     } catch (error) {
-      // Step 10: Error Handling
-      // Log error and show error message to user
+      // Step 7: Error Handling
       console.error('Booking confirmation error:', error);
       toast({
         title: "Failed to confirm booking.",
-        description: "Please try again.",
+        description: error instanceof Error ? error.message : "Please try again.",
         variant: "destructive",
       })
     } finally {
-      // Step 11: Cleanup
-      // Reset confirming state regardless of success/failure
+      // Step 8: Cleanup
       setIsConfirming(false);
     }
   };

@@ -199,28 +199,37 @@ export default function ServiceDetails() {
         
         try {
           // First fetch the service details for the selected location
-          const serviceResponse = await fetchWithRetry(
-            `https://api.zenoti.com/v1/centers/${selectedLocation.outlet.id}/services/${serviceId}`,
-            {
-              headers: {
-                'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
-                'accept': 'application/json'
-              }
-            },
-            generateCacheKey('service-details', { serviceId, centerId: selectedLocation.outlet.id })
-          )
+          const serviceResponse = await fetch(`/api/services/${serviceId}?centerId=${selectedLocation.outlet.id}`)
+          
+          if (!serviceResponse.ok) {
+            const errorData = await serviceResponse.json()
+            throw new Error(errorData.error || 'Failed to fetch service details')
+          }
 
-          // Update service details if they exist
-          if (serviceResponse) {
+          const serviceData = await serviceResponse.json()
+          console.log('Service details:', serviceData)
+
+          if (serviceData) {
             // Update the service details in the URL without refreshing the page
             const params = new URLSearchParams(window.location.search)
-            params.set('price', serviceResponse.price?.toString() || servicePrice.toString())
-            params.set('duration', serviceResponse.duration?.toString() || duration)
-            params.set('description', serviceResponse.description || description)
+            params.set('price', serviceData.price?.toString() || servicePrice.toString())
+            params.set('duration', serviceData.duration?.toString() || duration)
+            params.set('description', serviceData.description || description)
             window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`)
           }
 
           await createBooking()
+        } catch (error) {
+          console.error('Error fetching service details:', error)
+          if (isMounted.current) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to fetch service details'
+            setError(errorMessage)
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: errorMessage,
+            })
+          }
         } finally {
           requestInProgress.current = false
         }
@@ -264,39 +273,33 @@ export default function ServiceDetails() {
       console.log('Selected location:', selectedLocation)
       console.log('Service ID:', serviceId)
 
-      const payload = {
-        is_only_catalog_employees: true,
-        center_id: selectedLocation.outlet.id,
-        date: formattedDate,
-        guests: [{
-          id: guestId,
-          items: [{
-            item: {
-              id: serviceId
-            }
-          }]
-        }]
-      }
-
-      console.log('Booking payload:', payload)
-
-      const result = await fetchWithRetry(
-        'https://api.zenoti.com/v1/bookings?is_double_booking_enabled=true',
-        {
-          method: 'POST',
-          headers: {
-            'Authorization':`${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
-            'accept': 'application/json',
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify(payload)
+      const response = await fetch('/api/bookings/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        generateCacheKey('create-booking', { serviceId, date: formattedDate, centerId: selectedLocation.outlet.id })
-      )
+        body: JSON.stringify({
+          centerId: selectedLocation.outlet.id,
+          date: formattedDate,
+          serviceId: serviceId,
+          guestId: guestId
+        })
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to create booking')
+      }
 
       console.log('Booking created:', result)
       
       if (isMounted.current) {
+        // Check if the result has the expected structure
+        if (!result || !result.id) {
+          throw new Error('Invalid booking response: missing booking ID')
+        }
+        
         setBookingId(result.id)
         await fetchAvailableSlots(result.id)
       }
@@ -332,16 +335,14 @@ export default function ServiceDetails() {
     if (!isMounted.current) return;
 
     try {
-      const result = await fetchWithRetry(
-        `https://api.zenoti.com/v1/bookings/${bookingId}/slots?check_future_day_availability=false`,
-        {
-          headers: {
-            'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
-            'accept': 'application/json'
-          }
-        },
-        generateCacheKey('available-slots', { bookingId })
-      );
+      console.log('Fetching slots for booking:', bookingId)
+      
+      const response = await fetch(`/api/bookings/${bookingId}/slots`)
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to fetch available slots')
+      }
 
       console.log('Original slots:', result);
       const convertedSlots = convertToDateSlots(result);
@@ -400,17 +401,14 @@ export default function ServiceDetails() {
       const slotTime = `${formattedDate}T${formattedTime}`;
       
       await fetchWithRetry(
-        `https://api.zenoti.com/v1/bookings/${bookingId}/slots/reserve`,
+        `/api/bookings/${bookingId}/reserve-slot`,
         {
           method: 'POST',
           headers: {
-            'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
-            'accept': 'application/json',
-            'content-type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            slot_time: slotTime,
-            create_invoice: false
+            slotTime: slotTime
           })
         },
         generateCacheKey('reserve-slot', { bookingId, slotTime })
@@ -458,13 +456,11 @@ export default function ServiceDetails() {
 
     try {
       await fetchWithRetry(
-        `https://api.zenoti.com/v1/bookings/${bookingId}/slots/confirm`,
+        `/api/bookings/${bookingId}/confirm`,
         {
           method: 'POST',
           headers: {
-            'Authorization': `${process.env.NEXT_PUBLIC_ZENOTI_API_KEY}`,
-            'accept': 'application/json',
-            'content-type': 'application/json'
+            'Content-Type': 'application/json',
           }
         },
         generateCacheKey('confirm-booking', { bookingId })
