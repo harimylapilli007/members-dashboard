@@ -92,26 +92,65 @@ const getCityAndOutletFromCenterId = (centerId: string): { city: string, outlet:
 
 export default function BookingsPage() {
   const router = useRouter()
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const [bookings, setBookings] = useState<Booking[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [cancellingBookingId, setCancellingBookingId] = useState<string | null>(null)
+  const [retryCount, setRetryCount] = useState(0)
 
   const fetchBookings = async () => {
     try {
       // Get userData from localStorage each time we fetch
       const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData') || '{}') : {}
       
-      // Get guest ID from localStorage
-      const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
-      const guestId = dashboardParams.get('id') || localStorage.getItem('guestId') || userData?.id
+      // Get guest ID from multiple sources with better error handling
+      let guestId: string | null = null
+      let dashboardParams: string | null = null
+      
+      // First preference: userData.id from localStorage
+      if (userData?.id) {
+        guestId = userData.id
+      }
+      
+      // Second preference: dashboardParams
+      if (!guestId) {
+        dashboardParams = localStorage.getItem('dashboardParams')
+        if (dashboardParams) {
+          try {
+            const params = new URLSearchParams(dashboardParams)
+            guestId = params.get('id')
+          } catch (error) {
+            console.warn('Error parsing dashboardParams:', error)
+          }
+        }
+      }
+      
+      // Third preference: localStorage guestId
+      if (!guestId) {
+        guestId = localStorage.getItem('guestId')
+      }
+      
+      // Fourth preference: user.uid from auth context
+      if (!guestId && user?.uid) {
+        guestId = user.uid
+      }
 
       console.log('UserData:', userData) // Debug log
+      console.log('User from auth:', user) // Debug log
       console.log('Guest ID:', guestId) // Debug log
+      console.log('Dashboard params:', dashboardParams) // Debug log
 
       if (!guestId) {
-        throw new Error('Guest ID not found')
+        // Provide more specific error message
+        const errorMessage = 'Guest ID not found. Please ensure you are logged in and try refreshing the page.'
+        console.error('Guest ID not found. Available data:', {
+          userData,
+          user,
+          dashboardParams,
+          localStorageGuestId: localStorage.getItem('guestId')
+        })
+        throw new Error(errorMessage)
       }
 
       // Use the new API utility function
@@ -168,6 +207,7 @@ export default function BookingsPage() {
       }
 
       setBookings(transformedBookings)
+      setError(null) // Clear any previous errors
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch bookings')
     } finally {
@@ -175,9 +215,34 @@ export default function BookingsPage() {
     }
   }
 
-  useEffect(() => {
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1)
+    setError(null)
+    setIsLoading(true)
     fetchBookings()
-  }, [])
+  }
+
+  const handleLoginRedirect = () => {
+    // Clear any stored data and redirect to login
+    localStorage.removeItem('userData')
+    localStorage.removeItem('guestId')
+    localStorage.removeItem('dashboardParams')
+    router.push('/signin')
+  }
+
+  useEffect(() => {
+    if (!authLoading) {
+      fetchBookings()
+    }
+  }, [authLoading])
+
+  // Retry fetching bookings when user becomes available from auth context
+  useEffect(() => {
+    if (user && bookings.length === 0 && !isLoading && !error && !authLoading) {
+      console.log('User became available, retrying fetch...')
+      fetchBookings()
+    }
+  }, [user, bookings.length, isLoading, error, authLoading])
 
   const handleCancelBooking = async (bookingId: string, appointmentId: string) => {
     if (!confirm('Are you sure you want to cancel this booking?')) {
@@ -245,20 +310,30 @@ export default function BookingsPage() {
             </button>
           </div>
 
-          {isLoading ? (
+          {isLoading || authLoading ? (
             <div className="text-center py-8 sm:py-12">
               <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[#a07735] mx-auto"></div>
-              <p className="mt-4 text-sm sm:text-base text-gray-500">Loading your bookings...</p>
+              <p className="mt-4 text-sm sm:text-base text-gray-500">
+                {authLoading ? 'Loading user information...' : 'Loading your bookings...'}
+              </p>
             </div>
           ) : error ? (
             <div className="text-center py-8 sm:py-12">
               <div className="text-sm sm:text-base text-red-500 mb-4">{error}</div>
-              <button
-                onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-[#a07735] font-marcellus text-white rounded-md hover:bg-[#8a6930] transition-colors"
-              >
-                Try Again
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={handleRetry}
+                  className="px-4 py-2 bg-[#a07735] font-marcellus text-white rounded-md hover:bg-[#8a6930] transition-colors"
+                >
+                  Try Again
+                </button>
+                <button
+                  onClick={handleLoginRedirect}
+                  className="px-4 py-2 bg-gray-600 font-marcellus text-white rounded-md hover:bg-gray-700 transition-colors"
+                >
+                  Login
+                </button>
+              </div>
             </div>
           ) : bookings.length === 0 ? (
             <div className="text-center py-8 sm:py-12">
@@ -326,4 +401,4 @@ export default function BookingsPage() {
       </div>
     </div>
   )
-} 
+}
