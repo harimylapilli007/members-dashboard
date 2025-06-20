@@ -71,10 +71,14 @@ export function MembershipModal({ isOpen, onClose, membership, onConfirm, loadin
         <div className="p-3.5 sm:p-6 bg-white">
           <div className="relative h-32 sm:h-48 mb-3.5 sm:mb-6 rounded-lg overflow-hidden">
             <Image
-              src={`/membership/${membership.price?.sales || 'default'}.png`}
+              src={`/membership-optimized/${membership.price?.sales || 'default'}.webp`}
               alt="Ode Spa Membership"
               fill
               className="object-cover"
+              sizes="(max-width: 640px) 100vw, 500px"
+              quality={85}
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
             />
           </div>
           <div className="space-y-2.5 sm:space-y-4">

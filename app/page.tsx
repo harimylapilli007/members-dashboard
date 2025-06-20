@@ -10,65 +10,7 @@ import { usePathname, useRouter } from "next/navigation"
 import Header from "./components/Header"
 import { useState, useEffect } from "react"
 import { formatPrice } from "./utils/formatPrice"
-import { Skeleton } from "@/components/ui/skeleton"
-
-// Optimized skeleton component - simplified and faster
-const MembershipCardSkeleton = () => {
-  return (
-    <Card className="group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white/50 rounded-lg skeleton-container">
-      <CardContent className="p-0">
-        <div className="relative aspect-[16/9] w-full overflow-hidden">
-          <div className="absolute inset-0 w-full h-full shimmer-effect enhanced" />
-        </div>
-        <div className="p-4 space-y-3">
-          <div className="h-6 w-3/4 shimmer-effect rounded" />
-          <div className="flex items-center justify-between">
-            <div className="h-5 w-1/3 shimmer-effect rounded" />
-            <div className="h-5 w-1/4 shimmer-effect rounded" />
-          </div>
-          <div className="h-5 w-2/3 shimmer-effect rounded" />
-          <div className="h-10 w-full shimmer-effect enhanced rounded" />
-          <div className="h-10 w-full shimmer-effect enhanced rounded" />
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
-// Add this new component for image skeleton
-const ImageSkeleton = () => {
-  return (
-    <div className="absolute inset-0 shimmer-effect enhanced">
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 opacity-50" />
-    </div>
-  )
-}
-
-const CardSkeleton = () => {
-  return (
-    <Card className="group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white/50 rounded-lg">
-      <CardContent className="p-0">
-        <div className="relative aspect-[16/9] w-full min-w-0 min-h-0 overflow-hidden">
-          <ImageSkeleton />
-        </div>
-        <div className="p-4">
-          <div className="h-6 w-3/4 shimmer-effect mb-2 rounded" />
-          <div className="flex items-center justify-between mb-2">
-            <div className="h-5 w-1/3 shimmer-effect rounded" />
-            <div className="h-5 w-1/4 shimmer-effect rounded" />
-          </div>
-          <div className="h-5 w-2/3 shimmer-effect mt-4 rounded" />
-          <div className="flex items-center justify-center text-center mx-auto mt-4">
-            <div className="h-10 w-full shimmer-effect enhanced rounded" />
-          </div>
-          <div className="flex justify-center mt-4">
-            <div className="h-10 w-full shimmer-effect enhanced rounded" />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
+import { LoadingGrid, EnhancedMembershipCardSkeleton } from "@/components/ui/skeleton"
 
 export default function Component() {
   const pathname = usePathname()
@@ -126,7 +68,7 @@ export default function Component() {
     {
       id: 1,
       price: formatPrice(15000),
-      image: "/membership/15000.png",
+      image: "/membership-optimized/15000.webp",
       name:"Bronze Membership",
       offer: "35% off on all weekdays",
       offer2: "20% off on weekends"
@@ -134,35 +76,35 @@ export default function Component() {
     {
       id: 2,
       price: formatPrice(25000),
-      image: "/membership/25000.png",
+      image: "/membership-optimized/25000.webp",
       name:"Silver Membership",
       offer: "50% off on all services"
     },
     {
       id: 3,
       price: formatPrice(35000),
-      image: "/membership/35000.png",
+      image: "/membership-optimized/35000.webp",
       name:"Gold Membership",
       offer: "50% off on all services"
     },
     {
       id: 4,
       price: formatPrice(50000),
-      image: "/membership/50000.png",
+      image: "/membership-optimized/50000.webp",
       name:"Platinum Membership",
       offer: "50% off on all services"
     },
     {
       id: 5,
       price: formatPrice(65000),
-      image: "/membership/65000.png",
+      image: "/membership-optimized/65000.webp",
       name:"Diamond Membership",
       offer: "50% off on all services"
     },
     {
       id: 6,
       price: formatPrice(100000),
-      image: "/membership/100000.png",
+      image: "/membership-optimized/100000.webp",
       name:"Ode Signature Elite",
       offer: "50% off on all services"
     },
@@ -353,10 +295,8 @@ export default function Component() {
         />
       )}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 min-w-0 items-stretch max-w-[1100px] mx-auto p-4 md:p-8">
-          {[...Array(6)].map((_, index) => (
-            <MembershipCardSkeleton key={index} />
-          ))}
+        <div className="p-4 md:p-8">
+          <LoadingGrid count={6} />
         </div>
       ) : (
         <>
@@ -390,23 +330,23 @@ export default function Component() {
             {/* Main Content */}
             <main className="flex-1 p-4 md:p-8 w-full">
               <div className="mb-6 md:mb-8 max-w-[1100px] mx-auto">
-                <h2 className="text-[#454545] mb-4 font-inter">{"Here's everything you need to live the Ode Life, seamlessly."}</h2>
+                {/* <h2 className="text-[#454545] mb-4 font-inter">{"Here's everything you need to live the Ode Life, seamlessly."}</h2> */}
 
                 <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Available Memberships</h1>
                 <h2 className="text-[#454545] font-inter">Explore our membership options</h2>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 min-w-0 items-stretch max-w-[1100px] mx-auto">
-                {memberships.map((membership) => (
+                {memberships.map((membership, index) => (
                   <Card
                     key={membership.id}
-                    className="group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white/50 rounded-lg card-transition hover:shadow-[0_35px_35px_-5px_rgba(0,0,0,0.25),0_15px_15px_-5px_rgba(0,0,0,0.15),0_0_0_1px_rgba(0,0,0,0.1)] hover:scale-[1.02]"
+                    className={`group overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border-0 bg-white/50 rounded-lg card-transition hover:shadow-[0_35px_35px_-5px_rgba(0,0,0,0.25),0_15px_15px_-5px_rgba(0,0,0,0.15),0_0_0_1px_rgba(0,0,0,0.1)] hover:scale-[1.02] stagger-animation`}
                   >
                     <CardContent className="p-0">
                       <div className="relative aspect-[16/9] w-full overflow-hidden">
                         {/* Show skeleton only if image hasn't loaded yet */}
                         {!loadedImages.has(membership.id) && (
-                          <div className="absolute inset-0 w-full h-full shimmer-effect enhanced">
+                          <div className="absolute inset-0 w-full h-full shimmer-card">
                             <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 opacity-40" />
                           </div>
                         )}
@@ -419,8 +359,11 @@ export default function Component() {
                             onLoad={() => handleImageLoad(membership.id)}
                             onError={() => handleImageError(membership.id)}
                             loading={membership.id <= 3 ? "eager" : "lazy"}
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                             priority={membership.id <= 3}
+                            quality={85}
+                            placeholder="blur"
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                           />
                         </div>
                       </div>

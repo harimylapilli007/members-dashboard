@@ -99,14 +99,23 @@ aside {
 @keyframes shimmer-wave {
   0% {
     background-position: -200% 0;
-    opacity: 0.8;
+    opacity: 0.7;
   }
   50% {
     opacity: 1;
   }
   100% {
     background-position: 200% 0;
-    opacity: 0.8;
+    opacity: 0.7;
+  }
+}
+
+@keyframes shimmer-pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
@@ -120,17 +129,18 @@ aside {
 .shimmer-effect {
   background: linear-gradient(
     90deg,
-    #f0f0f0 0%,
-    #e0e0e0 20%,
+    #f5f5f5 0%,
+    #e8e8e8 20%,
     #f8f8f8 40%,
-    #e8e8e8 60%,
+    #e5e5e5 60%,
     #f0f0f0 80%,
-    #e0e0e0 100%
+    #e8e8e8 100%
   );
   background-size: 200% 100%;
   animation: shimmer-wave 1.8s ease-in-out infinite;
   position: relative;
   overflow: hidden;
+  border-radius: 4px;
 }
 
 .shimmer-effect::before {
@@ -143,7 +153,7 @@ aside {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.6) 50%,
     transparent 100%
   );
   animation: shimmer-wave 2.2s ease-in-out infinite;
@@ -154,12 +164,12 @@ aside {
 .shimmer-effect.enhanced {
   background: linear-gradient(
     90deg,
-    #e5e5e5 0%,
-    #d5d5d5 20%,
+    #e8e8e8 0%,
+    #d8d8d8 20%,
     #f0f0f0 40%,
-    #e8e8e8 60%,
-    #d8d8d8 80%,
-    #e5e5e5 100%
+    #e0e0e0 60%,
+    #d0d0d0 80%,
+    #e8e8e8 100%
   );
   background-size: 200% 100%;
   animation: shimmer-wave 2s ease-in-out infinite;
@@ -169,11 +179,78 @@ aside {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.9) 50%,
+    rgba(255, 255, 255, 0.8) 50%,
     transparent 100%
   );
   animation: shimmer-wave 2.5s ease-in-out infinite;
   animation-delay: 0.5s;
+}
+
+/* Card-specific shimmer effect */
+.shimmer-card {
+  background: linear-gradient(
+    90deg,
+    #f8f8f8 0%,
+    #e8e8e8 25%,
+    #f0f0f0 50%,
+    #e0e0e0 75%,
+    #f8f8f8 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-wave 2.2s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    transparent 100%
+  );
+  animation: shimmer-wave 2.8s ease-in-out infinite;
+  animation-delay: 0.7s;
+}
+
+/* Text shimmer effect */
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #e0e0e0 0%,
+    #d0d0d0 30%,
+    #e8e8e8 60%,
+    #d8d8d8 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-wave 1.5s ease-in-out infinite;
+  border-radius: 2px;
+}
+
+/* Button shimmer effect */
+.shimmer-button {
+  background: linear-gradient(
+    90deg,
+    #e5e5e5 0%,
+    #d5d5d5 25%,
+    #f0f0f0 50%,
+    #e0e0e0 75%,
+    #e5e5e5 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-wave 2s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* Pulse effect for loading states */
+.shimmer-pulse {
+  animation: shimmer-pulse 1.5s ease-in-out infinite;
 }
 
 /* Optimized image loading */
@@ -205,3 +282,65 @@ aside {
   animation: shimmer 1.5s ease-in-out infinite;
   contain: layout style paint;
 }
+
+/* Enhanced skeleton loading for membership cards */
+.membership-skeleton {
+  background: linear-gradient(
+    90deg,
+    #f8f8f8 0%,
+    #e8e8e8 20%,
+    #f0f0f0 40%,
+    #e0e0e0 60%,
+    #f8f8f8 80%,
+    #e8e8e8 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-wave 2.5s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.membership-skeleton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    transparent 100%
+  );
+  animation: shimmer-wave 3s ease-in-out infinite;
+  animation-delay: 0.8s;
+}
+
+/* Smooth fade-in animation for loaded content */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Staggered animation for grid items */
+.stagger-animation {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.stagger-animation:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animation:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animation:nth-child(3) { animation-delay: 0.3s; }
+.stagger-animation:nth-child(4) { animation-delay: 0.4s; }
+.stagger-animation:nth-child(5) { animation-delay: 0.5s; }
+.stagger-animation:nth-child(6) { animation-delay: 0.6s; }
