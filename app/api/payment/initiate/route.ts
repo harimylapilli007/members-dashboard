@@ -81,8 +81,8 @@ export async function POST(request: NextRequest) {
       email: body.customer_email,
       phone: body.customer_phone,
       salt: payuSalt,
-      surl: `${window.location.protocol}//${window.location.host}/api/payment/success`,
-      furl: `${window.location.protocol}//${window.location.host}/api/payment/failure`,
+      surl: `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/success`,
+      furl: `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/failure`,
     }
 
     // Generate hash
