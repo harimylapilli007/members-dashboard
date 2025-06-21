@@ -263,18 +263,18 @@ function PaymentFailureContent() {
                 {errorDetails.transactionId && (
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground font-['Marcellus'] min-w-[120px]">Transaction ID</span>
-                    <span className="font-mono text-base">{errorDetails.transactionId}</span>
+                    <span className="font-mono text-sm">{errorDetails.transactionId}</span>
                   </div>
                 )}
                 {errorDetails.code && (
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground font-['Marcellus']">Error Code</span>
-                    <span className="text-base font-['Marcellus']">{errorDetails.code}</span>
+                    <span className="text-sm font-['Marcellus']">{errorDetails.code}</span>
                   </div>
                 )}
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground font-['Marcellus'] min-w-[120px]">Error Message</span>
-                  <span className="text-base font-['Marcellus'] text-red-600">{errorDetails.message}</span>
+                  <span className="text-sm font-['Marcellus'] text-red-600">{errorDetails.message}</span>
                 </div>
               </div>
             </div>
