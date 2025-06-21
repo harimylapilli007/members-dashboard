@@ -12,6 +12,13 @@ import { useState, useEffect } from "react"
 import { formatPrice } from "./utils/formatPrice"
 import { LoadingGrid, EnhancedMembershipCardSkeleton } from "@/components/ui/skeleton"
 
+// Extend Window interface for GTM dataLayer
+declare global {
+  interface Window {
+    dataLayer: any[]
+  }
+}
+
 export default function Component() {
   const pathname = usePathname()
   const router = useRouter()
@@ -126,6 +133,36 @@ export default function Component() {
     setLoadedImages(prev => new Set(prev).add(id))
   }
 
+  // GTM tracking function for View Details button
+  const trackViewDetails = (membership: any) => {
+    if (typeof window !== 'undefined' && window.dataLayer) {
+      window.dataLayer.push({
+        event: 'membership_view_details',
+        membership_id: membership.id,
+        membership_name: membership.name,
+        membership_price: membership.price,
+        event_category: 'Membership',
+        event_action: 'View Details',
+        event_label: membership.name
+      })
+    }
+  }
+
+  // GTM tracking function for Buy Membership button
+  const trackBuyMembership = (membership: any) => {
+    if (typeof window !== 'undefined' && window.dataLayer) {
+      window.dataLayer.push({
+        event: 'membership_purchase_click',
+        membership_id: membership.id,
+        membership_name: membership.name,
+        membership_price: membership.price,
+        event_category: 'Membership',
+        event_action: 'Purchase Click',
+        event_label: membership.name
+      })
+    }
+  }
+
   // Preload critical images
   useEffect(() => {
     const preloadImages = () => {
@@ -174,7 +211,10 @@ export default function Component() {
               <div className="w-full sm:w-[140px] flex justify-center sm:justify-end">
                 <Button 
                   className="relative  sm:w-[300px] h-[32px] sm:h-[36px] p-4 sm:p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-base sm:text-[20px] leading-[17px] text-center text-[#98564D]"
-                  onClick={() => router.push('/signin')}
+                  onClick={() => {
+                    trackBuyMembership(membership)
+                    router.push('/signin')
+                  }}
                 >
                   Buy Membership
                 </Button>
@@ -393,7 +433,10 @@ export default function Component() {
                           <Button
                             variant="outline"
                             className="text-[#a07735] border-[#a07735] font-marcellus hover:text-[#a07735] flex bg-white/20 items-center text-[18px] w-full"
-                            onClick={() => setSelectedMembership(membership)}
+                            onClick={() => {
+                              setSelectedMembership(membership)
+                              trackViewDetails(membership)
+                            }}
                           >
                             View Details
                             <ChevronDown className="w-4 h-4 ml-1" />
@@ -402,7 +445,10 @@ export default function Component() {
                         <div className="flex justify-center mt-4">
                           <Button 
                             className="relative w-full h-[36px] p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-[20px] leading-[17px] text-center text-[#98564D]"
-                            onClick={() => router.push('/signin')}
+                            onClick={() => {
+                              trackBuyMembership(membership)
+                              router.push('/signin')
+                            }}
                           >
                             Buy Membership
                           </Button>
