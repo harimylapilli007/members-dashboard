@@ -3,6 +3,8 @@ import "@/styles/globals.css"
 import type { Metadata, Viewport } from "next"
 import { AuthProvider } from "@/lib/auth-context"
 import { Toaster } from "@/components/ui/toaster"
+import MobileBottomNav from "@/components/mobile-bottom-nav"
+import MobileLayoutWrapper from "@/components/mobile-layout-wrapper"
 import Script from "next/script"
 
 const GTM_ID = 'GTM-PD4SGRDF'
@@ -58,7 +60,10 @@ export default function RootLayout({
       </head>
       <body>
         <AuthProvider>
-          {children}
+          <MobileLayoutWrapper>
+            {children}
+          </MobileLayoutWrapper>
+          <MobileBottomNav />
           <Toaster />
         </AuthProvider>
       </body>

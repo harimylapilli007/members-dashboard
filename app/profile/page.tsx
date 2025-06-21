@@ -277,7 +277,7 @@ export default function ProfilePage() {
             </Card>
 
             {/* Notifications */}
-            <Card className="rounded-2xl border border-gray-300 bg-white/50 backdrop-blur-sm shadow-lg">
+            {/* <Card className="rounded-2xl border border-gray-300 bg-white/50 backdrop-blur-sm shadow-lg">
               <CardHeader>
                 <CardTitle className="text-xl font-marcellus text-[#232323] flex items-center">
                   <Bell className="w-5 h-5 mr-2 text-[#a07735]" />
@@ -308,7 +308,7 @@ export default function ProfilePage() {
                   <Switch />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             {/* Security */}
             {/* <Card className="rounded-2xl border border-gray-300 bg-white/50 backdrop-blur-sm shadow-lg">

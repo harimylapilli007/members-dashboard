@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Home, Bell, User, LogOut, ShoppingBag, ShoppingCart, Menu, X } from "lucide-react"
+import { Home, Bell, User, LogOut, ShoppingBag, ShoppingCart, Menu, X, Calendar, Heart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
@@ -211,7 +211,7 @@ export default function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <span className="flex items-center text-md">
-                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  <Calendar className="w-5 h-5 mr-2" />
                   BOOKING
                 </span>
               </Link>
@@ -228,7 +228,7 @@ export default function Header() {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <span className="flex items-center text-md">
-                    <Bell className="w-5 h-5 mr-2" />
+                    <Heart className="w-5 h-5 mr-2" />
                     VIEW BOOKINGS
                   </span>
                 </Link>
