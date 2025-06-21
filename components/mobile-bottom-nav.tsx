@@ -32,11 +32,7 @@ export default function MobileBottomNav() {
   }, [])
 
   const mainNavigationItems = [
-    // {
-    //   name: "Home",
-    //   href: "/",
-    //   icon: Home,
-    // },
+  
     {
       name: "Membership",
       href: "/dashboard/memberships",
@@ -44,23 +40,26 @@ export default function MobileBottomNav() {
     },
     {
       name: "Booking",
-      href: localStorage.getItem('selectedArea') ? `/ServiceBookingPage?guestId=${userData?.id}` : `/ServiceBookingPage?openModal=true&guestId=${userData?.id}`,
+      href: localStorage.getItem('selectedArea') ? `/ServiceBookingPage?guestId=${user?.uid || userData?.id}` : `/ServiceBookingPage?openModal=true&guestId=${user?.uid || userData?.id}`,
       icon: Calendar,
     },
-    {
-      name: "View Bookings",
-      href: "/view-bookings",
-      icon: Heart,
-    },
-    {
-      name: "Profile",
-      href: "/profile",
-      icon: User,
-    },
+    // Only show these items when user is logged in
+    ...(user ? [
+      {
+        name: "View Bookings",
+        href: "/view-bookings",
+        icon: Heart,
+      },
+      {
+        name: "Profile",
+        href: "/profile",
+        icon: User,
+      },
+    ] : []),
   ]
 
-  // Don't show navigation if not visible, not logged in, or no user data
-  if (!isVisible || !user || !userData) {
+  // Don't show navigation if not visible or not logged in
+  if (!isVisible) {
     return null
   }
 
