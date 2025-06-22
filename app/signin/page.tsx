@@ -120,7 +120,7 @@ export default function SignIn() {
     
     // If the number is 10 digits
     if (cleaned.length === 10) {
-      return `+91${cleaned}`;
+      return `+91${cleaned}`; // Default to India (+91)
     }
     
     // If the number doesn't start with a country code, assume it's a US number
