@@ -35,7 +35,7 @@ export default function MobileBottomNav() {
   
     {
       name: "Membership",
-      href: "/dashboard/memberships",
+      href:user ? "/dashboard/memberships" : "/",
       icon: ShoppingBag,
     },
     {

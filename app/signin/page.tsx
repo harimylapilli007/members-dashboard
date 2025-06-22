@@ -394,10 +394,19 @@ export default function SignIn() {
           description: "Successfully verified!",
         });
         
+        // Check for redirectAfterLogin in localStorage
+        const redirectAfterLogin = localStorage.getItem('redirectAfterLogin');
+        
         // If only one account, navigate directly
         if (guests.length === 1) {
+          // Navigate to redirectAfterLogin if it exists, otherwise to default dashboard
+          const redirectUrl = redirectAfterLogin || '/dashboard/memberships';
+          // Clear the redirectAfterLogin from localStorage
+          if (redirectAfterLogin) {
+            localStorage.removeItem('redirectAfterLogin');
+          }
           // Force a hard navigation to ensure proper state reset
-          window.location.href = '/dashboard/memberships';
+          window.location.href = redirectUrl;
         } else {
           // Show account selector for multiple accounts
           setShowAccountSelector(true);
@@ -450,7 +459,18 @@ export default function SignIn() {
     }
     localStorage.setItem('userData', JSON.stringify(userData))
 
-    router.push('/dashboard/memberships');
+    // Check for redirectAfterLogin in localStorage
+    const redirectAfterLogin = localStorage.getItem('redirectAfterLogin');
+    
+    // Navigate to redirectAfterLogin if it exists, otherwise to default dashboard
+    const redirectUrl = redirectAfterLogin || '/dashboard/memberships';
+    
+    // Clear the redirectAfterLogin from localStorage
+    if (redirectAfterLogin) {
+      localStorage.removeItem('redirectAfterLogin');
+    }
+
+    router.push(redirectUrl);
   };
 
   const handleRetry = () => {

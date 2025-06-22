@@ -289,7 +289,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                 <div className="sparkle-3"></div>
               </div>
 
-              <div
+              {/* <div
                 className="flex items-center p-4 bg-gradient-to-r bg-[#ae7735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
                 onClick={() => handleCitySelect("NewDelhi")}
               >
@@ -306,7 +306,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                 <div className="sparkle-1"></div>
                 <div className="sparkle-2"></div>
                 <div className="sparkle-3"></div>
-              </div>
+              </div> */}
 
               <div
                 className="flex items-center p-4 bg-gradient-to-r bg-[#ae7735] rounded-lg cursor-pointer hover:opacity-90 transition-all twinkle"
@@ -396,7 +396,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                 <span className="text-gray-800 text-sm">Cochin</span>
               </div>
 
-              <div
+              {/* <div
                 className="flex flex-col items-center cursor-pointer hover:opacity-80"
                 onClick={() => handleCitySelect("NewDelhi")}
               >
@@ -410,7 +410,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                   />
                 </div>
                 <span className="text-gray-800 text-sm">New Delhi</span>
-              </div>
+              </div> */}
 
               <div
                 className="flex flex-col items-center cursor-pointer hover:opacity-80"
