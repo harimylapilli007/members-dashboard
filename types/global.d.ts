@@ -5,5 +5,6 @@ declare global {
     recaptchaVerifier: RecaptchaVerifier | null;
     recaptchaWidgetId: number;
     confirmationResult: any;
+    dataLayer: any[];
   }
 } 

@@ -475,6 +475,19 @@ export default function ServiceBookingPage() {
   const categories = Object.keys(services).filter(cat => services[cat].length > 0);
 
   const handleBookNow = useCallback((service: Service) => {
+    // Add dataLayer push for service booking click
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: 'service_booking_click',
+        service_id: service.id,
+        service_name: service.name,
+        service_price: service.final_price,
+        event_category: 'Service',
+        event_action: 'Book Now Click',
+        event_label: service.name
+      });
+    }
+    
     router.push(`/service/${service.id}?id=${service.id}&name=${encodeURIComponent(service.name)}&price=${service.final_price}&duration=${service.duration}&description=${encodeURIComponent(service.description || '')}&location=${encodeURIComponent(selectedLocation?.outlet.name || '')}&outletId=${selectedLocation?.centerId || ''}&city=${encodeURIComponent(selectedLocation?.city || '')}`);
   }, [router, selectedLocation]);
 
@@ -547,6 +560,23 @@ export default function ServiceBookingPage() {
       fetchServices();
     }
   }, [selectedLocation?.centerId]);
+
+  // Add dataLayer push for service view list
+  useEffect(() => {
+    if (selectedLocation && Object.keys(services).length > 0 && !loading) {
+      const currentCategory = selectedCategory || Object.keys(services)[0];
+      const servicesInCategory = services[currentCategory] || [];
+      
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: 'service_view_list',
+          service_category: currentCategory,
+          location: `${selectedLocation.city} - ${selectedLocation.outlet.name}`,
+          service_count: servicesInCategory.length
+        });
+      }
+    }
+  }, [selectedLocation, services, selectedCategory, loading]);
 
   const handleServiceClick = (service: Service) => {
     if (!service || typeof service !== 'object') return;

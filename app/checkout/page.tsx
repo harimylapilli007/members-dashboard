@@ -74,6 +74,20 @@ export default function CheckoutPage() {
         time: time,
         formattedDate: formattedDate
       })
+
+      // Add dataLayer push for checkout page
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: 'service_checkout_page',
+          service_id: searchParams.get('serviceId') || '',
+          service_name: serviceName,
+          service_price: parseInt(price),
+          booking_date: date,
+          booking_time: time,
+          location: `${city} - ${location}`,
+          outlet: location
+        });
+      }
     }
   }, [searchParams])
 
@@ -169,6 +183,21 @@ export default function CheckoutPage() {
 
       if (!response.ok) {
         throw new Error(data.message || 'Failed to create booking');
+      }
+
+      // Add dataLayer push for successful booking completion with actual booking ID
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: 'service_booking_complete',
+          service_id: serviceId,
+          service_name: serviceData?.name || '',
+          service_price: serviceData?.price || 0,
+          booking_date: slotData.date,
+          booking_time: slotData.time,
+          location: `${serviceData?.city} - ${serviceData?.location}`,
+          outlet: serviceData?.location || '',
+          transaction_id: data.id || data.bookingId || `booking_${Date.now()}` // Use actual booking ID from response
+        });
       }
 
       // Step 6: Handle Successful Booking

@@ -899,6 +899,18 @@ export default function ServiceDetails() {
                               `}
                               onClick={() => {
                                 setSelectedSlot(time);
+                                // Add dataLayer push for service booking click
+                                if (window.dataLayer) {
+                                  window.dataLayer.push({
+                                    event: 'service_booking_click',
+                                    service_id: serviceId,
+                                    service_name: serviceName,
+                                    service_price: servicePrice,
+                                    event_category: 'Service',
+                                    event_action: 'Book Now Click',
+                                    event_label: serviceName
+                                  });
+                                }
                                 // Directly redirect to cart page when slot is selected
                                 const params = new URLSearchParams({
                                   serviceName: serviceName,
@@ -1158,6 +1170,18 @@ export default function ServiceDetails() {
                               `}
                               onClick={() => {
                                 setSelectedSlot(time);
+                                // Add dataLayer push for service booking click
+                                if (window.dataLayer) {
+                                  window.dataLayer.push({
+                                    event: 'service_booking_click',
+                                    service_id: serviceId,
+                                    service_name: serviceName,
+                                    service_price: servicePrice,
+                                    event_category: 'Service',
+                                    event_action: 'Book Now Click',
+                                    event_label: serviceName
+                                  });
+                                }
                                 // Directly redirect to cart page when slot is selected
                                 const params = new URLSearchParams({
                                   serviceName: serviceName,
