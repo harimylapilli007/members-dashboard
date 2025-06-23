@@ -562,7 +562,7 @@ export default function SignIn() {
               transition={{ duration: 0.3 }}
               className="text-xl sm:text-2xl font-bold text-white mb-1"
             >
-              Login
+              Verify Phone Number
             </motion.h1>
           </motion.div>
 
@@ -579,7 +579,7 @@ export default function SignIn() {
                   className="space-y-6"
                 >
                   <div className="space-y-4">
-                    <h1 className="text-[#454545] text-center font-inter text-lg sm:text-[22px] font-bold mb-4">Welcome Back...!</h1>
+                    <h1 className="text-[#454545] text-center font-inter text-lg sm:text-[22px] font-bold mb-4">Welcome ...!</h1>
                     <Label htmlFor="phone" className="text-gray-700 text-base sm:text-[18px] font-400 flex items-center gap-2 mb-4">
                       <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
                       <span className="font-['Marcellus'] text-base sm:text-[18px] font-400"> Please enter your phone number</span>

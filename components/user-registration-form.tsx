@@ -176,7 +176,7 @@ export function UserRegistrationForm() {
               transition={{ duration: 0.3 }}
               className="text-2xl font-bold text-white mb-1"
             >
-              Signup
+              Create Account
             </motion.h1>
           </motion.div>
 

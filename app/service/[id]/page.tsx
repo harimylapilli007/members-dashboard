@@ -207,7 +207,7 @@ export default function ServiceDetails() {
           }
 
           const serviceData = await serviceResponse.json()
-          console.log('Service details:', serviceData)
+          // console.log('Service details:', serviceData)
 
           if (serviceData) {
             // Update the service details in the URL without refreshing the page
@@ -269,9 +269,9 @@ export default function ServiceDetails() {
 
     try {
       const formattedDate = format(selectedDate, 'yyyy-MM-dd')
-      console.log('Creating booking with date:', formattedDate)
-      console.log('Selected location:', selectedLocation)
-      console.log('Service ID:', serviceId)
+      // console.log('Creating booking with date:', formattedDate)
+      // console.log('Selected location:', selectedLocation)
+      // console.log('Service ID:', serviceId)
 
       const response = await fetch('/api/bookings/create', {
         method: 'POST',
@@ -292,7 +292,7 @@ export default function ServiceDetails() {
         throw new Error(result.message || 'Failed to create booking')
       }
 
-      console.log('Booking created:', result)
+      // console.log('Booking created:', result)
       
       if (isMounted.current) {
         // Check if the result has the expected structure
@@ -335,7 +335,7 @@ export default function ServiceDetails() {
     if (!isMounted.current) return;
 
     try {
-      console.log('Fetching slots for booking:', bookingId)
+      // console.log('Fetching slots for booking:', bookingId)
       
       const response = await fetch(`/api/bookings/${bookingId}/slots`)
       const result = await response.json()
@@ -344,9 +344,9 @@ export default function ServiceDetails() {
         throw new Error(result.error || 'Failed to fetch available slots')
       }
 
-      console.log('Original slots:', result);
+      // console.log('Original slots:', result);
       const convertedSlots = convertToDateSlots(result);
-      console.log('Converted slots:', convertedSlots);
+      // console.log('Converted slots:', convertedSlots);
       
       if (isMounted.current) {
         setAvailableSlots(convertedSlots.slots);
