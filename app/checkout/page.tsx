@@ -149,7 +149,7 @@ export default function CheckoutPage() {
     try {
       // Step 4: Get Guest Information
       const dashboardParams = new URLSearchParams(localStorage.getItem('dashboardParams') || '')
-      const guestId = dashboardParams.get('id') || localStorage.getItem('guestId') || userData?.id
+      const guestId = userData?.id || dashboardParams.get('id') || localStorage.getItem('guestId') 
 
       if (!guestId) {
         throw new Error('Guest ID is missing')

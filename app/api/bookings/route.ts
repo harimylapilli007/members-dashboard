@@ -105,7 +105,10 @@ export async function POST(request: Request) {
           'Authorization': process.env.ZENOTI_API_KEY ?? '',
           'accept': 'application/json',
           'content-type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          notes: 'Website'
+        })
       },
       generateCacheKey('confirm-booking', { bookingId: result.id })
     )
