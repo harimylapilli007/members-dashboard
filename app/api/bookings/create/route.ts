@@ -14,12 +14,12 @@ export async function POST(request: Request) {
     } = body
 
     // Validate required fields
-    if (!centerId || !serviceId || !date || !guestId) {
-      console.log('Missing required fields:', { centerId, serviceId, date, guestId })
+    if (!centerId || !serviceId || !date) {
+      console.log('Missing required fields:', { centerId, serviceId, date })
       return NextResponse.json(
         { 
           success: false, 
-          message: 'Missing required fields: centerId, serviceId, date, or guestId' 
+          message: 'Missing required fields: centerId, serviceId, date' 
         },
         { status: 400 }
       )
