@@ -38,9 +38,9 @@ export async function GET(
     )
 
     if (!serviceResponse) {
-      console.error('No response from Zenoti API')
+      console.error('currently service is not available', serviceId)
       return NextResponse.json(
-        { error: 'No response from Zenoti API' },
+        { error: 'currently service is not available' },
         { status: 500 }
       )
     }

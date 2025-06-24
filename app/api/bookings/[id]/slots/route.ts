@@ -28,9 +28,9 @@ export async function GET(
     )
 
     if (!slotsResponse) {
-      console.error('No response from Zenoti API')
+      console.error('currently service is not available for this outlet', bookingId)
       return NextResponse.json(
-        { error: 'No response from Zenoti API' },
+        { error: 'currently service is not available for this outlet' },
         { status: 500 }
       )
     }
