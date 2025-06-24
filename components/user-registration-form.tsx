@@ -156,7 +156,7 @@ export function UserRegistrationForm() {
       <div className="absolute bottom-20 right-0 w-[500px] h-[400px] bg-[#b2d5e4] opacity-30 rounded-full blur-xl -z-30" />
       <div className="absolute top-1/3 left-1/2 w-[1600px] h-[1600px] bg-[#b2d5e4] opacity-50 blur-3xl rounded-full -z-30" />
 
-      <div className="min-h-screen flex items-center justify-center relative z-10">
+      <div className="min-h-screen flex items-center justify-center relative z-10 px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
