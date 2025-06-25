@@ -142,7 +142,7 @@ export async function POST(request: Request) {
 
     // Process payment with Zenoti API
     try {
-      const collectedById = 'b41ef1f0-ba77-4df3-ad4a-c74edb3c0252'; // Employee ID
+      const collectedById = 'b41ef1f0-ba77-4df3-ad4a-c74edb3c0252'; // Employee ID ---  .API
       const customPaymentId = 'cd817708-9de6-4152-9845-23c25b9f8e1b' // Custom Payment ID
 
       console.log('Starting Zenoti payment processing:', {

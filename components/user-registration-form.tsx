@@ -79,6 +79,30 @@ export function UserRegistrationForm() {
         return
       }
 
+      // GTM data layer push for registration form submission
+      if (typeof window !== 'undefined' && window.dataLayer) {
+        window.dataLayer.push({
+          event: 'registration_form_submit',
+          event_category: 'User Registration',
+          event_action: 'Form Submission',
+          event_label: 'Continue Button Click',
+          user_data: {
+            has_first_name: !!formData.first_name.trim(),
+            has_last_name: !!formData.last_name.trim(),
+            has_email: !!formData.email.trim(),
+            has_phone: !!formData.phone.trim(),
+            has_gender: !!formData.gender,
+            phone_length: cleanPhone.length
+          },
+          form_completion: {
+            first_name: formData.first_name.trim(),
+            last_name: formData.last_name.trim(),
+            email: formData.email.trim() || 'not_provided',
+            gender: formData.gender || 'not_selected'
+          }
+        })
+      }
+
       const userData = await createZenotiUser({
         first_name: formData.first_name.trim(),
         last_name: formData.last_name.trim(),
@@ -89,6 +113,18 @@ export function UserRegistrationForm() {
         },
         gender: formData.gender ? parseInt(formData.gender) : undefined
       })
+
+      // GTM data layer push for successful registration
+      if (typeof window !== 'undefined' && window.dataLayer) {
+        window.dataLayer.push({
+          event: 'registration_success',
+          event_category: 'User Registration',
+          event_action: 'Account Created',
+          event_label: 'Zenoti User Created',
+          user_id: userData?.id || 'unknown',
+          registration_method: 'form_submission'
+        })
+      }
 
       // Clear stored phone number from localStorage
       localStorage.removeItem('registrationPhone')
@@ -105,6 +141,25 @@ export function UserRegistrationForm() {
       }, 1500)
     } catch (error) {
       console.error('Error creating user:', error)
+      
+      // GTM data layer push for registration error
+      if (typeof window !== 'undefined' && window.dataLayer) {
+        window.dataLayer.push({
+          event: 'registration_error',
+          event_category: 'User Registration',
+          event_action: 'Account Creation Failed',
+          event_label: 'API Error',
+          error_message: error instanceof Error ? error.message : 'Unknown error',
+          form_data: {
+            has_first_name: !!formData.first_name.trim(),
+            has_last_name: !!formData.last_name.trim(),
+            has_email: !!formData.email.trim(),
+            has_phone: !!formData.phone.trim(),
+            has_gender: !!formData.gender
+          }
+        })
+      }
+      
       toast({
         variant: "destructive",
         title: "Error",

@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { initiatePayment } from "@/lib/payment-utils"
+import { initiatePayment } from "@/app/utils/payment"
 import { MembershipDetail } from "@/types/membership"
 import { useEffect, useState } from "react"
 import Image from "next/image"

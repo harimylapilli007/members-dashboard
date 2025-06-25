@@ -33,7 +33,7 @@ function PaymentSuccessContent() {
           email: searchParams.get('email') || '',
           status: searchParams.get('status') || '',
           hash: searchParams.get('hash') || '',
-          salt: '0Rd0lVQEvO',
+          salt: process.env.PAYU_SALT || '',
           payment_method: searchParams.get('payment_method') || 'UPI',
           mihpayid: searchParams.get('mihpayid') || '',
           bank_ref_num: searchParams.get('bank_ref_num') || '',
@@ -44,29 +44,36 @@ function PaymentSuccessContent() {
         // Set payment details
         setPaymentDetails(responseData)
 
-        // Fetch invoice details from Zenoti
-        const zenotiResponse = await fetch(`/api/invoices/${responseData.txnid}`, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        const zenotiData = await zenotiResponse.json();
-        
-        if (!zenotiData.success) {
-          throw new Error(zenotiData.error?.message || 'Failed to fetch invoice details');
-        }
-        
-        // Set invoice status with Zenoti invoice number
+        // Set basic invoice status without Zenoti data
         setInvoiceStatus({
           status: 'success',
           amount: responseData.amount,
           invoiceId: responseData.txnid,
           paymentId: responseData.mihpayid || `payu_${Date.now()}`,
-          invoiceNumber: zenotiData.data.invoice
-            ? `${zenotiData.data.invoice.invoice_number_prefix || ''}${zenotiData.data.invoice.invoice_number || ''}`
-            : undefined
+          invoiceNumber: undefined // Will be set if Zenoti fetch succeeds
         })
+
+        // Try to fetch invoice details from Zenoti (optional)
+        try {
+          const zenotiResponse = await fetch(`/api/invoices/${responseData.txnid}`, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          const zenotiData = await zenotiResponse.json();
+          
+          if (zenotiData.success && zenotiData.data.invoice) {
+            // Update invoice status with Zenoti invoice number if available
+            setInvoiceStatus(prev => ({
+              ...prev!,
+              invoiceNumber: `${zenotiData.data.invoice.invoice_number_prefix || ''}${zenotiData.data.invoice.invoice_number || ''}`
+            }));
+          }
+        } catch (zenotiError) {
+          // Silently handle Zenoti API errors - payment is still successful
+          console.log('Zenoti invoice fetch failed (non-critical):', zenotiError);
+        }
 
         // Show success message
         toast({
@@ -184,8 +191,8 @@ function PaymentSuccessContent() {
                     <span className="text-base font-['Marcellus']">{paymentMethod}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className=" text-muted-foreground font-['Marcellus']">Transaction ID</span>
-                    <span className="font-mono text-sm">{paymentDetails?.txnid || '—'}</span>
+                    <span className="text-muted-foreground font-['Marcellus']">Transaction ID</span>
+                    <span className="font-mono text-sm text-right">{paymentDetails?.txnid || '—'}</span>
                   </div>
                   {invoiceStatus?.invoiceNumber && (
                     <div className="flex justify-between items-center">

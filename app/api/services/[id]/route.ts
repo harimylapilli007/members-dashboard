@@ -38,9 +38,9 @@ export async function GET(
     )
 
     if (!serviceResponse) {
-      console.error('currently service is not available', serviceId)
+      console.error('currently service is not available for this outlet', serviceId)
       return NextResponse.json(
-        { error: 'currently service is not available' },
+        { error: 'currently service is not available for this outlet' },
         { status: 500 }
       )
     }

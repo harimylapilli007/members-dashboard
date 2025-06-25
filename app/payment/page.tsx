@@ -9,7 +9,8 @@ import { useToast } from "@/hooks/use-toast"
 import Header from "@/app/components/Header"
 import Image from "next/image"
 import { formatPrice } from "@/app/utils/formatPrice"
-import { initiatePayment } from "@/lib/payment-utils"
+import { initiatePayment } from "@/app/utils/payment"
+
 
 interface InvoiceData {
   id: string;
@@ -271,69 +272,15 @@ export default function PaymentPage() {
       // Store payment attempt timestamp in localStorage for persistence
       localStorage.setItem('lastPaymentAttempt', now.toString())
 
-      // Use the new server-side API endpoint
-      const response = await fetch('/api/payment/initiate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          invoice_id: invoiceData.invoice_id,
-          amount: Number(invoice?.total_amount) || 0,
-          product_info: membershipName || "Ode Spa Membership",
-          customer_name: userInfo.firstName,
-          customer_email: userInfo.email,
-          customer_phone: userInfo.phone,
-        })
+      // Use the payment.ts function directly
+      await initiatePayment({
+        name: membershipName || "Ode Spa Membership",
+        amount: Number(invoice?.total_amount) || 0,
+        firstName: userInfo.firstName,
+        email: userInfo.email,
+        phone: userInfo.phone,
+        invoiceId: invoiceData.invoice_id,
       })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        if (response.status === 429) {
-          // Rate limited by server
-          const remainingTime = Math.ceil((RATE_LIMIT_DELAY - timeSinceLastAttempt) / 1000)
-          setCountdown(remainingTime)
-          toast({
-            variant: "destructive",
-            title: "Rate Limited",
-            description: data.error?.message || `Please wait ${remainingTime} seconds before trying again.`,
-          })
-          return
-        }
-        throw new Error(data.error?.message || 'Failed to initiate payment')
-      }
-
-      if (!data.success) {
-        throw new Error(data.error?.message || 'Payment initiation failed')
-      }
-
-      // Create and submit the payment form
-      const form = document.createElement('form')
-      form.id = 'payu-payment-form'
-      form.action = data.payment_url
-      form.method = 'POST'
-      form.style.display = 'none'
-
-      // Add payment data to form
-      Object.entries(data.payment_data).forEach(([key, value]) => {
-        const input = document.createElement('input')
-        input.type = 'hidden'
-        input.name = key
-        input.value = value as string
-        form.appendChild(input)
-      })
-
-      // Submit the form
-      document.body.appendChild(form)
-      form.submit()
-
-      // Clean up the form after submission
-      setTimeout(() => {
-        if (form.parentNode) {
-          form.parentNode.removeChild(form)
-        }
-      }, 1000)
 
     } catch (error) {
       toast({

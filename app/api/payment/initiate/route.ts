@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate unique transaction ID
-    const txnid = `${body.invoice_id}_${Date.now()}`
+    const txnid = `${body.invoice_id}`
 
     // Prepare payment data
     const paymentData = {

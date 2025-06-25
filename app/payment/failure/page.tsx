@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { updateMembershipStatus } from "@/actions/payment-actions"
 import { useToast } from "@/hooks/use-toast"
-import { initiatePayment } from "@/lib/payment-utils"
+import { initiatePayment } from "@/app/utils/payment"
 import {
   Dialog,
   DialogContent,

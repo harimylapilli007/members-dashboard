@@ -18,7 +18,23 @@ export default function Header() {
   const { user, logout } = useAuth()
   const { toast } = useToast()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userData') || '{}') : {}
+  const [isClient, setIsClient] = useState(false)
+  const [userData, setUserData] = useState<{ id?: string }>({})
+
+  // Handle client-side initialization
+  useEffect(() => {
+    setIsClient(true)
+    const storedUserData = localStorage.getItem('userData')
+    if (storedUserData) {
+      try {
+        const parsedData = JSON.parse(storedUserData)
+        setUserData(parsedData)
+      } catch (error) {
+        console.error('Error parsing userData:', error)
+        setUserData({})
+      }
+    }
+  }, [])
 
   const handleLogout = async () => {
     try {
@@ -74,6 +90,45 @@ export default function Header() {
     };
   }, [isMobileMenuOpen]);
 
+  // Show loading state until client-side data is ready
+  if (!isClient) {
+    return (
+      <header className="z-10 flex items-center justify-between bg-white/20 backdrop-blur-md border-b border-white/20 shadow-lg px-4 md:px-6 lg:px-8 py-2 sticky top-0 max-w-[1305px] mx-auto rounded-2xl mt-4">
+        <div className="flex items-center justify-between w-full">
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/Logo.png"
+              alt="Ode Spa Logo"
+              width={200}
+              height={200}
+              className="w-[150px] sm:w-[180px] md:w-[200px] h-auto"
+            />
+          </Link>
+
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden p-2 text-[#454545] hover:text-[#a07735]"
+            disabled
+          >
+            <Menu size={24} />
+          </button>
+
+          {/* Desktop Navigation - Show skeleton during loading */}
+          <nav className="hidden md:flex items-center gap-3 lg:gap-8">
+            <div className="w-24 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+            <div className="w-20 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+          </nav>
+
+          {/* Desktop Auth Buttons - Show skeleton during loading */}
+          <div className="hidden md:flex items-center gap-2 lg:gap-4">
+            <div className="w-28 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+            <div className="w-28 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+          </div>
+        </div>
+      </header>
+    )
+  }
+
   return (
     <header className="z-10 flex items-center justify-between bg-white/20 backdrop-blur-md border-b border-white/20 shadow-lg px-4 md:px-6 lg:px-8 py-2 sticky top-0 max-w-[1305px] mx-auto rounded-2xl mt-4">
       <div className="flex items-center justify-between w-full">
@@ -111,7 +166,7 @@ export default function Header() {
             <span className="relative z-10 text-[14px] lg:text-[16px]">MEMBERSHIP</span>
           </Link>
           <Link 
-            href={localStorage.getItem('selectedArea') ? `/ServiceBookingPage?guestId=${userData?.id}` : `/ServiceBookingPage?openModal=true&guestId=${userData?.id}`}
+            href={isClient && localStorage.getItem('selectedArea') ? `/ServiceBookingPage?guestId=${userData?.id || ''}` : `/ServiceBookingPage?openModal=true&guestId=${userData?.id || ''}`}
             className={cn(
               "relative px-3 lg:px-4 py-2 rounded-lg font-bold font-inter text-sm lg:text-base transition-all duration-300",
               "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
@@ -198,7 +253,7 @@ export default function Header() {
                 </span>
               </Link>
               <Link 
-                href={`/ServiceBookingPage?openModal=true&guestId=${userData?.id}`}
+                href={`/ServiceBookingPage?openModal=true&guestId=${userData?.id || ''}`}
                 className={cn(
                   "relative px-4 py-3 rounded-lg font-bold font-inter text-sm transition-all duration-300 bg-white/50",
                   "hover:bg-[#a07735]/20 hover:text-[#a07735] hover:scale-[1.02] active:scale-[0.98]",
