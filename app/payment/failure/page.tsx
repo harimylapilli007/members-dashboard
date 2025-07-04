@@ -141,7 +141,7 @@ function PaymentFailureContent() {
       // Initiate payment with stored details
       await initiatePayment({
         name: paymentDetails.productinfo,
-        price: parseFloat(paymentDetails.amount),
+        amount: parseFloat(paymentDetails.amount),
         firstName: paymentDetails.firstname,
         email: paymentDetails.email,
         phone: paymentDetails.phone,
