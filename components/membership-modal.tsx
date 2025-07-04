@@ -48,7 +48,7 @@ export function MembershipModal({ isOpen, onClose, membership, onConfirm, loadin
       // Then initiate the payment
       initiatePayment({
         name: "Ode Spa Membership",
-        price: membership.price?.sales || 0,
+        amount: membership.price?.sales || 0,
         firstName: userInfo.firstName,
         email: userInfo.email,
         phone: userInfo.phone,
