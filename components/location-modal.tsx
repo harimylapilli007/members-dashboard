@@ -134,7 +134,7 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
       { name: "Svm Grand", id: "382c7ba3-5db8-4b1a-b61c-820590a8ccef" },
       { name: "Ramada Manohar", id: "fd0b1849-c640-472e-a3de-b56165358e2b" },
       { name: "Royalton", id: "02f4f819-6e1c-49c5-b831-c08fc651d4c8" },
-      { name: "Novotel HICC", id: "6f040deb-7bc3-4728-890e-696ad17cdafb" }
+      // { name: "Novotel HICC", id: "6f040deb-7bc3-4728-890e-696ad17cdafb" }
     ],
     "Bangalore": [
       { name: "Banashankari St", id: "5bee05b9-b470-4498-a6ad-0accb771ffe0" },
