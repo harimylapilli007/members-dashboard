@@ -427,8 +427,8 @@ export default function GiftCardPage() {
 
       <Header />
       
-      <div className="flex flex-col lg:flex-row items-start max-w-[1400px] mx-auto px-4 md:px-6">
-        <main className="flex-1 p-4 md:p-8 w-full">
+      <div className="flex flex-col lg:flex-row items-start max-w-[1400px] mx-auto  md:px-6">
+        <main className="flex-1 md:p-8 w-full">
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1100px] mx-auto">
             {/* Left Section - Gift Card Configuration */}
@@ -616,14 +616,14 @@ export default function GiftCardPage() {
                 )}
 
                 {/* Cards Container */}
-                <div className="overflow-hidden rounded-xl p-4">
+                <div className="overflow-hidden rounded-xl">
                   {selectedOccasionImages.length > 0 ? (
                     <div 
                       className="flex transition-transform duration-500 ease-in-out"
                       style={{ transform: `translateX(-${currentCardIndex * 100}%)` }}
                     >
                       {selectedOccasionImages.map((image, index) => (
-                        <div key={image.id} className="w-full flex-shrink-0 px-8">
+                        <div key={image.id} className="w-full flex-shrink-0">
                           <Card
                             className={`relative cursor-pointer overflow-hidden border-2 transition-all duration-300 hover:scale-105 transform rounded-lg bg-transparent ${
                               selectedDesign === index + 1
