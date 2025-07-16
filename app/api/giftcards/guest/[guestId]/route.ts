@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { guestId: string } }
+  { params }: { params: Promise<{ guestId: string }> }
 ) {
   try {
     const { guestId } = await params
