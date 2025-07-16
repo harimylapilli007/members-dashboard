@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Home, Bell, User, LogOut, ShoppingBag, ShoppingCart, Menu, X, Calendar, Heart } from "lucide-react"
+import { Home, Bell, User, LogOut, ShoppingBag, ShoppingCart, Menu, X, Calendar, Heart, GiftIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
@@ -178,6 +178,7 @@ export default function Header() {
           >
             <span className="relative z-10 text-[14px] lg:text-[16px]">BOOKING</span>
           </Link>
+          
           {user && (
             <Link 
               href="/view-bookings" 
@@ -192,6 +193,41 @@ export default function Header() {
             >
               <span className="relative z-10 text-[14px] lg:text-[16px]">VIEW BOOKINGS</span>
             </Link>
+          )}
+          {user && (
+            <div className="relative group">
+              <Link 
+                href="/gift-cards" 
+                className={cn(
+                  "relative px-3 lg:px-4 py-2 rounded-lg font-bold font-inter text-sm lg:text-base transition-all duration-300",
+                  "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
+                  "hover:scale-105 hover:shadow-lg hover:outline hover:outline-2 hover:outline-[#a07735]",
+                  pathname?.includes('/gift-cards')
+                    ? "text-[#a07735] before:bg-[#a07735]/20 before:backdrop-blur-sm before:border before:border-[#a07735]/20 outline outline-2 outline-[#a07735]"
+                    : "text-[#454545] hover:text-[#a07735] before:backdrop-blur-sm hover:before:bg-[#a07735]/20 hover:before:border-[#a07735]/30"
+                )}
+              >
+                <span className="relative z-10 text-[14px] lg:text-[16px]">GIFT CARDS</span>
+              </Link>
+              
+              {/* Dropdown Menu */}
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white/95 backdrop-blur-md border border-white/20 shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="py-2">
+                  <Link 
+                    href="/gift-cards" 
+                    className="block px-4 py-2 text-sm font-marcellus text-[#454545] hover:text-[#a07735] hover:bg-[#a07735]/10 transition-colors"
+                  >
+                    Buy Gift Cards
+                  </Link>
+                  <Link 
+                    href="/gift-cards/my-gift-cards" 
+                    className="block px-4 py-2 text-sm text-[#454545] font-marcellus hover:text-[#a07735] hover:bg-[#a07735]/10 transition-colors"
+                  >
+                    My Gift Cards
+                  </Link>
+                </div>
+              </div>
+            </div>
           )}
         </nav>
 
@@ -285,6 +321,42 @@ export default function Header() {
                   <span className="flex items-center text-md">
                     <Heart className="w-5 h-5 mr-2" />
                     VIEW BOOKINGS
+                  </span>
+                </Link>
+              )}
+              {user && (
+                <Link 
+                  href="/gift-cards" 
+                  className={cn(
+                    "relative px-4 py-3 rounded-lg font-bold font-inter text-sm transition-all duration-300 bg-white/50",
+                    "hover:bg-[#a07735]/20 hover:text-[#a07735] hover:scale-[1.02] active:scale-[0.98]",
+                    "transform hover:translate-x-1",
+                    pathname?.includes('/gift-cards') && !pathname?.includes('/my-gift-cards') ? "text-[#a07735] bg-[#a07735]/20" : "text-[#454545]",
+                    "animate-fadeIn"
+                  )}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="flex items-center text-md">
+                    <GiftIcon className="w-5 h-5 mr-2" />
+                    BUY GIFT CARDS
+                  </span>
+                </Link>
+              )}
+              {user && (
+                <Link 
+                  href="/gift-cards/my-gift-cards" 
+                  className={cn(
+                    "relative px-4 py-3 rounded-lg font-bold font-inter text-sm transition-all duration-300 bg-white/50",
+                    "hover:bg-[#a07735]/20 hover:text-[#a07735] hover:scale-[1.02] active:scale-[0.98]",
+                    "transform hover:translate-x-1",
+                    pathname?.includes('/gift-cards/my-gift-cards') ? "text-[#a07735] bg-[#a07735]/20" : "text-[#454545]",
+                    "animate-fadeIn"
+                  )}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="flex items-center text-md">
+                    <GiftIcon className="w-5 h-5 mr-2" />
+                    MY GIFT CARDS
                   </span>
                 </Link>
               )}

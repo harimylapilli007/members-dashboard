@@ -43,8 +43,8 @@ export const initiatePayment = (membershipData: {
       }
 
       // Check if we have valid PayU credentials
-      const payuKey = process.env.PAYU_KEY || ''
-      const payuSalt = process.env.PAYU_SALT || ''
+      const payuKey = process.env.PAYU_KEY || '26sF13CI'
+      const payuSalt = process.env.PAYU_SALT || '0Rd0lVQEvO'
       
       if (!payuKey || !payuSalt) {
         reject(new Error('Payment gateway configuration is missing. Please contact support.'))

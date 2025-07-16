@@ -95,11 +95,20 @@ export async function makeCustomPayment(invoiceId: string, amount: string, custo
     });
     clearTimeout(timeoutId);
     
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    // Check if response is JSON or plain text
+    const contentType = response.headers.get('content-type')
     
-    return response.json();
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.error?.message || `HTTP error! status: ${response.status}`)
+      }
+      return data
+    } else {
+      // Handle plain text response
+      const textData = await response.text()
+      throw new Error(textData || `HTTP error! status: ${response.status}`)
+    }
   } catch (error) {
     clearTimeout(timeoutId);
     if (error instanceof Error) {
@@ -142,11 +151,20 @@ export async function closeInvoice(invoiceId: string, closedById: string) {
     });
     clearTimeout(timeoutId);
     
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    // Check if response is JSON or plain text
+    const contentType = response.headers.get('content-type')
     
-    return response.json();
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.error?.message || `HTTP error! status: ${response.status}`)
+      }
+      return data
+    } else {
+      // Handle plain text response
+      const textData = await response.text()
+      throw new Error(textData || `HTTP error! status: ${response.status}`)
+    }
   } catch (error) {
     clearTimeout(timeoutId);
     if (error instanceof Error) {

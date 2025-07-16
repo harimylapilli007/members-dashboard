@@ -8,9 +8,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
-import { ChevronRight, MessageCircle, Info, ChevronLeft, Loader2 } from "lucide-react"
+import { ChevronRight, MessageCircle, Info, ChevronLeft, Loader2, Calendar } from "lucide-react"
 import Image from "next/image"
 import Header from "@/app/components/Header"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { format } from "date-fns"
 
 
 
@@ -50,27 +54,243 @@ export default function GiftCardPage() {
   const [message, setMessage] = useState("")
   const [selectedDesign, setSelectedDesign] = useState(0)
   const [deliveryOption, setDeliveryOption] = useState("now")
+  const [deliveryDate, setDeliveryDate] = useState<Date>()
+  const [deliveryTime, setDeliveryTime] = useState("09:00")
   const [currentCardIndex, setCurrentCardIndex] = useState(0)
   const [occasions, setOccasions] = useState<Occasion[]>(defaultOccasions)
   const [isLoadingOccasions, setIsLoadingOccasions] = useState(true)
   const [occasionsError, setOccasionsError] = useState<string | null>(null)
   const [selectedOccasionImages, setSelectedOccasionImages] = useState<Array<{id: string, url: string}>>([])
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
 
 
   const handleAmountChange = (value: string) => {
     setSelectedAmount(value)
     setCustomAmount("")
+    setSubmitError(null)
   }
 
   const handleCustomAmountChange = (value: string) => {
     setCustomAmount(value)
     setSelectedAmount("")
+    setSubmitError(null)
   }
 
-  const handlePreviewAndPay = () => {
-    // Handle preview and payment logic
-    console.log("Preview and Pay clicked")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+
+  const handlePreviewAndPay = async () => {
+    // Validate user authentication
+    const userDataStr = localStorage.getItem('userData')
+    if (!userDataStr) {
+      setSubmitError('Please log in to create a gift card')
+      setTimeout(() => {
+        window.location.href = '/signin?redirectAfterLogin=' + encodeURIComponent(window.location.href)
+      }, 2000)
+      return
+    }
+
+    let userData
+    try {
+      userData = JSON.parse(userDataStr)
+    } catch (error) {
+      console.error('Error parsing user data:', error)
+      setSubmitError('Invalid user data. Please log in again.')
+      setTimeout(() => {
+        window.location.href = '/signin?redirectAfterLogin=' + encodeURIComponent(window.location.href)
+      }, 2000)
+      return
+    }
+
+    const guestId = userData.id
+    if (!guestId) {
+      setSubmitError('Please log in to create a gift card')
+      setTimeout(() => {
+        window.location.href = '/signin?redirectAfterLogin=' + encodeURIComponent(window.location.href)
+      }, 2000)
+      return
+    }
+
+    // Validate form data
+    const finalAmount = selectedAmount || customAmount
+    if (!finalAmount) {
+      setSubmitError('Please select or enter an amount')
+      return
+    }
+
+    const numericAmount = parseFloat(finalAmount)
+    if (numericAmount < 100) {
+      setSubmitError('Minimum gift card amount is ₹100')
+      return
+    }
+
+    if (numericAmount > 100000) {
+      setSubmitError('Maximum gift card amount is ₹100,000')
+      return
+    }
+
+    if (!recipientName.trim()) {
+      setSubmitError('Please enter recipient name')
+      return
+    }
+
+    if (!recipientEmail.trim()) {
+      setSubmitError('Please enter recipient email')
+      return
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(recipientEmail)) {
+      setSubmitError('Please enter a valid email address')
+      return
+    }
+
+    // Validate delivery date if "send later" is selected
+    if (deliveryOption === "later" && !deliveryDate) {
+      setSubmitError('Please select a delivery date')
+      return
+    }
+
+    // Check if selected date is in the future
+    if (deliveryOption === "later" && deliveryDate) {
+      const selectedDateTime = new Date(deliveryDate)
+      const [hours, minutes] = deliveryTime.split(':').map(Number)
+      selectedDateTime.setHours(hours, minutes, 0, 0)
+      
+      if (selectedDateTime <= new Date()) {
+        setSubmitError('Please select a future date and time for delivery')
+        return
+      }
+    }
+
+    setIsSubmitting(true)
+    setSubmitError(null)
+
+    try {
+      // Step 1: Create gift card
+      const giftCardPayload = {
+        amount: finalAmount,
+        recipientName: recipientName.trim(),
+        recipientEmail: recipientEmail.trim(),
+        recipientPhone: recipientPhone.trim() || null,
+        message: message.trim() || null,
+        occasionId: selectedOccasion,
+        deliveryOption,
+        deliveryDate: deliveryOption === "later" && deliveryDate ? (() => {
+          const selectedDateTime = new Date(deliveryDate)
+          const [hours, minutes] = deliveryTime.split(':').map(Number)
+          selectedDateTime.setHours(hours, minutes, 0, 0)
+          return selectedDateTime.toISOString()
+        })() : null,
+        guestId
+      }
+
+      console.log('Creating gift card:', giftCardPayload)
+
+      const giftCardResponse = await fetch('/api/giftcards/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(giftCardPayload)
+      })
+
+      const giftCardData = await giftCardResponse.json()
+
+      if (!giftCardResponse.ok) {
+        throw new Error(giftCardData.error?.message || 'Failed to create gift card')
+      }
+
+      if (!giftCardData.success) {
+        throw new Error(giftCardData.error?.message || 'Failed to create gift card')
+      }
+
+      console.log('Gift card created successfully:', giftCardData)
+
+      // Step 2: Get exact amount from invoice
+      let exactAmount = numericAmount
+      try {
+        const invoiceResponse = await fetch(`/api/giftcards/invoice/${giftCardData.invoiceId}`)
+        const invoiceData = await invoiceResponse.json()
+        
+        if (invoiceResponse.ok && invoiceData.success && invoiceData.invoice?.amount_due) {
+          exactAmount = invoiceData.invoice.amount_due
+          console.log('Exact amount due:', exactAmount)
+        } else {
+          console.warn('Using original amount, invoice fetch failed:', invoiceData.error?.message)
+        }
+      } catch (invoiceError) {
+        console.error('Error fetching invoice details:', invoiceError)
+        // Continue with original amount
+      }
+
+      // Step 3: Initiate payment using gift card payment endpoint
+      const paymentPayload = {
+        invoice_id: giftCardData.invoiceId,
+        amount: exactAmount,
+        product_info: 'Gift Card',
+        customer_name: userData.name || userData.firstName || 'Guest',
+        customer_email: userData.email || '',
+        customer_phone: userData.phone || '',
+        recipient_name: recipientName.trim(),
+        recipient_email: recipientEmail.trim(),
+        occasion: occasions.find(o => o.value === selectedOccasion)?.label || selectedOccasion,
+        message: message.trim() || ''
+      }
+
+      console.log('Initiating payment:', paymentPayload)
+
+      const paymentResponse = await fetch('/api/giftcards/payment/initiate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(paymentPayload)
+      })
+
+      const paymentData = await paymentResponse.json()
+
+      if (!paymentResponse.ok) {
+        throw new Error(paymentData.error?.message || 'Failed to initiate payment')
+      }
+
+      if (!paymentData.success) {
+        throw new Error(paymentData.error?.message || 'Failed to initiate payment')
+      }
+
+      console.log('Payment initiated successfully:', paymentData)
+
+      setSubmitSuccess(true)
+
+      // Step 4: Redirect to payment gateway
+      setTimeout(() => {
+        // Create a form and submit it to the payment gateway
+        const form = document.createElement('form')
+        form.method = 'POST'
+        form.action = paymentData.payment_url
+
+        // Add all payment data as hidden fields
+        Object.entries(paymentData.payment_data).forEach(([key, value]) => {
+          const input = document.createElement('input')
+          input.type = 'hidden'
+          input.name = key
+          input.value = value as string
+          form.appendChild(input)
+        })
+
+        document.body.appendChild(form)
+        form.submit()
+      }, 1500)
+
+    } catch (error) {
+      console.error('Error in gift card creation/payment flow:', error)
+      setSubmitError(error instanceof Error ? error.message : 'An unexpected error occurred')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const nextCard = () => {
@@ -99,6 +319,22 @@ export default function GiftCardPage() {
       setSelectedDesign(1)
     }
   }
+
+  // Check login status
+  useEffect(() => {
+    const userDataStr = localStorage.getItem('userData')
+    if (userDataStr) {
+      try {
+        const userData = JSON.parse(userDataStr)
+        setIsLoggedIn(!!userData.id)
+      } catch (error) {
+        console.error('Error parsing user data:', error)
+        setIsLoggedIn(false)
+      }
+    } else {
+      setIsLoggedIn(false)
+    }
+  }, [])
 
   // Fetch occasions from Zenoti API
   useEffect(() => {
@@ -193,22 +429,14 @@ export default function GiftCardPage() {
       
       <div className="flex flex-col lg:flex-row items-start max-w-[1400px] mx-auto px-4 md:px-6">
         <main className="flex-1 p-4 md:p-8 w-full">
-          <div className="mb-6 md:mb-8 max-w-[1100px] mx-auto">
-            <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Gift Cards</h1>
-            <h2 className="text-[#454545] font-inter">Choose the perfect gift for your loved ones</h2>
-          </div>
-
+          
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1100px] mx-auto">
             {/* Left Section - Gift Card Configuration */}
             <div className="space-y-8 bg-white/50 backdrop-blur-sm rounded-xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border border-white/20">
               {/* Title */}
               <div>
-                <h1 className="text-3xl font-semibold text-[#232323] mb-2 font-marcellus">
-                  I Would Like to Gift
-                </h1>
-                <p className="text-[#454545] font-inter">
-                  Choose the perfect gift amount for a relaxing spa experience
-                </p>
+              <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Gift Cards</h1>
+              <h2 className="text-[#454545] font-inter">Choose the perfect gift for your loved ones</h2>
               </div>
 
               {/* Amount Selection */}
@@ -303,7 +531,10 @@ export default function GiftCardPage() {
                   <Input
                     value={recipientName}
                     placeholder="Enter Recipient Name"
-                    onChange={(e) => setRecipientName(e.target.value)}
+                    onChange={(e) => {
+                      setRecipientName(e.target.value)
+                      setSubmitError(null)
+                    }}
                     className="bg-white/70 border-[#a07735]/30 focus:border-[#a07735] focus:ring-0 focus:ring-offset-0 focus:outline-none"
                   />
                 </div>
@@ -316,18 +547,22 @@ export default function GiftCardPage() {
                     type="email"
                     value={recipientEmail}
                     placeholder="Enter Recipient Email"
-                    onChange={(e) => setRecipientEmail(e.target.value)}
+                    onChange={(e) => {
+                      setRecipientEmail(e.target.value)
+                      setSubmitError(null)
+                    }}
                     className="bg-white/70 border-[#a07735]/30 focus:border-[#a07735] focus:ring-0 focus:ring-offset-0 focus:outline-none"
                   />
                 </div>
 
                 <div>
                   <Label className="text-sm font-medium text-[#454545] mb-2 block font-inter">
-                    Recipient Phone Number
+                    Recipient Phone (Optional)
                   </Label>
                   <Input
+                    type="tel"
                     value={recipientPhone}
-                    placeholder="Enter Recipient Phone Number"
+                    placeholder="Enter Recipient Phone"
                     onChange={(e) => setRecipientPhone(e.target.value)}
                     className="bg-white/70 border-[#a07735]/30 focus:border-[#a07735] focus:ring-0 focus:ring-offset-0 focus:outline-none"
                   />
@@ -466,9 +701,16 @@ export default function GiftCardPage() {
               {/* Delivery Date */}
               <div>
                 <Label className="text-sm font-medium text-[#454545] mb-4 block font-inter">
-                  Delivery Date (Required)
+                  Delivery Date
                 </Label>
-                <RadioGroup value={deliveryOption} onValueChange={setDeliveryOption}>
+                <RadioGroup value={deliveryOption} onValueChange={(value) => {
+                  setDeliveryOption(value)
+                  if (value === "now") {
+                    setDeliveryDate(undefined)
+                    setDeliveryTime("09:00")
+                  }
+                  setSubmitError(null)
+                }}>
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="now" id="now" className="text-[#a07735]" />
@@ -484,21 +726,114 @@ export default function GiftCardPage() {
                     </div>
                   </div>
                 </RadioGroup>
+
+                {/* Date Picker for Send Later */}
+                {deliveryOption === "later" && (
+                  <div className="mt-4 space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium text-[#454545] mb-2 block font-inter">
+                        Select Delivery Date
+                      </Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal bg-white/70 border-[#a07735]/30 focus:border-[#a07735] focus:ring-0 focus:ring-offset-0",
+                              !deliveryDate && "text-muted-foreground"
+                            )}
+                          >
+                            <Calendar className="mr-2 h-4 w-4" />
+                            {deliveryDate ? format(deliveryDate, "PPP") : "Pick a date"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <CalendarComponent
+                            mode="single"
+                            selected={deliveryDate}
+                            onSelect={(date) => {
+                              setDeliveryDate(date || undefined)
+                              setSubmitError(null)
+                            }}
+                            disabled={(date) => date <= new Date()}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium text-[#454545] mb-2 block font-inter">
+                        Select Delivery Time
+                      </Label>
+                      <Input
+                        type="time"
+                        value={deliveryTime}
+                        onChange={(e) => {
+                          setDeliveryTime(e.target.value)
+                          setSubmitError(null)
+                        }}
+                        className="bg-white/70 border-[#a07735]/30 focus:border-[#a07735] focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                      />
+                    </div>
+
+                    {deliveryDate && (
+                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="text-sm text-blue-800 font-inter">
+                          <strong>Selected Delivery:</strong><br />
+                          {format(deliveryDate, "PPP")} at {deliveryTime}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Preview and Pay Section */}
               <div className="mt-8 text-center">
+                {/* Error Message */}
+                {submitError && (
+                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-600 text-sm font-inter">{submitError}</p>
+                  </div>
+                )}
+
+                {/* Success Message */}
+                {submitSuccess && (
+                  <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-green-600 text-sm font-inter">Gift card created successfully! Redirecting to payment gateway...</p>
+                  </div>
+                )}
+
                 <Button
                   onClick={handlePreviewAndPay}
-                  className="relative w-full sm:w-[300px] h-[32px] sm:h-[36px] p-4 sm:p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-base sm:text-[20px] leading-[17px] text-center text-[#98564D] hover:scale-105 transition-transform duration-300"
+                  disabled={isSubmitting}
+                  className="relative w-full sm:w-[300px] h-[32px] sm:h-[36px] p-4 sm:p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-base sm:text-[20px] leading-[17px] text-center text-[#98564D] hover:scale-105 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  Preview and Pay
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Creating Gift Card...
+                    </>
+                  ) : (
+                    'Preview and Pay'
+                  )}
                 </Button>
                 
                 <div className="flex items-center justify-center gap-2 mt-4 text-sm text-[#454545]">
                   <Info className="h-4 w-4 text-[#98564D]" />
                   <span className="font-inter text-sm">This gift card can be redeemed for any spa service or product</span>
                 </div>
+                
+                {/* <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h4 className="text-sm font-medium text-blue-800 mb-2">How it works:</h4>
+                  <ul className="text-xs text-blue-700 space-y-1">
+                    <li>• Fill in the gift card details above</li>
+                    <li>• Click "Preview and Pay" to create your gift card</li>
+                    <li>• Complete payment through our secure gateway</li>
+                    <li>• Gift card will be delivered to the recipient's email</li>
+                  </ul>
+                </div> */}
               </div>
             </div>
           </div>

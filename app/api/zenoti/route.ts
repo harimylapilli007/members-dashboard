@@ -14,7 +14,7 @@ export async function GET(request: Request) {
 
     const response = await fetch(`https://api.zenoti.com/v1/guests/search?phone=${phone}`, {
       headers: {
-        'Authorization': `${process.env.ZENOTI_API_KEY}`,
+        'Authorization': `apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283`,
         'accept': 'application/json',
         'content-type': 'application/json'
       }

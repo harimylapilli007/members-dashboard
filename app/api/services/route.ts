@@ -103,7 +103,8 @@ export async function GET(request: Request) {
     console.log('Environment check:', {
       ZENOTI_API_KEY: apiKey ? 'Present' : 'Missing',
       NODE_ENV: process.env.NODE_ENV,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      key: apiKey
     })
     
     if (!apiKey) {

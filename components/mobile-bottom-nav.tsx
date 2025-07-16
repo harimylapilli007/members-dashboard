@@ -11,7 +11,8 @@ import {
   ShoppingBag, 
   Calendar, 
   Heart,
-  User
+  User,
+  GiftIcon
 } from "lucide-react"
 
 export default function MobileBottomNav() {
@@ -49,6 +50,11 @@ export default function MobileBottomNav() {
         name: "View Bookings",
         href: "/view-bookings",
         icon: Heart,
+      },
+      {
+        name: "My Gift Cards",
+        href: "/gift-cards/my-gift-cards",
+        icon: GiftIcon,
       },
       {
         name: "Profile",

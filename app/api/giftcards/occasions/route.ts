@@ -3,11 +3,10 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     console.log('Fetching gift card occasions from Zenoti API')
-    console.log(process.env)
-
-    console.log('ZENOTI_API_KEY:', process.env.ZENOTI_API_KEY ? 'Set' : 'Not set')
-    
-    if (!process.env.ZENOTI_API_KEY) {
+ 
+    // const apiKey = process.env.ZENOTI_API_KEY
+    const apiKey = "apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283"   //local
+    if (!apiKey) {
       console.error('ZENOTI_API_KEY is not set in environment variables')
       return NextResponse.json(
         { 
@@ -20,7 +19,7 @@ export async function GET() {
 
     const response = await fetch('https://api.zenoti.com/v1/giftcards/occasions', {
       headers: {
-        'Authorization': `${process.env.ZENOTI_API_KEY}`,
+        'Authorization': `${apiKey}`,
         'accept': 'application/json',
         'content-type': 'application/json'
       }
