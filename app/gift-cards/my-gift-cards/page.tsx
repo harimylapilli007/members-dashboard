@@ -95,7 +95,7 @@ function MyGiftCardsContent() {
   }
 
   const handleGoToDashboard = () => {
-    router.push('/dashboard')
+    router.push('/')
   }
 
   const formatDate = (dateString: string) => {

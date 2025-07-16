@@ -194,7 +194,6 @@ export default function Header() {
               <span className="relative z-10 text-[14px] lg:text-[16px]">VIEW BOOKINGS</span>
             </Link>
           )}
-          {user && (
             <div className="relative group">
               <Link 
                 href="/gift-cards" 
@@ -228,7 +227,6 @@ export default function Header() {
                 </div>
               </div>
             </div>
-          )}
         </nav>
 
         {/* Desktop Auth Buttons */}
@@ -324,7 +322,6 @@ export default function Header() {
                   </span>
                 </Link>
               )}
-              {user && (
                 <Link 
                   href="/gift-cards" 
                   className={cn(
@@ -341,7 +338,6 @@ export default function Header() {
                     BUY GIFT CARDS
                   </span>
                 </Link>
-              )}
               {user && (
                 <Link 
                   href="/gift-cards/my-gift-cards" 

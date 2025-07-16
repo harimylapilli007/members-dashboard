@@ -44,18 +44,23 @@ export default function MobileBottomNav() {
       href: localStorage.getItem('selectedArea') ? `/ServiceBookingPage?guestId=${user?.uid || userData?.id}` : `/ServiceBookingPage?openModal=true&guestId=${user?.uid || userData?.id}`,
       icon: Calendar,
     },
+    {
+      name: "Buy Gift Cards",
+      href: "/gift-cards",
+      icon: GiftIcon,
+    },
     // Only show these items when user is logged in
     ...(user ? [
-      {
-        name: "View Bookings",
-        href: "/view-bookings",
-        icon: Heart,
-      },
-      {
-        name: "My Gift Cards",
-        href: "/gift-cards/my-gift-cards",
-        icon: GiftIcon,
-      },
+      // {
+      //   name: "View Bookings",
+      //   href: "/view-bookings",
+      //   icon: Heart,
+      // },
+      // {
+      //   name: "My Gift Cards",
+      //   href: "/gift-cards/my-gift-cards",
+      //   icon: GiftIcon,
+      // },
       {
         name: "Profile",
         href: "/profile",
