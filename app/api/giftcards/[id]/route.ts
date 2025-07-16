@@ -5,7 +5,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id: giftCardId } = await params
+    const { id: giftCardId } = params
     
     if (!giftCardId) {
       return NextResponse.json(
