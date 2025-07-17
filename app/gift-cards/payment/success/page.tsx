@@ -245,6 +245,233 @@ function GiftCardPaymentSuccessContent() {
     }
   }
 
+  const handleShareGiftCard = async () => {
+    try {
+      // Create the gift card as a blob first
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        throw new Error('Could not get canvas context')
+      }
+
+      // Set canvas size
+      canvas.width = 800
+      canvas.height = 500
+
+      // Create gradient background
+      const gradient = ctx.createLinearGradient(0, 0, 800, 500)
+      
+      let color1 = '#a07735'
+      let color2 = '#8B4513'
+      
+      if (design.background.includes('linear-gradient')) {
+        const colorMatch = design.background.match(/#[a-fA-F0-9]{6}/g)
+        if (colorMatch && colorMatch.length >= 2) {
+          color1 = colorMatch[0]
+          color2 = colorMatch[1]
+        }
+      }
+      
+      gradient.addColorStop(0, color1)
+      gradient.addColorStop(1, color2)
+      
+      ctx.fillStyle = gradient
+      ctx.fillRect(0, 0, 800, 500)
+
+      // Add decorative elements
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'
+      ctx.beginPath()
+      ctx.arc(100, 100, 50, 0, 2 * Math.PI)
+      ctx.fill()
+
+      ctx.beginPath()
+      ctx.arc(700, 150, 30, 0, 2 * Math.PI)
+      ctx.fill()
+
+      ctx.beginPath()
+      ctx.arc(150, 400, 25, 0, 2 * Math.PI)
+      ctx.fill()
+
+      // Add main content
+      ctx.fillStyle = design.textColor
+      ctx.font = 'bold 48px "Marcellus", Arial, sans-serif'
+      ctx.textAlign = 'center'
+      ctx.fillText(design.icon, 400, 120)
+
+      ctx.font = 'bold 36px "Marcellus", Arial, sans-serif'
+      ctx.fillText(design.title, 400, 180)
+
+      ctx.font = '18px "Marcellus", Arial, sans-serif'
+      ctx.fillText(design.subtitle, 400, 220)
+
+      // Add amount
+      ctx.font = 'bold 48px "Marcellus", Arial, sans-serif'
+      ctx.fillText(`₹${paymentDetails?.amount || '1,000'}`, 400, 280)
+
+      // Add recipient name
+      ctx.font = '24px "Marcellus", Arial, sans-serif'
+      ctx.fillText(`To: ${giftCardStatus?.recipientName || 'Recipient'}`, 400, 320)
+
+      // Add message
+      if (giftCardStatus?.message) {
+        ctx.font = '16px "Marcellus", Arial, sans-serif'
+        const words = giftCardStatus.message.split(' ')
+        let line = ''
+        let y = 360
+        for (let word of words) {
+          const testLine = line + word + ' '
+          const metrics = ctx.measureText(testLine)
+          if (metrics.width > 600) {
+            ctx.fillText(line, 400, y)
+            line = word + ' '
+            y += 25
+          } else {
+            line = testLine
+          }
+        }
+        ctx.fillText(line, 400, y)
+      }
+
+      // Add footer
+      ctx.font = '14px "Marcellus", Arial, sans-serif'
+      ctx.fillText('Ode Spa - Your Wellness Journey', 400, 460)
+      ctx.fillText('Valid for 1 year from purchase date', 400, 480)
+
+      // Convert canvas to blob
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          try {
+            // Create file from blob
+            const file = new File([blob], `gift-card-${giftCardStatus?.giftCardId || Date.now()}.png`, {
+              type: 'image/png',
+            })
+
+            // Check if Web Share API is available
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                title: 'Ode Spa Gift Card',
+                text: `I've sent you a gift card worth ₹${paymentDetails?.amount || '1,000'} for ${giftCardStatus?.occasion || 'a special occasion'}!`,
+                files: [file],
+                url: window.location.origin
+              })
+              
+              toast({
+                title: "Gift Card Shared",
+                description: "Your gift card has been shared successfully.",
+              })
+            } else {
+              // Fallback: copy to clipboard or show share options
+              await handleFallbackShare(file)
+            }
+          } catch (shareError) {
+            console.error('Error sharing gift card:', shareError)
+            // Fallback to download
+            await handleDownloadGiftCard()
+          }
+        }
+      }, 'image/png', 0.9)
+
+    } catch (error) {
+      console.error('Error creating gift card for sharing:', error)
+      toast({
+        variant: "destructive",
+        title: "Share Failed",
+        description: "Failed to share gift card. Please try downloading instead.",
+      })
+    }
+  }
+
+  const handleFallbackShare = async (file: File) => {
+    try {
+      // Try to copy image to clipboard first
+      if (navigator.clipboard && navigator.clipboard.write) {
+        const clipboardItem = new ClipboardItem({
+          [file.type]: file
+        })
+        await navigator.clipboard.write([clipboardItem])
+        
+        toast({
+          title: "Gift Card Copied",
+          description: "Gift card image copied to clipboard. You can now paste it in any app.",
+        })
+      } else {
+        // Final fallback: show share options modal
+        showShareOptionsModal(file)
+      }
+    } catch (clipboardError) {
+      console.error('Clipboard copy failed:', clipboardError)
+      showShareOptionsModal(file)
+    }
+  }
+
+  const showShareOptionsModal = (file: File) => {
+    // Create a modal with share options
+    const modal = document.createElement('div')
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'
+    modal.innerHTML = `
+      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-bold mb-4">Share Gift Card</h3>
+        <p class="text-gray-600 mb-4">Choose how you'd like to share your gift card:</p>
+        <div class="space-y-3">
+          <button id="download-btn" class="w-full bg-[#A07735] text-white py-2 px-4 rounded hover:bg-[#8B4513] transition-colors">
+            Download & Share Manually
+          </button>
+          <button id="email-btn" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors">
+            Share via Email
+          </button>
+          <button id="whatsapp-btn" class="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors">
+            Share via WhatsApp
+          </button>
+          <button id="close-btn" class="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors">
+            Cancel
+          </button>
+        </div>
+      </div>
+    `
+
+    document.body.appendChild(modal)
+
+    // Add event listeners
+    modal.querySelector('#download-btn')?.addEventListener('click', () => {
+      document.body.removeChild(modal)
+      handleDownloadGiftCard()
+    })
+
+    modal.querySelector('#email-btn')?.addEventListener('click', () => {
+      document.body.removeChild(modal)
+      const subject = encodeURIComponent('Your Ode Spa Gift Card')
+      const body = encodeURIComponent(`Hi ${giftCardStatus?.recipientName || 'there'}!
+
+I've sent you a gift card worth ₹${paymentDetails?.amount || '1,000'} for ${giftCardStatus?.occasion || 'a special occasion'}!
+
+${giftCardStatus?.message ? `Message: "${giftCardStatus.message}"` : ''}
+
+You can redeem this at any Ode Spa location. Valid for 1 year from purchase date.
+
+Best regards,
+${userFirstName || 'Your friend'}`)
+      
+      window.open(`mailto:${giftCardStatus?.recipientEmail || ''}?subject=${subject}&body=${body}`)
+    })
+
+    modal.querySelector('#whatsapp-btn')?.addEventListener('click', () => {
+      document.body.removeChild(modal)
+      const message = encodeURIComponent(`Hi ${giftCardStatus?.recipientName || 'there'}! I've sent you a gift card worth ₹${paymentDetails?.amount || '1,000'} for ${giftCardStatus?.occasion || 'a special occasion'}! ${giftCardStatus?.message ? `Message: "${giftCardStatus.message}"` : ''} You can redeem this at any Ode Spa location.`)
+      window.open(`https://wa.me/?text=${message}`)
+    })
+
+    modal.querySelector('#close-btn')?.addEventListener('click', () => {
+      document.body.removeChild(modal)
+    })
+
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        document.body.removeChild(modal)
+      }
+    })
+  }
+
   const downloadAsCanvas = async () => {
     return new Promise((resolve, reject) => {
       try {
@@ -296,27 +523,27 @@ function GiftCardPaymentSuccessContent() {
 
         // Add main content
         ctx.fillStyle = design.textColor
-        ctx.font = 'bold 48px Arial'
+        ctx.font = 'bold 48px "Marcellus", Arial, sans-serif'
         ctx.textAlign = 'center'
         ctx.fillText(design.icon, 400, 120)
 
-        ctx.font = 'bold 36px Arial'
+        ctx.font = 'bold 36px "Marcellus", Arial, sans-serif'
         ctx.fillText(design.title, 400, 180)
 
-        ctx.font = '18px Arial'
+        ctx.font = '18px "Marcellus", Arial, sans-serif'
         ctx.fillText(design.subtitle, 400, 220)
 
         // Add amount
-        ctx.font = 'bold 48px Arial'
+        ctx.font = 'bold 48px "Marcellus", Arial, sans-serif'
         ctx.fillText(`₹${paymentDetails?.amount || '1,000'}`, 400, 280)
 
         // Add recipient name
-        ctx.font = '24px Arial'
+        ctx.font = '24px "Marcellus", Arial, sans-serif'
         ctx.fillText(`To: ${giftCardStatus?.recipientName || 'Recipient'}`, 400, 320)
 
         // Add message
         if (giftCardStatus?.message) {
-          ctx.font = '16px Arial'
+          ctx.font = '16px "Marcellus", Arial, sans-serif'
           const words = giftCardStatus.message.split(' ')
           let line = ''
           let y = 360
@@ -335,7 +562,7 @@ function GiftCardPaymentSuccessContent() {
         }
 
         // Add footer
-        ctx.font = '14px Arial'
+        ctx.font = '14px "Marcellus", Arial, sans-serif'
         ctx.fillText('Ode Spa - Your Wellness Journey', 400, 460)
         ctx.fillText('Valid for 1 year from purchase date', 400, 480)
 
@@ -581,7 +808,7 @@ function GiftCardPaymentSuccessContent() {
             {/* Right Side - Gift Card Preview */}
                          <div className="bg-white/50 rounded-2xl shadow-xl p-8">
                <div className="relative">
-                 <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Gift Card Preview</h3>
+                 <h3 className="text-xl font-bold text-gray-900 mb-6 text-center font-['Marcellus']">Gift Card Preview</h3>
                  {/* Gift Card Preview */}
                  <div 
                    className="rounded-xl p-6 relative overflow-hidden h-80 w-full max-w-md flex flex-col justify-center items-center mx-auto shadow-lg"
@@ -593,17 +820,17 @@ function GiftCardPaymentSuccessContent() {
                   <div className="absolute bottom-6 left-6 w-4 h-4 bg-white/20 rounded-full"></div>
                   
                   {/* Main card content */}
-                                     <div className="z-10 text-center p-8 flex flex-col items-center justify-center">
+                      <div className="z-10 text-center p-8 flex flex-col items-center justify-center">
                      <div className="text-4xl mb-4">{design.icon}</div>
-                     <h3 className="text-2xl font-bold mb-2" style={{ color: design.textColor }}>
+                     <h2 className="text-2xl font-bold mb-2 font-['Marcellus']" style={{ color: design.textColor }}>
                        {design.title}
-                     </h3>
-                     <p className="text-sm mb-6 opacity-90" style={{ color: design.textColor }}>
+                     </h2>
+                     <p className="text-sm mb-6 opacity-90 font-['Marcellus']" style={{ color: design.textColor }}>
                        {design.subtitle}
                      </p>
                      
                      <div className="bg-white/20 rounded-lg p-4 mb-4 backdrop-blur-sm">
-                       <div className="text-3xl font-bold" style={{ color: design.textColor }}>
+                       <div className="text-3xl font-bold font-['Marcellus']" style={{ color: design.textColor }}>
                          ₹{paymentDetails?.amount || '1,000'}
                        </div>
                      </div>
@@ -621,10 +848,10 @@ function GiftCardPaymentSuccessContent() {
                   
                   {/* Footer */}
                   <div className="absolute bottom-4 left-4 right-4 text-center">
-                    <div className="text-xs opacity-70" style={{ color: design.textColor }}>
+                    <div className="text-xs opacity-70 font-['Marcellus']" style={{ color: design.textColor }}>
                       Ode Spa - Your Wellness Journey
                     </div>
-                    <div className="text-xs opacity-60" style={{ color: design.textColor }}>
+                    <div className="text-xs opacity-60 font-['Marcellus']" style={{ color: design.textColor }}>
                       Valid for 1 year from purchase date
                     </div>
                   </div>
@@ -643,6 +870,16 @@ function GiftCardPaymentSuccessContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 4H4C2.89 4 2 4.89 2 6V18C2 19.11 2.89 20 4 20H20C21.11 20 22 19.11 22 18V6C22 4.89 21.11 4 20 4ZM20 18H4V12H20V18ZM20 8H4V6H20V8Z" />
               </svg>
               Send Another Gift
+            </Button>
+            
+            <Button
+              className="flex-1 sm:flex-none h-12 rounded-lg bg-gradient-to-r from-green-400 to-green-500 text-white font-semibold hover:from-green-500 hover:to-green-600 transition-all duration-200"
+              onClick={handleShareGiftCard}
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+              </svg>
+              Share Gift Card
             </Button>
             
             <Button

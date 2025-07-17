@@ -9,6 +9,66 @@ import { useToast } from "@/hooks/use-toast"
 import { CalendarIcon, GiftIcon, UserIcon, MailIcon, MessageSquareIcon, ClockIcon, DollarSignIcon, SparklesIcon, StarIcon, HeartIcon, Share2Icon, CopyIcon, CheckIcon } from "lucide-react"
 import Header from "@/app/components/Header"
 
+// Gift card design configurations
+const giftCardDesigns = {
+  birthday: {
+    background: "linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%)",
+    accentColor: "#ff4757",
+    textColor: "#2d3436",
+    icon: "🎂",
+    title: "Happy Birthday!",
+    subtitle: "Wishing you a day filled with joy and relaxation"
+  },
+  anniversary: {
+    background: "linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%)",
+    accentColor: "#5f3dc4",
+    textColor: "#ffffff",
+    icon: "💕",
+    title: "Happy Anniversary!",
+    subtitle: "Celebrating your special day with love"
+  },
+  diwali: {
+    background: "linear-gradient(135deg, #fdcb6e 0%, #e17055 100%)",
+    accentColor: "#d63031",
+    textColor: "#2d3436",
+    icon: "🪔",
+    title: "Happy Diwali!",
+    subtitle: "May your life be as bright as the festival of lights"
+  },
+  christmas: {
+    background: "linear-gradient(135deg, #00b894 0%, #00cec9 100%)",
+    accentColor: "#00a085",
+    textColor: "#ffffff",
+    icon: "🎄",
+    title: "Merry Christmas!",
+    subtitle: "Wishing you peace, joy, and relaxation"
+  },
+  newyear: {
+    background: "linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)",
+    accentColor: "#0652dd",
+    textColor: "#ffffff",
+    icon: "🎆",
+    title: "Happy New Year!",
+    subtitle: "New beginnings, new wellness journey"
+  },
+  mothersday: {
+    background: "linear-gradient(135deg, #fd79a8 0%, #e84393 100%)",
+    accentColor: "#c44569",
+    textColor: "#ffffff",
+    icon: "🌹",
+    title: "Happy Mother's Day!",
+    subtitle: "Thank you for all the love and care"
+  },
+  default: {
+    background: "linear-gradient(135deg, #a07735 0%, #8B4513 100%)",
+    accentColor: "#8B4513",
+    textColor: "#ffffff",
+    icon: "🎁",
+    title: "Gift Card",
+    subtitle: "A special gift for someone special"
+  }
+}
+
 interface GiftCard {
   id: string
   amount: number
@@ -228,6 +288,274 @@ function MyGiftCardsContent() {
     const encodedText = encodeURIComponent(text)
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodeURIComponent(window.location.href)}`
     window.open(twitterUrl, '_blank')
+  }
+
+  // Get gift card design based on occasion
+  const getGiftCardDesign = (occasion?: string) => {
+    if (!occasion) return giftCardDesigns.default
+    
+    const occasionKey = occasion.toLowerCase().replace(/\s+/g, '')
+    
+    // Try exact match first
+    if (giftCardDesigns[occasionKey as keyof typeof giftCardDesigns]) {
+      return giftCardDesigns[occasionKey as keyof typeof giftCardDesigns]
+    }
+    
+    // Try partial matches
+    if (occasionKey.includes('birthday')) return giftCardDesigns.birthday
+    if (occasionKey.includes('anniversary')) return giftCardDesigns.anniversary
+    if (occasionKey.includes('diwali')) return giftCardDesigns.diwali
+    if (occasionKey.includes('christmas')) return giftCardDesigns.christmas
+    if (occasionKey.includes('newyear') || occasionKey.includes('new_year')) return giftCardDesigns.newyear
+    if (occasionKey.includes('mothersday') || occasionKey.includes('mothers_day')) return giftCardDesigns.mothersday
+    
+    return giftCardDesigns.default
+  }
+
+  const handleShareGiftCard = async (giftCard: GiftCard) => {
+    try {
+      const design = getGiftCardDesign(giftCard.occasion)
+      
+      // Create a canvas element to render the gift card
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        throw new Error('Could not get canvas context')
+      }
+
+      // Set canvas size
+      canvas.width = 800
+      canvas.height = 500
+
+      // Create gradient background
+      const gradient = ctx.createLinearGradient(0, 0, 800, 500)
+      
+      let color1 = '#a07735'
+      let color2 = '#8B4513'
+      
+      if (design.background.includes('linear-gradient')) {
+        const colorMatch = design.background.match(/#[a-fA-F0-9]{6}/g)
+        if (colorMatch && colorMatch.length >= 2) {
+          color1 = colorMatch[0]
+          color2 = colorMatch[1]
+        }
+      }
+      
+      gradient.addColorStop(0, color1)
+      gradient.addColorStop(1, color2)
+      
+      ctx.fillStyle = gradient
+      ctx.fillRect(0, 0, 800, 500)
+
+      // Add decorative elements
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'
+      ctx.beginPath()
+      ctx.arc(100, 100, 50, 0, 2 * Math.PI)
+      ctx.fill()
+
+      ctx.beginPath()
+      ctx.arc(700, 150, 30, 0, 2 * Math.PI)
+      ctx.fill()
+
+      ctx.beginPath()
+      ctx.arc(150, 400, 25, 0, 2 * Math.PI)
+      ctx.fill()
+
+      // Add main content
+      ctx.fillStyle = design.textColor
+      ctx.font = 'bold 48px "Marcellus", Arial, sans-serif'
+      ctx.textAlign = 'center'
+      ctx.fillText(design.icon, 400, 120)
+
+      ctx.font = 'bold 36px "Marcellus", Arial, sans-serif'
+      ctx.fillText(design.title, 400, 180)
+
+      ctx.font = '18px "Marcellus", Arial, sans-serif'
+      ctx.fillText(design.subtitle, 400, 220)
+
+      // Add amount
+      ctx.font = 'bold 48px "Marcellus", Arial, sans-serif'
+      ctx.fillText(`₹${giftCard.balance || giftCard.value || giftCard.amount || '1,000'}`, 400, 280)
+
+      // Add recipient name
+      ctx.font = '24px "Marcellus", Arial, sans-serif'
+      ctx.fillText(`To: ${giftCard.recipient_name || 'Recipient'}`, 400, 320)
+
+      // Add message
+      if (giftCard.message) {
+        ctx.font = '16px "Marcellus", Arial, sans-serif'
+        const words = giftCard.message.split(' ')
+        let line = ''
+        let y = 360
+        for (let word of words) {
+          const testLine = line + word + ' '
+          const metrics = ctx.measureText(testLine)
+          if (metrics.width > 600) {
+            ctx.fillText(line, 400, y)
+            line = word + ' '
+            y += 25
+          } else {
+            line = testLine
+          }
+        }
+        ctx.fillText(line, 400, y)
+      }
+
+      // Add footer
+      ctx.font = '14px "Marcellus", Arial, sans-serif'
+      ctx.fillText('Ode Spa - Your Wellness Journey', 400, 460)
+      ctx.fillText('Valid for 1 year from purchase date', 400, 480)
+
+      // Convert canvas to blob
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          try {
+            // Create file from blob
+            const file = new File([blob], `gift-card-${giftCard.actual_code || giftCard.id || Date.now()}.png`, {
+              type: 'image/png',
+            })
+
+            // Check if Web Share API is available
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                title: 'Ode Spa Gift Card',
+                text: `I've sent you a gift card worth ₹${giftCard.balance || giftCard.value || giftCard.amount || '1,000'} for ${giftCard.occasion || 'a special occasion'}!`,
+                files: [file],
+                url: window.location.origin
+              })
+              
+              toast({
+                title: "Gift Card Shared",
+                description: "Your gift card has been shared successfully.",
+              })
+            } else {
+              // Fallback: copy to clipboard or show share options
+              await handleFallbackShare(file, giftCard)
+            }
+          } catch (shareError) {
+            console.error('Error sharing gift card:', shareError)
+            // Fallback to text sharing
+            shareToWhatsApp(giftCard)
+          }
+        }
+      }, 'image/png', 0.9)
+
+    } catch (error) {
+      console.error('Error creating gift card for sharing:', error)
+      toast({
+        variant: "destructive",
+        title: "Share Failed",
+        description: "Failed to share gift card. Please try text sharing instead.",
+      })
+    }
+  }
+
+  const handleFallbackShare = async (file: File, giftCard: GiftCard) => {
+    try {
+      // Try to copy image to clipboard first
+      if (navigator.clipboard && navigator.clipboard.write) {
+        const clipboardItem = new ClipboardItem({
+          [file.type]: file
+        })
+        await navigator.clipboard.write([clipboardItem])
+        
+        toast({
+          title: "Gift Card Copied",
+          description: "Gift card image copied to clipboard. You can now paste it in any app.",
+        })
+      } else {
+        // Final fallback: show share options modal
+        showShareOptionsModal(file, giftCard)
+      }
+    } catch (clipboardError) {
+      console.error('Clipboard copy failed:', clipboardError)
+      showShareOptionsModal(file, giftCard)
+    }
+  }
+
+  const showShareOptionsModal = (file: File, giftCard: GiftCard) => {
+    // Create a modal with share options
+    const modal = document.createElement('div')
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'
+    modal.innerHTML = `
+      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-bold mb-4">Share Gift Card</h3>
+        <p class="text-gray-600 mb-4">Choose how you'd like to share your gift card:</p>
+        <div class="space-y-3">
+          <button id="download-btn" class="w-full bg-[#A07735] text-white py-2 px-4 rounded hover:bg-[#8B4513] transition-colors">
+            Download & Share Manually
+          </button>
+          <button id="email-btn" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors">
+            Share via Email
+          </button>
+          <button id="whatsapp-btn" class="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors">
+            Share via WhatsApp
+          </button>
+          <button id="close-btn" class="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors">
+            Cancel
+          </button>
+        </div>
+      </div>
+    `
+
+    document.body.appendChild(modal)
+
+    // Add event listeners
+    modal.querySelector('#download-btn')?.addEventListener('click', () => {
+      document.body.removeChild(modal)
+      downloadGiftCard(file, giftCard)
+    })
+
+    modal.querySelector('#email-btn')?.addEventListener('click', () => {
+      document.body.removeChild(modal)
+      const subject = encodeURIComponent('Your Ode Spa Gift Card')
+      const body = encodeURIComponent(`Hi ${giftCard.recipient_name || 'there'}!
+
+I've sent you a gift card worth ₹${giftCard.balance || giftCard.value || giftCard.amount || '1,000'} for ${giftCard.occasion || 'a special occasion'}!
+
+${giftCard.message ? `Message: "${giftCard.message}"` : ''}
+
+You can redeem this at any Ode Spa location. Valid for 1 year from purchase date.
+
+Best regards,
+${userData?.first_name || userData?.firstName || 'Your friend'}`)
+      
+      window.open(`mailto:${giftCard.recipient_email || ''}?subject=${subject}&body=${body}`)
+    })
+
+    modal.querySelector('#whatsapp-btn')?.addEventListener('click', () => {
+      document.body.removeChild(modal)
+      const message = encodeURIComponent(`Hi ${giftCard.recipient_name || 'there'}! I've sent you a gift card worth ₹${giftCard.balance || giftCard.value || giftCard.amount || '1,000'} for ${giftCard.occasion || 'a special occasion'}! ${giftCard.message ? `Message: "${giftCard.message}"` : ''} You can redeem this at any Ode Spa location.`)
+      window.open(`https://wa.me/?text=${message}`)
+    })
+
+    modal.querySelector('#close-btn')?.addEventListener('click', () => {
+      document.body.removeChild(modal)
+    })
+
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        document.body.removeChild(modal)
+      }
+    })
+  }
+
+  const downloadGiftCard = (file: File, giftCard: GiftCard) => {
+    const url = URL.createObjectURL(file)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `gift-card-${giftCard.actual_code || giftCard.id || Date.now()}.png`
+    a.style.display = 'none'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    
+    toast({
+      title: "Gift Card Downloaded",
+      description: "Your gift card has been downloaded successfully.",
+    })
   }
 
   // Close share dropdown when clicking outside
@@ -456,9 +784,25 @@ function MyGiftCardsContent() {
                           
                           {/* Share Options Dropdown */}
                           {showShareOptions === giftCard.id && (
-                            <div className="absolute right-0 top-10 z-50 bg-white border border-[#A07735] rounded-lg shadow-lg p-2 min-w-[200px] share-dropdown">
+                            <div className="absolute right-0 top-10 z-50 bg-white border border-[#A07735] rounded-lg shadow-lg p-2 min-w-[220px] share-dropdown">
                               <div className="text-xs font-semibold text-[#8B5A2B] mb-2 px-2">Share Gift Card</div>
                               <div className="space-y-1">
+                                <button
+                                  onClick={() => {
+                                    handleShareGiftCard(giftCard)
+                                    setShowShareOptions(null)
+                                  }}
+                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-green-50 rounded text-left transition-colors border-b border-gray-100"
+                                >
+                                  <div className="w-5 h-5 bg-gradient-to-r from-green-400 to-green-500 rounded flex items-center justify-center">
+                                    <Share2Icon className="h-3 w-3 text-white" />
+                                  </div>
+                                  <div>
+                                    <div className="font-medium">Share as Image</div>
+                                    <div className="text-xs text-gray-500">Beautiful gift card design</div>
+                                  </div>
+                                </button>
+                                
                                 <button
                                   onClick={() => {
                                     shareToWhatsApp(giftCard)
