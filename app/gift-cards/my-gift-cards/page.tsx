@@ -221,74 +221,7 @@ function MyGiftCardsContent() {
     return <GiftIcon className="h-4 w-4" />
   }
 
-  const generateShareText = (giftCard: GiftCard) => {
-    const cardInfo = [
-      `🎁 Gift Card: ${giftCard.actual_code}`,
-      `💰 Value: ${formatCurrency(giftCard.balance || giftCard.value || 0)}`,
-      giftCard.recipient_name ? `👤 Recipient: ${giftCard.recipient_name}` : '',
-      giftCard.occasion ? `🎉 Occasion: ${giftCard.occasion}` : '',
-      giftCard.message ? `💌 Message: "${giftCard.message}"` : '',
-      `📅 Created: ${formatDate(giftCard.sale_date)}`,
-      giftCard.expiry_date ? `⏰ Expires: ${formatDate(giftCard.expiry_date)}` : '',
-      `\n💝 Share this beautiful gift card with your loved ones!`
-    ].filter(Boolean).join('\n')
-    
-    return cardInfo
-  }
 
-  const shareToWhatsApp = (giftCard: GiftCard) => {
-    const text = generateShareText(giftCard)
-    const encodedText = encodeURIComponent(text)
-    const whatsappUrl = `https://wa.me/?text=${encodedText}`
-    window.open(whatsappUrl, '_blank')
-  }
-
-  const shareToEmail = (giftCard: GiftCard) => {
-    const subject = encodeURIComponent(`🎁 Gift Card ${giftCard.actual_code} - ${giftCard.recipient_name || 'Special Gift'}`)
-    const body = encodeURIComponent(generateShareText(giftCard))
-    const mailtoUrl = `mailto:?subject=${subject}&body=${body}`
-    window.open(mailtoUrl)
-  }
-
-  const shareToTelegram = (giftCard: GiftCard) => {
-    const text = generateShareText(giftCard)
-    const encodedText = encodeURIComponent(text)
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodedText}`
-    window.open(telegramUrl, '_blank')
-  }
-
-  const copyToClipboard = async (giftCard: GiftCard) => {
-    try {
-      const text = generateShareText(giftCard)
-      await navigator.clipboard.writeText(text)
-      setCopiedCardId(giftCard.id)
-      toast({
-        title: "Copied!",
-        description: "Gift card details copied to clipboard",
-      })
-      setTimeout(() => setCopiedCardId(null), 2000)
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to copy to clipboard",
-      })
-    }
-  }
-
-  const shareToFacebook = (giftCard: GiftCard) => {
-    const text = generateShareText(giftCard)
-    const encodedText = encodeURIComponent(text)
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodedText}`
-    window.open(facebookUrl, '_blank')
-  }
-
-  const shareToTwitter = (giftCard: GiftCard) => {
-    const text = generateShareText(giftCard)
-    const encodedText = encodeURIComponent(text)
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodeURIComponent(window.location.href)}`
-    window.open(twitterUrl, '_blank')
-  }
 
   // Get gift card design based on occasion
   const getGiftCardDesign = (occasion?: string) => {
@@ -321,7 +254,7 @@ function MyGiftCardsContent() {
       const ctx = canvas.getContext('2d')
       if (!ctx) {
         throw new Error('Could not get canvas context')
-      }
+  }
 
       // Set canvas size
       canvas.width = 800
@@ -377,9 +310,7 @@ function MyGiftCardsContent() {
       ctx.font = 'bold 48px "Marcellus", Arial, sans-serif'
       ctx.fillText(`₹${giftCard.balance || giftCard.value || giftCard.amount || '1,000'}`, 400, 280)
 
-      // Add recipient name
-      ctx.font = '24px "Marcellus", Arial, sans-serif'
-      ctx.fillText(`To: ${giftCard.recipient_name || 'Recipient'}`, 400, 320)
+      
 
       // Add message
       if (giftCard.message) {
@@ -409,9 +340,9 @@ function MyGiftCardsContent() {
       // Convert canvas to blob
       canvas.toBlob(async (blob) => {
         if (blob) {
+          let file: File | undefined;
           try {
-            // Create file from blob
-            const file = new File([blob], `gift-card-${giftCard.actual_code || giftCard.id || Date.now()}.png`, {
+            file = new File([blob], `gift-card-${giftCard.actual_code || giftCard.id || Date.now()}.png`, {
               type: 'image/png',
             })
 
@@ -423,7 +354,6 @@ function MyGiftCardsContent() {
                 files: [file],
                 url: window.location.origin
               })
-              
               toast({
                 title: "Gift Card Shared",
                 description: "Your gift card has been shared successfully.",
@@ -434,8 +364,8 @@ function MyGiftCardsContent() {
             }
           } catch (shareError) {
             console.error('Error sharing gift card:', shareError)
-            // Fallback to text sharing
-            shareToWhatsApp(giftCard)
+            // Fallback to download
+            if (file) downloadGiftCard(file, giftCard)
           }
         }
       }, 'image/png', 0.9)
@@ -480,16 +410,10 @@ function MyGiftCardsContent() {
     modal.innerHTML = `
       <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
         <h3 class="text-lg font-bold mb-4">Share Gift Card</h3>
-        <p class="text-gray-600 mb-4">Choose how you'd like to share your gift card:</p>
+        <p class="text-gray-600 mb-4">You can download your gift card as an image and share it anywhere.</p>
         <div class="space-y-3">
           <button id="download-btn" class="w-full bg-[#A07735] text-white py-2 px-4 rounded hover:bg-[#8B4513] transition-colors">
-            Download & Share Manually
-          </button>
-          <button id="email-btn" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors">
-            Share via Email
-          </button>
-          <button id="whatsapp-btn" class="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors">
-            Share via WhatsApp
+            Download Gift Card Image
           </button>
           <button id="close-btn" class="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors">
             Cancel
@@ -504,29 +428,6 @@ function MyGiftCardsContent() {
     modal.querySelector('#download-btn')?.addEventListener('click', () => {
       document.body.removeChild(modal)
       downloadGiftCard(file, giftCard)
-    })
-
-    modal.querySelector('#email-btn')?.addEventListener('click', () => {
-      document.body.removeChild(modal)
-      const subject = encodeURIComponent('Your Ode Spa Gift Card')
-      const body = encodeURIComponent(`Hi ${giftCard.recipient_name || 'there'}!
-
-I've sent you a gift card worth ₹${giftCard.balance || giftCard.value || giftCard.amount || '1,000'} for ${giftCard.occasion || 'a special occasion'}!
-
-${giftCard.message ? `Message: "${giftCard.message}"` : ''}
-
-You can redeem this at any Ode Spa location. Valid for 1 year from purchase date.
-
-Best regards,
-${userData?.first_name || userData?.firstName || 'Your friend'}`)
-      
-      window.open(`mailto:${giftCard.recipient_email || ''}?subject=${subject}&body=${body}`)
-    })
-
-    modal.querySelector('#whatsapp-btn')?.addEventListener('click', () => {
-      document.body.removeChild(modal)
-      const message = encodeURIComponent(`Hi ${giftCard.recipient_name || 'there'}! I've sent you a gift card worth ₹${giftCard.balance || giftCard.value || giftCard.amount || '1,000'} for ${giftCard.occasion || 'a special occasion'}! ${giftCard.message ? `Message: "${giftCard.message}"` : ''} You can redeem this at any Ode Spa location.`)
-      window.open(`https://wa.me/?text=${message}`)
     })
 
     modal.querySelector('#close-btn')?.addEventListener('click', () => {
@@ -784,7 +685,7 @@ ${userData?.first_name || userData?.firstName || 'Your friend'}`)
                           
                           {/* Share Options Dropdown */}
                           {showShareOptions === giftCard.id && (
-                            <div className="absolute right-0 top-10 z-50 bg-white border border-[#A07735] rounded-lg shadow-lg p-2 min-w-[220px] share-dropdown">
+                            <div className="absolute right-0 top-10 z-50 bg-white border border-[#A07735] rounded-lg shadow-lg p-2 min-w-[200px] share-dropdown">
                               <div className="text-xs font-semibold text-[#8B5A2B] mb-2 px-2">Share Gift Card</div>
                               <div className="space-y-1">
                                 <button
@@ -792,7 +693,7 @@ ${userData?.first_name || userData?.firstName || 'Your friend'}`)
                                     handleShareGiftCard(giftCard)
                                     setShowShareOptions(null)
                                   }}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-green-50 rounded text-left transition-colors border-b border-gray-100"
+                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-green-50 rounded text-left transition-colors"
                                 >
                                   <div className="w-5 h-5 bg-gradient-to-r from-green-400 to-green-500 rounded flex items-center justify-center">
                                     <Share2Icon className="h-3 w-3 text-white" />
@@ -801,88 +702,6 @@ ${userData?.first_name || userData?.firstName || 'Your friend'}`)
                                     <div className="font-medium">Share as Image</div>
                                     <div className="text-xs text-gray-500">Beautiful gift card design</div>
                                   </div>
-                                </button>
-                                
-                                <button
-                                  onClick={() => {
-                                    shareToWhatsApp(giftCard)
-                                    setShowShareOptions(null)
-                                  }}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-green-50 rounded text-left transition-colors"
-                                >
-                                  <div className="w-5 h-5 bg-green-500 rounded flex items-center justify-center">
-                                    <span className="text-white text-xs font-bold">W</span>
-                                  </div>
-                                  WhatsApp
-                                </button>
-                                
-                                <button
-                                  onClick={() => {
-                                    shareToEmail(giftCard)
-                                    setShowShareOptions(null)
-                                  }}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-blue-50 rounded text-left transition-colors"
-                                >
-                                  <div className="w-5 h-5 bg-blue-500 rounded flex items-center justify-center">
-                                    <MailIcon className="h-3 w-3 text-white" />
-                                  </div>
-                                  Email
-                                </button>
-                                
-                                <button
-                                  onClick={() => {
-                                    shareToTelegram(giftCard)
-                                    setShowShareOptions(null)
-                                  }}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-cyan-50 rounded text-left transition-colors"
-                                >
-                                  <div className="w-5 h-5 bg-cyan-500 rounded flex items-center justify-center">
-                                    <span className="text-white text-xs font-bold">T</span>
-                                  </div>
-                                  Telegram
-                                </button>
-                                
-                                <button
-                                  onClick={() => {
-                                    shareToFacebook(giftCard)
-                                    setShowShareOptions(null)
-                                  }}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-blue-50 rounded text-left transition-colors"
-                                >
-                                  <div className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center">
-                                    <span className="text-white text-xs font-bold">f</span>
-                                  </div>
-                                  Facebook
-                                </button>
-                                
-                                <button
-                                  onClick={() => {
-                                    shareToTwitter(giftCard)
-                                    setShowShareOptions(null)
-                                  }}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-sky-50 rounded text-left transition-colors"
-                                >
-                                  <div className="w-5 h-5 bg-sky-500 rounded flex items-center justify-center">
-                                    <span className="text-white text-xs font-bold">𝕏</span>
-                                  </div>
-                                  Twitter
-                                </button>
-                                
-                                <div className="border-t border-gray-200 my-1"></div>
-                                
-                                <button
-                                  onClick={() => {
-                                    copyToClipboard(giftCard)
-                                    setShowShareOptions(null)
-                                  }}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 rounded text-left transition-colors"
-                                >
-                                  {copiedCardId === giftCard.id ? (
-                                    <CheckIcon className="h-4 w-4 text-green-600" />
-                                  ) : (
-                                    <CopyIcon className="h-4 w-4 text-gray-600" />
-                                  )}
-                                  {copiedCardId === giftCard.id ? 'Copied!' : 'Copy to Clipboard'}
                                 </button>
                               </div>
                             </div>
