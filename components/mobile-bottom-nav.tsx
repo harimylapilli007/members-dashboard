@@ -61,11 +61,11 @@ export default function MobileBottomNav() {
       //   href: "/gift-cards/my-gift-cards",
       //   icon: GiftIcon,
       // },
-      {
-        name: "Profile",
-        href: "/profile",
-        icon: User,
-      },
+      // {
+      //   name: "Profile",
+      //   href: "/profile",
+      //   icon: User,
+      // },
     ] : []),
   ]
 

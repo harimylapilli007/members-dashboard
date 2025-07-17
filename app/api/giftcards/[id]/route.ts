@@ -17,7 +17,8 @@ export async function GET(
       )
     }
 
-    const apiKey = process.env.ZENOTI_API_KEY
+    // const apiKey = process.env.ZENOTI_API_KEY
+    const apiKey = "apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283"   //local
     if (!apiKey) {
       console.error('ZENOTI_API_KEY is not set in environment variables')
       return NextResponse.json(

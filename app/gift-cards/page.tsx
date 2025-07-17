@@ -8,11 +8,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
-import { ChevronRight, MessageCircle, Info, ChevronLeft, Loader2, Calendar } from "lucide-react"
+import { ChevronRight, MessageCircle, Info, ChevronLeft, Loader2, Calendar, CheckCircle, CheckCheckIcon, CheckCheck, CheckCircle2, Gift, Mail, User, Clock } from "lucide-react"
 import Image from "next/image"
 import Header from "@/app/components/Header"
 import { Calendar as CalendarComponent } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 
@@ -62,6 +63,10 @@ export default function GiftCardPage() {
   const [occasionsError, setOccasionsError] = useState<string | null>(null)
   const [selectedOccasionImages, setSelectedOccasionImages] = useState<Array<{id: string, url: string}>>([])
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [showPreviewModal, setShowPreviewModal] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
 
 
 
@@ -77,9 +82,32 @@ export default function GiftCardPage() {
     setSubmitError(null)
   }
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitError, setSubmitError] = useState<string | null>(null)
-  const [submitSuccess, setSubmitSuccess] = useState(false)
+  const nextCard = () => {
+    setCurrentCardIndex((prev) => (prev + 1) % selectedOccasionImages.length)
+  }
+
+  const prevCard = () => {
+    setCurrentCardIndex((prev) => (prev - 1 + selectedOccasionImages.length) % selectedOccasionImages.length)
+  }
+
+  const selectCard = (id: number) => {
+    setSelectedDesign(id)
+  }
+
+  const handleOccasionChange = (value: string) => {
+    setSelectedOccasion(value)
+    // Find the selected occasion and update images
+    const selectedOccasionData = occasions.find(occasion => occasion.value === value)
+    if (selectedOccasionData && selectedOccasionData.images) {
+      setSelectedOccasionImages(selectedOccasionData.images)
+      setCurrentCardIndex(0) // Reset to first card
+      setSelectedDesign(1) // Reset selection to first design
+    } else {
+      setSelectedOccasionImages([])
+      setCurrentCardIndex(0)
+      setSelectedDesign(1)
+    }
+  }
 
   const handlePreviewAndPay = async () => {
     // Validate user authentication
@@ -166,10 +194,22 @@ export default function GiftCardPage() {
       }
     }
 
+    // Show preview modal instead of directly proceeding to payment
+    setShowPreviewModal(true)
+    setSubmitError(null)
+  }
+
+  const handleConfirmPayment = async () => {
     setIsSubmitting(true)
     setSubmitError(null)
+    setShowPreviewModal(false)
 
     try {
+      const userDataStr = localStorage.getItem('userData')
+      const userData = JSON.parse(userDataStr!)
+      const guestId = userData.id
+      const finalAmount = selectedAmount || customAmount
+
       // Step 1: Create gift card
       const giftCardPayload = {
         amount: finalAmount,
@@ -211,7 +251,7 @@ export default function GiftCardPage() {
       console.log('Gift card created successfully:', giftCardData)
 
       // Step 2: Get exact amount from invoice
-      let exactAmount = numericAmount
+      let exactAmount = parseFloat(finalAmount)
       try {
         const invoiceResponse = await fetch(`/api/giftcards/invoice/${giftCardData.invoiceId}`)
         const invoiceData = await invoiceResponse.json()
@@ -290,33 +330,6 @@ export default function GiftCardPage() {
       setSubmitError(error instanceof Error ? error.message : 'An unexpected error occurred')
     } finally {
       setIsSubmitting(false)
-    }
-  }
-
-  const nextCard = () => {
-    setCurrentCardIndex((prev) => (prev + 1) % selectedOccasionImages.length)
-  }
-
-  const prevCard = () => {
-    setCurrentCardIndex((prev) => (prev - 1 + selectedOccasionImages.length) % selectedOccasionImages.length)
-  }
-
-  const selectCard = (id: number) => {
-    setSelectedDesign(id)
-  }
-
-  const handleOccasionChange = (value: string) => {
-    setSelectedOccasion(value)
-    // Find the selected occasion and update images
-    const selectedOccasionData = occasions.find(occasion => occasion.value === value)
-    if (selectedOccasionData && selectedOccasionData.images) {
-      setSelectedOccasionImages(selectedOccasionData.images)
-      setCurrentCardIndex(0) // Reset to first card
-      setSelectedDesign(1) // Reset selection to first design
-    } else {
-      setSelectedOccasionImages([])
-      setCurrentCardIndex(0)
-      setSelectedDesign(1)
     }
   }
 
@@ -432,7 +445,7 @@ export default function GiftCardPage() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1100px] mx-auto">
             {/* Left Section - Gift Card Configuration */}
-            <div className="space-y-8 bg-white/50 backdrop-blur-sm rounded-xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border border-white/20">
+            <div className="space-y-6 bg-white/50 backdrop-blur-sm rounded-xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_8px_10px_-6px_rgba(0,0,0,0.1)] border border-white/20">
               {/* Title */}
               <div>
               <h1 className="text-2xl md:text-3xl font-marcellus text-[#232323] mb-2">Gift Cards</h1>
@@ -442,7 +455,7 @@ export default function GiftCardPage() {
               {/* Amount Selection */}
               <div className="space-y-4">
                 <div>
-                  <Label className="text-sm font-medium text-[#454545] mb-2 block font-inter">
+                  <Label className="text-sm md:text-lg   text-[#454545] mb-2 block font-marcellus">
                     Choose from preset amounts below
                   </Label>
                   <Select value={selectedAmount} onValueChange={handleAmountChange}>
@@ -460,7 +473,7 @@ export default function GiftCardPage() {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium text-[#454545] mb-2 block font-inter">
+                    <Label className="text-sm md:text-lg  text-[#454545] mb-2 block font-marcellus">
                     Or enter custom amount
                   </Label>
                   <div className="relative">
@@ -480,7 +493,7 @@ export default function GiftCardPage() {
 
               {/* Occasion Selection */}
               <div>
-                <Label className="text-sm font-medium text-[#454545] mb-4 block font-inter">
+                <Label className="text-sm md:text-lg  text-[#454545] mb-4 block font-marcellus">
                   Occasion
                 </Label>
                 {isLoadingOccasions ? (
@@ -494,9 +507,9 @@ export default function GiftCardPage() {
                     <RadioGroup value={selectedOccasion} onValueChange={handleOccasionChange}>
                       <div className="grid grid-cols-2 gap-3">
                         {occasions.map((occasion) => (
-                          <div key={occasion.value} className="flex items-center space-x-2">
+                          <div key={occasion.value} className="flex items-center space-x-2 font-marcellus">
                             <RadioGroupItem value={occasion.value} id={occasion.value} className="text-[#a07735]" />
-                            <Label htmlFor={occasion.value} className="text-sm font-inter text-[#454545]">
+                            <Label htmlFor={occasion.value} className="text-sm md:text-md  text-[#454545]">
                               {occasion.label}
                             </Label>
                           </div>
@@ -510,7 +523,7 @@ export default function GiftCardPage() {
                       {occasions.map((occasion) => (
                         <div key={occasion.value} className="flex items-center space-x-2">
                           <RadioGroupItem value={occasion.value} id={occasion.value} className="text-[#a07735]" />
-                          <Label htmlFor={occasion.value} className="text-sm font-inter text-[#454545]">
+                          <Label htmlFor={occasion.value} className="text-sm md:text-md font-marcellus text-[#454545]">
                             {occasion.label}
                           </Label>
                         </div>
@@ -522,10 +535,10 @@ export default function GiftCardPage() {
 
               {/* Recipient Details */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-[#232323] font-marcellus">Recipient Details</h3>
+                <h2 className="text-lg font-medium text-[#232323] font-marcellus">Recipient Details</h2>
                 
                 <div>
-                  <Label className="text-sm font-medium text-[#454545] mb-2 block font-inter">
+                  <Label className="text-sm md:text-lg  text-[#454545] mb-2 block font-marcellus">
                     Recipient Name
                   </Label>
                   <Input
@@ -540,7 +553,7 @@ export default function GiftCardPage() {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium text-[#454545] mb-2 block font-inter">
+                  <Label className="text-sm md:text-lg  text-[#454545] mb-2 block font-marcellus">
                     Recipient Email
                   </Label>
                   <Input
@@ -556,7 +569,7 @@ export default function GiftCardPage() {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium text-[#454545] mb-2 block font-inter">
+                  <Label className="text-sm md:text-lg  text-[#454545] mb-2 block font-marcellus">
                     Recipient Phone (Optional)
                   </Label>
                   <Input
@@ -576,7 +589,7 @@ export default function GiftCardPage() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <MessageCircle className="h-5 w-5 text-[#98564D]" />
-                  <Label className="text-sm font-medium text-[#454545] font-inter">
+                  <Label className="text-sm md:text-lg  text-[#454545] font-marcellus">
                     Message (Optional)
                   </Label>
                 </div>
@@ -590,7 +603,7 @@ export default function GiftCardPage() {
 
                           {/* Gift Card Design Selection */}
             <div>
-              <Label className="text-sm font-medium text-[#454545] mb-4 block font-inter">
+              <Label className="text-sm md:text-lg  text-[#454545] mb-4 block font-marcellus">
                 Select your gift Card
               </Label>
               
@@ -661,8 +674,8 @@ export default function GiftCardPage() {
 
                             {/* Selection Indicator */}
                             {selectedDesign === index + 1 && (
-                              <div className="absolute top-3 right-3 w-8 h-8 bg-gradient-to-r from-[#a07735] to-[#98564D] rounded-full flex items-center justify-center shadow-lg">
-                                <div className="w-4 h-4 bg-white rounded-full"></div>
+                              <div className="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
+                                <CheckCircle2 className="w-6 h-6 text-white" fill="#a07735" />
                               </div>
                             )}
                           </Card>
@@ -700,7 +713,7 @@ export default function GiftCardPage() {
 
               {/* Delivery Date */}
               <div>
-                <Label className="text-sm font-medium text-[#454545] mb-4 block font-inter">
+                <Label className="text-sm md:text-lg  text-[#454545] mb-4 block font-marcellus">
                   Delivery Date
                 </Label>
                 <RadioGroup value={deliveryOption} onValueChange={(value) => {
@@ -714,13 +727,13 @@ export default function GiftCardPage() {
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="now" id="now" className="text-[#a07735]" />
-                      <Label htmlFor="now" className="text-sm font-inter text-[#454545]">
+                      <Label htmlFor="now" className="text-sm md:text-md font-marcellus text-[#454545]">
                         Send now
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="later" id="later" className="text-[#a07735]" />
-                      <Label htmlFor="later" className="text-sm font-inter text-[#454545]">
+                      <Label htmlFor="later" className="text-sm md:text-md font-marcellus text-[#454545]">
                         Send later
                       </Label>
                     </div>
@@ -731,7 +744,7 @@ export default function GiftCardPage() {
                 {deliveryOption === "later" && (
                   <div className="mt-4 space-y-4">
                     <div>
-                      <Label className="text-sm font-medium text-[#454545] mb-2 block font-inter">
+                      <Label className="text-sm md:text-lg  text-[#454545] mb-2 block font-marcellus">
                         Select Delivery Date
                       </Label>
                       <Popover>
@@ -763,7 +776,7 @@ export default function GiftCardPage() {
                     </div>
 
                     <div>
-                      <Label className="text-sm font-medium text-[#454545] mb-2 block font-inter">
+                      <Label className="text-sm md:text-lg  text-[#454545] mb-2 block font-marcellus">
                         Select Delivery Time
                       </Label>
                       <Input
@@ -779,7 +792,7 @@ export default function GiftCardPage() {
 
                     {deliveryDate && (
                       <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <div className="text-sm text-blue-800 font-inter">
+                        <div className="text-sm text-blue-800 font-marcellus">
                           <strong>Selected Delivery:</strong><br />
                           {format(deliveryDate, "PPP")} at {deliveryTime}
                         </div>
@@ -839,6 +852,145 @@ export default function GiftCardPage() {
           </div>
         </main>
       </div>
+
+      {/* Preview Modal */}
+      <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
+        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-xl bg-white w-[92%] sm:w-full mx-auto max-h-[90vh] sm:max-h-[85vh] overflow-y-auto scrollbar-hide">
+          <DialogHeader className="p-6 bg-white text-center border-b border-gray-200">
+            <DialogTitle className="text-[#232323] text-2xl sm:text-3xl text-center font-marcellus font-bold mb-2">
+              Checkout Summary
+            </DialogTitle>
+            <DialogDescription className="text-[#454545] font-marcellus text-base text-center">
+              Complete your spa gift card purchase
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="p-6 space-y-2">
+            {/* Delivery Date Section */}
+            <div className="space-y-2">
+              <h2 className="text-lg font-semibold text-[#232323] font-marcellus">
+                DELIVERY DATE *
+              </h2>
+              <div className="p-2 bg-gray-50 border border-gray-200 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-[#a07735]" />
+                  <span className="text-[#454545] font-inter">
+                    {deliveryOption === "now" 
+                      ? "Send immediately" 
+                      : deliveryDate 
+                        ? `${format(deliveryDate, "dd MMM yyyy")} at ${deliveryTime}`
+                        : "Select delivery date"
+                    }
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Summary Section */}
+            <div className="">
+              <h2 className="text-lg font-semibold text-[#232323] font-marcellus">
+                SUMMARY
+              </h2>
+              
+              {/* Gift Card Item */}
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Gift className="h-5 w-5 text-[#a07735]" />
+                  <div>
+                    <p className="font-marcellus font-semibold text-[#232323]">
+                      Gift Card x1
+                    </p>
+                    <p className="text-sm text-[#454545] font-inter">
+                      {occasions.find(o => o.value === selectedOccasion)?.label || selectedOccasion}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-marcellus font-semibold text-[#232323]">
+                    ₹{(selectedAmount || customAmount)?.toLocaleString()}.00
+                  </span>
+                  <button className="text-gray-400 hover:text-red-500">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Price Breakdown */}
+              <div className="space-y-4 border-t border-gray-200 pt-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-[#454545] font-inter">Sub Total</span>
+                  <span className="font-marcellus font-semibold text-[#232323]">
+                    ₹{(selectedAmount || customAmount)?.toLocaleString()}.00
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#454545] font-inter">Tax</span>
+                  <span className="font-marcellus font-semibold text-[#232323]">
+                    ₹{Math.round(parseFloat(selectedAmount || customAmount || '0') * 0.18).toLocaleString()}.00
+                  </span>
+                </div>
+                <div className="flex justify-between items-center pt-3 border-t border-gray-200">
+                  <span className="text-lg font-marcellus font-bold text-[#232323]">Total</span>
+                  <span className="text-lg font-marcellus font-bold text-[#232323]">
+                    ₹{(parseFloat(selectedAmount || customAmount || '0') * 1.18).toLocaleString()}.00
+                  </span>
+                </div>
+                <p className="text-xs text-[#454545] font-inter text-center">
+                  Inclusive of all taxes
+                </p>
+              </div>
+            </div>
+
+            {/* Recipient Details (Collapsed) */}
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-3">
+                <User className="h-4 w-4 text-[#a07735]" />
+                <div>
+                  <p className="font-marcellus font-semibold text-[#232323] text-sm">
+                    Recipient: {recipientName}
+                  </p>
+                  <p className="text-xs text-[#454545] font-inter">
+                    {recipientEmail}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="p-6 bg-white border-t border-gray-200">
+            <div className="w-full space-y-4">
+              {/* Preview and Buy Button */}
+              <Button 
+                onClick={handleConfirmPayment} 
+                disabled={isSubmitting}
+                className="w-full h-[32px]  p-4 sm:p-6 bg-gradient-to-r from-[#E6B980] to-[#F8E1A0] shadow-[0px_2px_4px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)] rounded-xl font-['Marcellus'] font-bold text-base sm:text-[20px] leading-[17px] text-center text-[#98564D] hover:scale-105 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Gift className="h-5 w-5 mr-2" />
+                    Preview and Buy
+                  </>
+                )}
+              </Button>
+              
+              {/* Security Message */}
+              <div className="flex items-center justify-center gap-2 text-sm text-[#454545] font-inter">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span>Secure Payment Protected</span>
+              </div>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 } 

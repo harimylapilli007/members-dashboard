@@ -93,7 +93,7 @@ export default function Header() {
   // Show loading state until client-side data is ready
   if (!isClient) {
     return (
-      <header className="z-10 flex items-center justify-between bg-white/20 backdrop-blur-md border-b border-white/20 shadow-lg px-4 md:px-6 lg:px-8 py-2 sticky top-0 max-w-[1305px] mx-auto rounded-2xl mt-4">
+      <header className="z-50 flex items-center justify-between bg-white/20 backdrop-blur-md border-b border-white/20 shadow-lg px-4 md:px-6 lg:px-8 py-2 sticky top-0 max-w-[1305px] mx-auto rounded-2xl mt-4">
         <div className="flex items-center justify-between w-full">
           <Link href="/" className="flex items-center">
             <Image
@@ -130,7 +130,7 @@ export default function Header() {
   }
 
   return (
-    <header className="z-10 flex items-center justify-between bg-white/20 backdrop-blur-md border-b border-white/20 shadow-lg px-4 md:px-6 lg:px-8 py-2 sticky top-0 max-w-[1305px] mx-auto rounded-2xl mt-4">
+    <header className="z-50 flex items-center justify-between bg-white/20 backdrop-blur-md border-b border-white/20 shadow-lg px-4 md:px-6 lg:px-8 py-2 sticky top-0 max-w-[1305px] mx-auto rounded-2xl mt-4">
       <div className="flex items-center justify-between w-full">
         <Link href="/" className="flex items-center">
           <Image
@@ -198,7 +198,7 @@ export default function Header() {
               <Link 
                 href="/gift-cards" 
                 className={cn(
-                  "relative px-3 lg:px-4 py-2 rounded-lg font-bold font-inter text-sm lg:text-base transition-all duration-300",
+                  "relative px-3 lg:px-4 py-2 rounded-lg font-bold font-inter text-sm lg:text-base transition-all duration-300 z-10",
                   "before:absolute before:inset-0 before:rounded-lg before:transition-all before:duration-300",
                   "hover:scale-105 hover:shadow-lg hover:outline hover:outline-2 hover:outline-[#a07735]",
                   pathname?.includes('/gift-cards')
@@ -210,7 +210,7 @@ export default function Header() {
               </Link>
               
               {/* Dropdown Menu */}
-              <div className="absolute top-full left-0 mt-2 w-48 bg-white/95 backdrop-blur-md border border-white/20 shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white/95 backdrop-blur-md border border-white/20 shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[60]">
                 <div className="py-2">
                   <Link 
                     href="/gift-cards" 

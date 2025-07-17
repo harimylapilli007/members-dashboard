@@ -90,6 +90,32 @@ async function closeInvoice(invoiceId: string, closedById: string) {
   return data;
 }
 
+// Function to send gift card email
+async function sendGiftCardEmail(invoiceId: string) {
+  const options = {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      Authorization: `apikey 061fb3b3f6974acc828ced31bef595cca3f57e5bc194496785492e2b70362283`
+    }
+  };
+
+  console.log('Sending gift card email with options:', {
+    url: `https://api.zenoti.com/v1/invoices/${invoiceId}/send_giftcard_email`
+  });
+
+  const response = await fetch(`https://api.zenoti.com/v1/invoices/${invoiceId}/send_giftcard_email`, options);
+  const data = await response.json();
+  
+  console.log('Send gift card email response:', {
+    status: response.status,
+    statusText: response.statusText,
+    data: data
+  });
+
+  return data;
+}
+
 export async function POST(request: Request) {
   try {
     // Parse form data instead of JSON
@@ -153,6 +179,21 @@ export async function POST(request: Request) {
       }
 
       console.log('Invoice closed successfully');
+
+      // Send gift card email to the guest
+      try {
+        const emailResult = await sendGiftCardEmail(responseData.txnid);
+        
+        if (emailResult.error) {
+          console.error('Send gift card email failed:', emailResult.error);
+          // Don't throw error here as the payment is still successful
+        } else {
+          console.log('Gift card email sent successfully');
+        }
+      } catch (emailError) {
+        console.error('Error sending gift card email:', emailError);
+        // Don't throw error here as the payment is still successful
+      }
 
       // Update gift card status in our system
     //   await updateGiftCardStatus(responseData);
