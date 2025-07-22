@@ -272,7 +272,7 @@ export default function GiftCardPage() {
         invoice_id: giftCardData.invoiceId,
         amount: exactAmount,
         product_info: 'Gift Card',
-        customer_name: userData.name || userData.firstName || 'Guest',
+        customer_name: userData.name || userData.first_name || 'Guest',
         customer_email: userData.email || '',
         customer_phone: userData.phone || '',
         recipient_name: recipientName.trim(),
