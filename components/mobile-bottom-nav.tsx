@@ -15,6 +15,20 @@ import {
   GiftIcon
 } from "lucide-react"
 
+// GTM tracking function for mobile navigation
+const trackMobileNavClick = (navItem: string) => {
+  if (typeof window !== 'undefined' && window.dataLayer) {
+    window.dataLayer.push({
+      event: 'mobile_nav_click',
+      nav_item: navItem,
+      timestamp: new Date().toISOString(),
+      user_agent: navigator.userAgent,
+      screen_width: window.innerWidth,
+      screen_height: window.innerHeight
+    })
+  }
+}
+
 export default function MobileBottomNav() {
   const pathname = usePathname()
   const { isVisible } = useMobileNav()
@@ -89,6 +103,7 @@ export default function MobileBottomNav() {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={() => trackMobileNavClick(item.name)}
                 className={cn(
                   "flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-200 min-w-0 flex-1",
                   "hover:bg-gray-100/50 active:scale-95",
