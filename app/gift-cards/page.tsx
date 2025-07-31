@@ -274,7 +274,7 @@ export default function GiftCardPage() {
         product_info: 'Gift Card',
         customer_name: userData.first_name || userData.last_name || 'Guest',
         customer_email: userData.email || '',
-        customer_phone: userData.phone || '',
+        customer_phone: userData.phone || '', 
         recipient_name: recipientName.trim(),
         recipient_email: recipientEmail.trim(),
         occasion: occasions.find(o => o.value === selectedOccasion)?.label || selectedOccasion,
