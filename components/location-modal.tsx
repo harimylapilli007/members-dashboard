@@ -169,7 +169,8 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
       { name: "Dom Airport", id: "94078349-47bf-4a3c-8272-7b20008ea266" }
     ],
     "Goa": [
-      { name: "Fortune Candolim", id: "d069efee-094e-4a30-ba19-9458effffdd4" }
+      { name: "Fortune Candolim", id: "d069efee-094e-4a30-ba19-9458effffdd4" },
+      { name: "Regenta Candolim", id: "7ee9a492-6dbc-406c-9098-30bf08431b55" }
     ],
     "Ahmedabad": [
       { name: "DoubleTree Hilton", id: "60f37c05-f44a-4dd3-aab7-490c32c61d6e" },
@@ -524,6 +525,22 @@ export default function LocationModal({ isOpen, onClose, onSelectLocation }: Loc
                   />
                 </div>
                 <span className="text-gray-800 text-sm">Udaipur</span>
+              </div>
+
+              <div
+                className="flex flex-col items-center cursor-pointer hover:opacity-80"
+                onClick={() => handleCitySelect("Goa")}
+              >
+                <div className="w-12 h-12 mb-3 flex items-center justify-center">
+                  <Image
+                    src="/city_icons/Goa.png"
+                    alt="Goa"
+                    width={48}
+                    height={48}
+                    className="object-contain"
+                  />
+                </div>
+                <span className="text-gray-800 text-sm">Goa</span>
               </div>
 
               {/* Row 5 */}

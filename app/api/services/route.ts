@@ -80,7 +80,8 @@ function categorizeServices(allData: any[]) {
       name: service.name || '',
       final_price: service.price_info?.price_without_tax || service.price || 0,
       duration: service.duration || 0,
-      description: service.description || ''
+      description: service.description || '',
+      image_path: service.image_paths || ''
     })
   })
 
@@ -99,7 +100,7 @@ export async function GET(request: Request) {
       )
     }
 
-    const apiKey = process.env.ZENOTI_API_KEY
+    const apiKey = process.env.ZENOTI_API_KEY 
     console.log('Environment check:', {
       ZENOTI_API_KEY: apiKey ? 'Present' : 'Missing',
       NODE_ENV: process.env.NODE_ENV,
@@ -129,7 +130,7 @@ export async function GET(request: Request) {
 
     while (true) {
       try {
-        const url = `https://api.zenoti.com/v1/Centers/${centerId}/services?page=${currentPage}&size=${pageSize}`
+        const url = `https://api.zenoti.com/v1/Centers/${centerId}/services/?expand=additional_info&expand=image_paths&page=${currentPage}&size=${pageSize}`
         const cacheKey = generateCacheKey(url, { centerId, page: currentPage })
         
         const data = await fetchWithRetry(url, { 

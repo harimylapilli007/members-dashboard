@@ -27,6 +27,7 @@ export default function ServiceDetails() {
   const duration = searchParams.get('duration') || '30'
   const description = searchParams.get('description') || ''
   const serviceId = searchParams.get('id') || ''
+  const imagePath = searchParams.get('image_path') || '/spa-swedish-massage.png'
   
   useEffect(() => {
     document.title = serviceName
@@ -507,8 +508,8 @@ export default function ServiceDetails() {
             <div className="flex flex-col order-1 lg:order-1">
               <div className="rounded-lg overflow-hidden mb-4 sm:mb-6 relative">
                 <Image
-                  src="/spa-swedish-massage.png"
-                  alt="Swedish Massage"
+                  src={imagePath}
+                  alt={serviceName}
                   width={600}
                   height={400}
                   className="object-cover w-full h-[200px] sm:h-[300px] md:h-[350px]"

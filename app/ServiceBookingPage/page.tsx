@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, memo } from "react";
+import React, { useEffect, useState, useCallback, memo, useRef } from "react";
 import { MapPin, Clock, Tag, Phone, ChevronDown } from "lucide-react";
 import LocationModal from "@/components/location-modal";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -18,6 +18,7 @@ interface Service {
   final_price: number;
   duration: number;
   description: string;
+  image_path?: string;
 }
 
 interface CategorizedServices {
@@ -84,6 +85,22 @@ const LoadingSpinner = () => (
   </div>
 );
 
+// Service Card Skeleton for loading states
+const ServiceCardSkeleton = () => (
+  <div className="bg-white/50 backdrop-blur-sm rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
+    <div className="relative h-40 md:h-48 w-full bg-gray-200"></div>
+    <div className="p-3 md:p-4">
+      <div className="h-4 bg-gray-200 rounded mb-2"></div>
+      <div className="h-3 bg-gray-200 rounded mb-3 w-3/4"></div>
+      <div className="h-3 bg-gray-200 rounded mb-4 w-1/2"></div>
+      <div className="flex items-center justify-between">
+        <div className="h-6 bg-gray-200 rounded w-20"></div>
+        <div className="h-8 bg-gray-200 rounded w-24"></div>
+      </div>
+    </div>
+  </div>
+);
+
 const ErrorMessage = ({ message, onRetry }: { message: string; onRetry: () => void }) => (
   <div className="flex flex-col items-center justify-center min-h-screen p-4">
     <div className="text-red-600 mb-4">{message}</div>
@@ -111,7 +128,7 @@ const ServiceCard = memo(({
   <div onClick={() => onBookNow(service)} className="bg-white/50 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 hover:border-[#a07735]/40 group">
     <div className="relative h-40 md:h-48 w-full">
       <Image
-        src={categoryImage}
+        src={service.image_path || categoryImage}
         alt={service.name}
         fill
         className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -390,6 +407,16 @@ export default function ServiceBookingPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
+  
+  // Pagination state
+  const [visibleServices, setVisibleServices] = useState<{ [key: string]: Service[] }>({});
+  const [servicesPerPage] = useState(6); // Show 6 services initially
+  const [currentPage, setCurrentPage] = useState<{ [key: string]: number }>({});
+  const [hasMoreServices, setHasMoreServices] = useState<{ [key: string]: boolean }>({});
+  const [loadingMore, setLoadingMore] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
 
   // Load saved state after component mounts
   useEffect(() => {
@@ -488,7 +515,7 @@ export default function ServiceBookingPage() {
       });
     }
     
-    router.push(`/service/${service.id}?id=${service.id}&name=${encodeURIComponent(service.name)}&price=${service.final_price}&duration=${service.duration}&description=${encodeURIComponent(service.description || '')}&location=${encodeURIComponent(selectedLocation?.outlet.name || '')}&outletId=${selectedLocation?.centerId || ''}&city=${encodeURIComponent(selectedLocation?.city || '')}`);
+    router.push(`/service/${service.id}?id=${service.id}&name=${encodeURIComponent(service.name)}&price=${service.final_price}&duration=${service.duration}&description=${encodeURIComponent(service.description || '')}&image_path=${encodeURIComponent(service.image_path || '')}&location=${encodeURIComponent(selectedLocation?.outlet.name || '')}&outletId=${selectedLocation?.centerId || ''}&city=${encodeURIComponent(selectedLocation?.city || '')}`);
   }, [router, selectedLocation]);
 
   const handleReadMore = useCallback((service: Service) => {
@@ -497,7 +524,8 @@ export default function ServiceBookingPage() {
       name: service.name || '',
       final_price: service.final_price || 0,
       duration: service.duration || 0,
-      description: service.description || ''
+      description: service.description || '',
+      image_path: service.image_path || ''
     });
   }, []);
 
@@ -509,6 +537,105 @@ export default function ServiceBookingPage() {
     setIsLocationModalOpen(true);
   }, []);
 
+  // Function to initialize pagination for a category
+  const initializePagination = useCallback((category: string, allServices: Service[]) => {
+    const filteredServices = allServices.filter(service => 
+      service.name.toLowerCase().includes(search.toLowerCase()) ||
+      service.description?.toLowerCase().includes(search.toLowerCase())
+    );
+    
+    const initialServices = filteredServices.slice(0, servicesPerPage);
+    const hasMore = filteredServices.length > servicesPerPage;
+    
+    setVisibleServices(prev => ({
+      ...prev,
+      [category]: initialServices
+    }));
+    
+    setCurrentPage(prev => ({
+      ...prev,
+      [category]: 1
+    }));
+    
+    setHasMoreServices(prev => ({
+      ...prev,
+      [category]: hasMore
+    }));
+  }, [search, servicesPerPage]);
+
+  // Function to load more services
+  const loadMoreServices = useCallback(async (category: string) => {
+    if (loadingMore || !hasMoreServices[category]) return;
+    
+    setLoadingMore(true);
+    
+    // Simulate loading delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const allServices = services[category] || [];
+    const filteredServices = allServices.filter(service => 
+      service.name.toLowerCase().includes(search.toLowerCase()) ||
+      service.description?.toLowerCase().includes(search.toLowerCase())
+    );
+    
+    const currentPageNum = currentPage[category] || 1;
+    const nextPage = currentPageNum + 1;
+    const startIndex = (nextPage - 1) * servicesPerPage;
+    const endIndex = startIndex + servicesPerPage;
+    const newServices = filteredServices.slice(startIndex, endIndex);
+    
+    setVisibleServices(prev => ({
+      ...prev,
+      [category]: [...(prev[category] || []), ...newServices]
+    }));
+    
+    setCurrentPage(prev => ({
+      ...prev,
+      [category]: nextPage
+    }));
+    
+    setHasMoreServices(prev => ({
+      ...prev,
+      [category]: endIndex < filteredServices.length
+    }));
+    
+    setLoadingMore(false);
+  }, [loadingMore, hasMoreServices, services, search, servicesPerPage, currentPage]);
+
+  // Intersection Observer for infinite scrolling
+  useEffect(() => {
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && selectedCategory && hasMoreServices[selectedCategory] && !loadingMore) {
+          loadMoreServices(selectedCategory);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [selectedCategory, hasMoreServices, loadingMore, loadMoreServices]);
+
+  // Update visible services when category or search changes
+  useEffect(() => {
+    if (selectedCategory && services[selectedCategory]) {
+      initializePagination(selectedCategory, services[selectedCategory]);
+    }
+  }, [selectedCategory, services, search, initializePagination]);
+
   const fetchServices = async () => {
     if (!selectedLocation?.centerId) {
       setError('Please select a location first');
@@ -519,6 +646,9 @@ export default function ServiceBookingPage() {
     setLoading(true);
     setError(null);
     setServices({}); // Reset services state
+    setVisibleServices({}); // Reset visible services
+    setCurrentPage({}); // Reset pagination
+    setHasMoreServices({}); // Reset has more state
     
     try {
       const response = await fetch(`/api/services?centerId=${selectedLocation.centerId}`);
@@ -586,7 +716,8 @@ export default function ServiceBookingPage() {
       name: service.name || '',
       final_price: service.final_price || 0,
       duration: service.duration || 0,
-      description: service.description || ''
+      description: service.description || '',
+      image_path: service.image_path || ''
     });
     setIsServiceModalOpen(true);
   };
@@ -784,25 +915,81 @@ export default function ServiceBookingPage() {
                   />
 
                   {/* Services List */}
-                  {selectedCategory && services[selectedCategory] && (
+                  {selectedCategory && (visibleServices[selectedCategory] || loading) && (
                     <div className="space-y-6">
-                      <h1 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-6">{selectedCategory}</h1>
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-                        {services[selectedCategory]
-                          .filter(service => 
-                            service.name.toLowerCase().includes(search.toLowerCase()) ||
-                            service.description?.toLowerCase().includes(search.toLowerCase())
-                          )
-                          .map((service) => (
-                            <ServiceCard
-                              key={service.id}
-                              service={service}
-                              categoryImage={categoryImages.find(img => img.name === selectedCategory)?.image || '/categories/default.jpg'}
-                              onBookNow={handleBookNow}
-                              onReadMore={handleReadMore}
-                            />
+                      <h1 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-6">
+                        {selectedCategory}
+                        {!loading && services[selectedCategory] && (
+                          <span className="text-sm font-normal text-gray-500 ml-2">
+                            ({visibleServices[selectedCategory]?.length || 0} of {services[selectedCategory].length} services)
+                          </span>
+                        )}
+                      </h1>
+                      
+                      {loading ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+                          {[...Array(6)].map((_, index) => (
+                            <ServiceCardSkeleton key={index} />
                           ))}
-                      </div>
+                        </div>
+                      ) : visibleServices[selectedCategory]?.length > 0 ? (
+                        <>
+                          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+                            {visibleServices[selectedCategory].map((service) => (
+                              <ServiceCard
+                                key={service.id}
+                                service={service}
+                                categoryImage={categoryImages.find(img => img.name === selectedCategory)?.image || '/categories/default.jpg'}
+                                onBookNow={handleBookNow}
+                                onReadMore={handleReadMore}
+                              />
+                            ))}
+                          </div>
+                          
+                          {/* Load More Section */}
+                          {hasMoreServices[selectedCategory] && (
+                            <div 
+                              ref={loadMoreRef}
+                              className="flex justify-center py-8"
+                            >
+                              {loadingMore ? (
+                                <div className="w-full">
+                                  <div className="flex items-center justify-center gap-3 text-gray-600 mb-4">
+                                    <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-[#a07735]"></div>
+                                    <span>Loading more services...</span>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+                                    {[...Array(3)].map((_, index) => (
+                                      <ServiceCardSkeleton key={index} />
+                                    ))}
+                                  </div>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => loadMoreServices(selectedCategory)}
+                                  className="px-6 py-3 bg-[#a07735] text-white rounded-lg hover:bg-[#8a6930] transition-colors font-semibold shadow hover:scale-105 hover:shadow-lg focus:outline-none"
+                                >
+                                  Load More Services
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="text-center py-12">
+                          <div className="text-gray-500 text-lg mb-4">
+                            {search ? `No services found for "${search}"` : 'No services available in this category'}
+                          </div>
+                          {search && (
+                            <button
+                              onClick={() => setSearch('')}
+                              className="px-4 py-2 bg-[#a07735] text-white rounded-lg hover:bg-[#8a6930] transition-colors"
+                            >
+                              Clear Search
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
                 </main>
